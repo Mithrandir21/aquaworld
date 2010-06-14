@@ -22,9 +22,9 @@ public class DataRetrival
 					.getSalinity());
 			data[i][2] = getRangeString(objects[i].getParameters().getPH());
 			data[i][3] = getRangeString(objects[i].getParameters().getGH());
-			data[i][4] = getRangeString(objects[i].getParameters()
+			data[i][4] = getRangeString(objects[i].getParameters().getKh());
+			data[i][5] = getRangeString(objects[i].getParameters()
 					.getTemperature());
-			data[i][5] = getRangeString(objects[i].getParameters().getKh());
 			data[i][6] = getRangeString(objects[i].getParameters()
 					.getMagnesium());
 			data[i][7] = getRangeString(objects[i].getParameters().getCalcium());
@@ -38,10 +38,32 @@ public class DataRetrival
 
 
 
+	/**
+	 * This function returns a string array with data from the array.
+	 */
+	public static String[] getObjectsData(AbstractObject objects)
+	{
+		String[] data = new String[10];
+
+		data[0] = objects.toString();
+		data[1] = getRangeString(objects.getParameters().getSalinity());
+		data[2] = getRangeString(objects.getParameters().getPH());
+		data[3] = getRangeString(objects.getParameters().getGH());
+		data[4] = getRangeString(objects.getParameters().getKh());
+		data[5] = getRangeString(objects.getParameters().getTemperature());
+		data[6] = getRangeString(objects.getParameters().getMagnesium());
+		data[7] = getRangeString(objects.getParameters().getCalcium());
+		data[8] = "" + objects.getParameters().getSpaceNeeded();
+		data[9] = getRangeString(objects.getParameters().getOthersSize());
+
+		return data;
+	}
+
+
+
 
 	/**
 	 * TODO - Description
-	 * 
 	 */
 	public static String getRangeString(double[] range)
 	{
@@ -76,7 +98,6 @@ public class DataRetrival
 
 	/**
 	 * TODO - Description
-	 * 
 	 */
 	public static String getRangeString(double low, double high)
 	{
@@ -103,7 +124,6 @@ public class DataRetrival
 
 	/**
 	 * TODO - Description
-	 * 
 	 */
 	public static String getRangeString(String low, String high)
 	{

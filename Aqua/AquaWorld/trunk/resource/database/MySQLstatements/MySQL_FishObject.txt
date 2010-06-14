@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS `FishObject` (
+  `FishObjectID` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` text NOT NULL,
+  `LatinName` text NOT NULL,
+  `Family` text,
+  `Description` mediumtext,
+  `Size` double NOT NULL,
+  `Gender` enum('MALE','FEMALE','UNISEX') NOT NULL,
+  `FishParametersID` int(11) NOT NULL,
+  `FishExclusionID` int(11) NOT NULL,
+  PRIMARY KEY (`FishObjectID`),
+  KEY `FishExclusion` (`FishExclusionID`),
+  KEY `FishParameters` (`FishParametersID`)
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;

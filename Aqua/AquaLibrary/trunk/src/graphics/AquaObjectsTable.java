@@ -1,5 +1,6 @@
 package graphics;
 
+
 /**
  * A ScrollPane which "freezes" the specified number of
  * columns of a JTable.
@@ -92,5 +93,5 @@ public class AquaObjectsTable extends JScrollPane
 		this.setRowHeaderView(nonScrollingColumns);
 		this.setCorner(ScrollPaneConstants.UPPER_LEFT_CORNER,
 				nonScrollingHeader);
-  }
+	}
 }

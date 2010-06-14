@@ -1,7 +1,7 @@
 package gui.groups.bottom;
 
 
-import graphics.AquaObjectsTable;
+import graphicalObjects.AquaObjectsTable;
 
 import java.awt.GridLayout;
 
@@ -9,7 +9,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import logistical.DataRetrival;
 import coreObjects.AbstractObject;
 import coreObjects.ObjectParameters;
 import coreObjects.Coral.CoralObject;
@@ -37,94 +36,94 @@ public class ResultTable extends JPanel
 		JTabbedPane results = new JTabbedPane();
 
 
-		// /**
-		// * sample table data
-		// */
-		// Object[][] data = {
-		// { "Mary", "Campione", "Snowboarding", 5, Boolean.FALSE,
-		// "Campione", "Snowboarding", 5, Boolean.FALSE,
-		// "Campione" },
-		// { "Alison", "Huml", "Rowing", 3, Boolean.FALSE, "Huml",
-		// "Rowing", 3, Boolean.FALSE, "Huml" },
-		// { "Kathy", "Walrath", "Knitting", 2, Boolean.FALSE, "Walrath",
-		// "Knitting", 2, Boolean.FALSE, "Walrath" },
-		// { "Sharon", "Zakhour", "Speed reading", 20, Boolean.FALSE,
-		// "Zakhour", "Speed reading", 20, Boolean.FALSE,
-		// "Zakhour" },
-		// { "Philip", "Milne", "Pool", 10, Boolean.FALSE, "Milne",
-		// "Pool", 10, Boolean.FALSE, "Milne" },
-		// { "Mary", "Campione", "Snowboarding", 5, Boolean.FALSE,
-		// "Campione", "Snowboarding", 5, Boolean.FALSE,
-		// "Campione" },
-		// { "Alison", "Huml", "Rowing", 3, Boolean.FALSE, "Huml",
-		// "Rowing", 3, Boolean.FALSE, "Huml" },
-		// { "Kathy", "Walrath", "Knitting", 2, Boolean.FALSE, "Walrath",
-		// "Knitting", 2, Boolean.FALSE, "Walrath" },
-		// { "Sharon", "Zakhour", "Speed reading", 20, Boolean.FALSE,
-		// "Zakhour", "Speed reading", 20, Boolean.FALSE,
-		// "Zakhour" },
-		// { "Philip", "Milne", "Pool", 10, Boolean.FALSE, "Milne",
-		// "Pool", 10, Boolean.FALSE, "Milne" },
-		// { "Mary", "Campione", "Snowboarding", 5, Boolean.FALSE,
-		// "Campione", "Snowboarding", 5, Boolean.FALSE,
-		// "Campione" },
-		// { "Alison", "Huml", "Rowing", 3, Boolean.FALSE, "Huml",
-		// "Rowing", 3, Boolean.FALSE, "Huml" },
-		// { "Kathy", "Walrath", "Knitting", 2, Boolean.FALSE, "Walrath",
-		// "Knitting", 2, Boolean.FALSE, "Walrath" },
-		// { "Sharon", "Zakhour", "Speed reading", 20, Boolean.FALSE,
-		// "Zakhour", "Speed reading", 20, Boolean.FALSE,
-		// "Zakhour" },
-		// { "Philip", "Milne", "Pool", 10, Boolean.FALSE, "Milne",
-		// "Pool", 10, Boolean.FALSE, "Milne" },
-		// { "Mary", "Campione", "Snowboarding", 5, Boolean.FALSE,
-		// "Campione", "Snowboarding", 5, Boolean.FALSE,
-		// "Campione" },
-		// { "Alison", "Huml", "Rowing", 3, Boolean.FALSE, "Huml",
-		// "Rowing", 3, Boolean.FALSE, "Huml" },
-		// { "Kathy", "Walrath", "Knitting", 2, Boolean.FALSE, "Walrath",
-		// "Knitting", 2, Boolean.FALSE, "Walrath" },
-		// { "Sharon", "Zakhour", "Speed reading", 20, Boolean.FALSE,
-		// "Zakhour", "Speed reading", 20, Boolean.FALSE,
-		// "Zakhour" },
-		// { "Philip", "Milne", "Pool", 10, Boolean.FALSE, "Milne",
-		// "Pool", 10, Boolean.FALSE, "Milne" },
-		// { "Mary", "Campione", "Snowboarding", 5, Boolean.FALSE,
-		// "Campione", "Snowboarding", 5, Boolean.FALSE,
-		// "Campione" },
-		// { "Alison", "Huml", "Rowing", 3, Boolean.FALSE, "Huml",
-		// "Rowing", 3, Boolean.FALSE, "Huml" },
-		// { "Kathy", "Walrath", "Knitting", 2, Boolean.FALSE, "Walrath",
-		// "Knitting", 2, Boolean.FALSE, "Walrath" },
-		// { "Sharon", "Zakhour", "Speed reading", 20, Boolean.FALSE,
-		// "Zakhour", "Speed reading", 20, Boolean.FALSE,
-		// "Zakhour" },
-		// { "Philip", "Milne", "Pool", 10, Boolean.FALSE, "Milne",
-		// "Pool", 10, Boolean.FALSE, "Milne" },
-		// { "Mary", "Campione", "Snowboarding", 5, Boolean.FALSE,
-		// "Campione", "Snowboarding", 5, Boolean.FALSE,
-		// "Campione" },
-		// { "Alison", "Huml", "Rowing", 3, Boolean.FALSE, "Huml",
-		// "Rowing", 3, Boolean.FALSE, "Huml" },
-		// { "Kathy", "Walrath", "Knitting", 2, Boolean.FALSE, "Walrath",
-		// "Knitting", 2, Boolean.FALSE, "Walrath" },
-		// { "Sharon", "Zakhour", "Speed reading", 20, Boolean.FALSE,
-		// "Zakhour", "Speed reading", 20, Boolean.FALSE,
-		// "Zakhour" },
-		// { "Philip", "Milne", "Pool", 10, Boolean.FALSE, "Milne",
-		// "Pool", 10, Boolean.FALSE, "Milne" },
-		// { "Mary", "Campione", "Snowboarding", 5, Boolean.FALSE,
-		// "Campione", "Snowboarding", 5, Boolean.FALSE,
-		// "Campione" },
-		// { "Alison", "Huml", "Rowing", 3, Boolean.FALSE, "Huml",
-		// "Rowing", 3, Boolean.FALSE, "Huml" },
-		// { "Kathy", "Walrath", "Knitting", 2, Boolean.FALSE, "Walrath",
-		// "Knitting", 2, Boolean.FALSE, "Walrath" },
-		// { "Sharon", "Zakhour", "Speed reading", 20, Boolean.FALSE,
-		// "Zakhour", "Speed reading", 20, Boolean.FALSE,
-		// "Zakhour" },
-		// { "Philip", "Milne", "Pool", 10, Boolean.FALSE, "Milne",
-		// "Pool", 10, Boolean.FALSE, "Milne" } };
+		/**
+		 * sample table data
+		 */
+		Object[][] data = {
+				{ "Mary", "Campione", "Snowboarding", 5, Boolean.FALSE,
+						"Campione", "Snowboarding", 5, Boolean.FALSE,
+						"Campione" },
+				{ "Alison", "Huml", "Rowing", 3, Boolean.FALSE, "Huml",
+						"Rowing", 3, Boolean.FALSE, "Huml" },
+				{ "Kathy", "Walrath", "Knitting", 2, Boolean.FALSE, "Walrath",
+						"Knitting", 2, Boolean.FALSE, "Walrath" },
+				{ "Sharon", "Zakhour", "Speed reading", 20, Boolean.FALSE,
+						"Zakhour", "Speed reading", 20, Boolean.FALSE,
+						"Zakhour" },
+				{ "Philip", "Milne", "Pool", 10, Boolean.FALSE, "Milne",
+						"Pool", 10, Boolean.FALSE, "Milne" },
+				{ "Mary", "Campione", "Snowboarding", 5, Boolean.FALSE,
+						"Campione", "Snowboarding", 5, Boolean.FALSE,
+						"Campione" },
+				{ "Alison", "Huml", "Rowing", 3, Boolean.FALSE, "Huml",
+						"Rowing", 3, Boolean.FALSE, "Huml" },
+				{ "Kathy", "Walrath", "Knitting", 2, Boolean.FALSE, "Walrath",
+						"Knitting", 2, Boolean.FALSE, "Walrath" },
+				{ "Sharon", "Zakhour", "Speed reading", 20, Boolean.FALSE,
+						"Zakhour", "Speed reading", 20, Boolean.FALSE,
+						"Zakhour" },
+				{ "Philip", "Milne", "Pool", 10, Boolean.FALSE, "Milne",
+						"Pool", 10, Boolean.FALSE, "Milne" },
+				{ "Mary", "Campione", "Snowboarding", 5, Boolean.FALSE,
+						"Campione", "Snowboarding", 5, Boolean.FALSE,
+						"Campione" },
+				{ "Alison", "Huml", "Rowing", 3, Boolean.FALSE, "Huml",
+						"Rowing", 3, Boolean.FALSE, "Huml" },
+				{ "Kathy", "Walrath", "Knitting", 2, Boolean.FALSE, "Walrath",
+						"Knitting", 2, Boolean.FALSE, "Walrath" },
+				{ "Sharon", "Zakhour", "Speed reading", 20, Boolean.FALSE,
+						"Zakhour", "Speed reading", 20, Boolean.FALSE,
+						"Zakhour" },
+				{ "Philip", "Milne", "Pool", 10, Boolean.FALSE, "Milne",
+						"Pool", 10, Boolean.FALSE, "Milne" },
+				{ "Mary", "Campione", "Snowboarding", 5, Boolean.FALSE,
+						"Campione", "Snowboarding", 5, Boolean.FALSE,
+						"Campione" },
+				{ "Alison", "Huml", "Rowing", 3, Boolean.FALSE, "Huml",
+						"Rowing", 3, Boolean.FALSE, "Huml" },
+				{ "Kathy", "Walrath", "Knitting", 2, Boolean.FALSE, "Walrath",
+						"Knitting", 2, Boolean.FALSE, "Walrath" },
+				{ "Sharon", "Zakhour", "Speed reading", 20, Boolean.FALSE,
+						"Zakhour", "Speed reading", 20, Boolean.FALSE,
+						"Zakhour" },
+				{ "Philip", "Milne", "Pool", 10, Boolean.FALSE, "Milne",
+						"Pool", 10, Boolean.FALSE, "Milne" },
+				{ "Mary", "Campione", "Snowboarding", 5, Boolean.FALSE,
+						"Campione", "Snowboarding", 5, Boolean.FALSE,
+						"Campione" },
+				{ "Alison", "Huml", "Rowing", 3, Boolean.FALSE, "Huml",
+						"Rowing", 3, Boolean.FALSE, "Huml" },
+				{ "Kathy", "Walrath", "Knitting", 2, Boolean.FALSE, "Walrath",
+						"Knitting", 2, Boolean.FALSE, "Walrath" },
+				{ "Sharon", "Zakhour", "Speed reading", 20, Boolean.FALSE,
+						"Zakhour", "Speed reading", 20, Boolean.FALSE,
+						"Zakhour" },
+				{ "Philip", "Milne", "Pool", 10, Boolean.FALSE, "Milne",
+						"Pool", 10, Boolean.FALSE, "Milne" },
+				{ "Mary", "Campione", "Snowboarding", 5, Boolean.FALSE,
+						"Campione", "Snowboarding", 5, Boolean.FALSE,
+						"Campione" },
+				{ "Alison", "Huml", "Rowing", 3, Boolean.FALSE, "Huml",
+						"Rowing", 3, Boolean.FALSE, "Huml" },
+				{ "Kathy", "Walrath", "Knitting", 2, Boolean.FALSE, "Walrath",
+						"Knitting", 2, Boolean.FALSE, "Walrath" },
+				{ "Sharon", "Zakhour", "Speed reading", 20, Boolean.FALSE,
+						"Zakhour", "Speed reading", 20, Boolean.FALSE,
+						"Zakhour" },
+				{ "Philip", "Milne", "Pool", 10, Boolean.FALSE, "Milne",
+						"Pool", 10, Boolean.FALSE, "Milne" },
+				{ "Mary", "Campione", "Snowboarding", 5, Boolean.FALSE,
+						"Campione", "Snowboarding", 5, Boolean.FALSE,
+						"Campione" },
+				{ "Alison", "Huml", "Rowing", 3, Boolean.FALSE, "Huml",
+						"Rowing", 3, Boolean.FALSE, "Huml" },
+				{ "Kathy", "Walrath", "Knitting", 2, Boolean.FALSE, "Walrath",
+						"Knitting", 2, Boolean.FALSE, "Walrath" },
+				{ "Sharon", "Zakhour", "Speed reading", 20, Boolean.FALSE,
+						"Zakhour", "Speed reading", 20, Boolean.FALSE,
+						"Zakhour" },
+				{ "Philip", "Milne", "Pool", 10, Boolean.FALSE, "Milne",
+						"Pool", 10, Boolean.FALSE, "Milne" } };
 
 
 
@@ -167,12 +166,49 @@ public class ResultTable extends JPanel
 
 
 
-		String[][] data = DataRetrival.getObjectsData(objects);
+		// String[][] data = DataRetrival.getObjectsData(objects);
+
+
+		// /**
+		// * sample data column names
+		// */
+		// String[] columnNames = { "Latin Name", "Salinity", "PH", "GH",
+		// "Temperature", "KH", "Magnesium", "Calcium", "Space Needed",
+		// "Others Sizes" };
+		//
+		//
+		// JXTable table = new JXTable();
+		// DefaultTableModel model = new DefaultTableModel(data, columnNames);
+		// table.setAutoResizeMode(JXTable.AUTO_RESIZE_OFF);
+		// Font f = table.getFont();
+		// table.setFont(f.deriveFont(Font.BOLD));
+		// table.setEditable(false);
+		//
+		// table.setModel(model);
+		// Color gridColor = Color.BLACK;
+		// int rowHeight = 25;
+		// // if not on 1.6 comment this out
+		// table.setFillsViewportHeight(true);
+		//
+		// table.setGridColor(gridColor);
+		//
+		// table.setRowHeight(rowHeight);
+
+		// Dimension size = new Dimension(1000, 1);
+		// table.setPreferredScrollableViewportSize(size);
+		// table.setPreferredSize(size);
+		// table.setMinimumSize(size);
+
+
+		// JScrollPane scroll = new JScrollPane(table);
 
 		AquaObjectsTable table = new AquaObjectsTable(data);
 		JPanel p = new JPanel(new GridLayout());
 		p.add(table);
 		results.addTab("Search Results", p);
+
+
+
 		results.addTab("Group Objects", new JPanel());
 
 

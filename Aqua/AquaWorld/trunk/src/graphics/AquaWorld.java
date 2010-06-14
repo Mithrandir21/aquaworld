@@ -9,6 +9,7 @@ import graphics.GUI.messageArea.messageTabs.AquariumAndEquipmentMessage;
 import graphics.GUI.messageArea.messageTabs.FishAnimalsMessage;
 import graphics.GUI.propertiesArea.ObjectScrollProperties;
 import graphics.GUI.selectionArea.TabbedSelection;
+import graphics.ProgramGUI.TipOfDay;
 import graphics.canvas.WorkareaCanvas;
 import graphics.canvas.WorkareaTabbed;
 
@@ -27,13 +28,13 @@ import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
@@ -45,10 +46,14 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 
+import managment.IOmanagment;
+import managment.Settings;
+
 import org.jdesktop.swingx.JXMultiSplitPane;
 import org.jdesktop.swingx.MultiSplitLayout;
 import org.jdesktop.swingx.MultiSplitLayout.Node;
 
+import sqlLogic.SQLfunctions;
 import widgetTank.Tank;
 import widgets.WidgetCoral;
 import widgets.WidgetFish;
@@ -108,7 +113,7 @@ public class AquaWorld extends JFrame
 	public static WorkareaCanvas[] canvases = new WorkareaCanvas[3];
 
 
-	 // A pointer to the currently open canvas that is displayed in the
+	// A pointer to the currently open canvas that is displayed in the
 	// workarea.
 	public static WorkareaCanvas currentCanvas = null;
 
@@ -162,10 +167,14 @@ public class AquaWorld extends JFrame
 	{
 		super("AquaWorld");
 
+		// Tries to retrieve the users previous settings
+		IOmanagment.openSettings();
+
 		// load the sqlite-JDBC driver using the current class loader
 		try
 		{
 			Class.forName("org.sqlite.JDBC");
+			// Class.forName("com.mysql.jdbc.Driver");
 		}
 		catch ( ClassNotFoundException e1 )
 		{
@@ -176,18 +185,42 @@ public class AquaWorld extends JFrame
 		Connection connection = null;
 		try
 		{
+			// String url = "jdbc:mysql://db4free.net:3306/aquaworld";
+			// String url = "jdbc:sqlite:Fish.db";
+			// String user = "mithrandir21";
+			// String pass = "sauron21";
 			// create a database connection
-			connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
-			Statement statement = connection.createStatement();
-			statement.setQueryTimeout(30); // set timeout to 30 sec.
+			// connection = DriverManager.getConnection(url, user, pass);
 
-			statement.executeUpdate("drop table if exists person");
-			statement
-					.executeUpdate("create table person (id integer, name string)");
-			statement.executeUpdate("insert into person values(1, 'leo')");
-			statement.executeUpdate("insert into person values(2, 'yui')");
-			statement.executeUpdate("insert into person values(3, 'bam')");
-			statement.executeUpdate("insert into person values(4, 'ali')");
+			connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
+			SQLfunctions.databaseTruncate(connection);
+
+			File fishExFile = new File(
+					"./resource/database/SQLiteStatements/SQLite_FishExclusionList.txt");
+			String fishExString = IOmanagment.getSQLtableString(fishExFile);
+			SQLfunctions.databaseCreation(connection, fishExString);
+
+			File fishGroupFile = new File(
+					"./resource/database/SQLiteStatements/SQLite_FishGroup.txt");
+			String fishGroupString = IOmanagment
+					.getSQLtableString(fishGroupFile);
+			SQLfunctions.databaseCreation(connection, fishGroupString);
+
+			File objectParFile = new File(
+					"./resource/database/SQLiteStatements/SQLite_ObjectParameters.txt");
+			String objParString = IOmanagment.getSQLtableString(objectParFile);
+			SQLfunctions.databaseCreation(connection, objParString);
+
+			File fishObjectFile = new File(
+					"./resource/database/SQLiteStatements/SQLite_FishObject.txt");
+			String fishObjectString = IOmanagment
+					.getSQLtableString(fishObjectFile);
+			SQLfunctions.databaseCreation(connection, fishObjectString);
+
+			// File alterFile = new File(
+			// "./resource/database/SQLiteStatements/SQLite_ALTER.txt");
+			// String alterString = IOmanagment.getSQLtableString(alterFile);
+			// SQLfunctions.databaseCreation(connection, alterString);
 		}
 		catch ( SQLException e )
 		{
@@ -359,28 +392,27 @@ public class AquaWorld extends JFrame
 
 		CirculationPump pump = new CirculationPump("PumpTest", "PumpTestDesc",
 				2000);
-		
+
 		SaltwaterAquarium test = new SaltwaterAquarium("ProTest", "DeskTest",
-				pump, 1, 3.4, 5.3, 26,
-				35, 60, 20);
+				pump, 1, 3.4, 5.3, 26, 35, 60, 20);
 
 		Tank testTank = new Tank("Test Aquarium", test);
 
 		workTab.createNewCanvasTab(testTank);
 
-		
-		double[] sal = {1.0,1.0};
-		double[] ph = {5.6,8.0};
-		double[] gh = {1.0,9.0};
-		double[] temp = {23,27.5};
+
+		double[] sal = { 1.0, 1.0 };
+		double[] ph = { 5.6, 8.0 };
+		double[] gh = { 1.0, 9.0 };
+		double[] temp = { 23, 27.5 };
 		double[] kh = { 6.0, 10.0 };
 		double[] magnesium = { 300, 4500 };
 		double[] calcium = { 1300, 1500 };
-		
+
 		// ---------------------------------------------------
 		ObjectParameters parameter = new ObjectParameters(sal, ph, gh, temp);
 		FishExclusions fishEx = new FishExclusions();
-		
+
 		FishObject fish = new FishObject(00001, "Gullfiskius", "...Gullfish",
 				FishGender.UNISEX, 7.5, parameter, fishEx);
 		WidgetFish widFish = new WidgetFish(currentCanvas.getScene(), fish,
@@ -402,9 +434,8 @@ public class AquaWorld extends JFrame
 		// --------------------------------------------------
 
 		InvertebratesObject invertebrate = new InvertebratesObject(00003,
-				"Iven",
-				"Ivenius", "...Invertebrate", InvertebratesTypes.Anemones,
-				parameter);
+				"Iven", "Ivenius", "...Invertebrate",
+				InvertebratesTypes.Anemones, parameter);
 
 		WidgetInvertebrates widInv = new WidgetInvertebrates(currentCanvas
 				.getScene(), invertebrate, null);
@@ -479,10 +510,10 @@ public class AquaWorld extends JFrame
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		this.setVisible(true);
 
-		// if ( Settings.showTOFD )
-		// {
-		// new TipOfDay();
-		// }
+		if ( Settings.showTOFD )
+		{
+			new TipOfDay();
+		}
 	}
 
 	/**
@@ -530,6 +561,11 @@ public class AquaWorld extends JFrame
 	 */
 	private void makeLayoutModel()
 	{
+		// String layoutDef = "(COLUMN (LEAF name=toolbarLeaf) (ROW (LEAF name=selectionLeaf weight=0.2) "
+		// + "(COLUMN weight=0.8(ROW (LEAF name=workareaLeaf weight=0.7) "
+		// + "(LEAF name=propertiesLeaf weight=0.3) )"
+		// + "(LEAF name=messagesLeaf weight=0.2)  ) ) )";
+
 		String layoutDef = "(COLUMN (LEAF name=toolbarLeaf) (ROW (LEAF name=selectionLeaf weight=0.2) "
 				+ "(COLUMN weight=0.8(ROW (LEAF name=workareaLeaf weight=0.7) "
 				+ "(LEAF name=propertiesLeaf weight=0.3) )"
@@ -553,20 +589,47 @@ public class AquaWorld extends JFrame
 			propertiesPanel.setVisible(false);
 			messagesPanel.setVisible(false);
 			selectionPanel.setVisible(false);
-			layoutDef = "(COLUMN (LEAF name=toolbarLeaf) (ROW (LEAF name=selectionLeaf weight=0.0) "
-					+ "(COLUMN weight=1.0 (ROW (LEAF name=workareaLeaf weight=1.0) "
-					+ "(LEAF name=propertiesLeaf weight=0.0) )"
-					+ "(LEAF name=messagesLeaf weight=0.0)  ) ) )";
+
+			System.out.println("Full");
+			//
+			//
+			// propertiesPanel.revalidate();
+			// messagesPanel.revalidate();
+			// selectionPanel.revalidate();
+			//
+			// propertiesPanel.repaint();
+			// messagesPanel.repaint();
+			// selectionPanel.repaint();
+
+			// layoutDef = "(COLUMN (LEAF name=toolbarLeaf) (ROW (LEAF name=selectionLeaf weight=0.0) "
+			// + "(COLUMN weight=1.0 (ROW (LEAF name=workareaLeaf weight=1.0) "
+			// + "(LEAF name=propertiesLeaf weight=0.0) )"
+			// + "(LEAF name=messagesLeaf weight=0.0)  ) ) )";
+
+			layoutDef = "(COLUMN (LEAF name=toolbarLeaf) (LEAF name=workareaLeaf weight=1.0) )";
 		}
 		else
 		{
 			propertiesPanel.setVisible(true);
 			messagesPanel.setVisible(true);
 			selectionPanel.setVisible(true);
+
+			System.out.println("!Full");
+			//
+			//
+			// propertiesPanel.revalidate();
+			// messagesPanel.revalidate();
+			// selectionPanel.revalidate();
+			//
+			// propertiesPanel.repaint();
+			// messagesPanel.repaint();
+			// selectionPanel.repaint();
+
 			layoutDef = "(COLUMN (LEAF name=toolbarLeaf) (ROW (LEAF name=selectionLeaf weight=0.2) "
 					+ "(COLUMN weight=0.8(ROW (LEAF name=workareaLeaf weight=0.7) "
 					+ "(LEAF name=propertiesLeaf weight=0.3) )"
 					+ "(LEAF name=messagesLeaf weight=0.2)  ) ) )";
+
 		}
 
 		// JOptionPane.showMessageDialog(null,"Error Loading layout Model.");
@@ -578,9 +641,9 @@ public class AquaWorld extends JFrame
 		multiSplitPane.revalidate();
 		multiSplitPane.repaint();
 
-		((MessageTabbed) messagesPanel.getComponent(0)).revalidate();
-		((MessageTabbed) messagesPanel.getComponent(0)).repaint();
-
+		// ((MessageTabbed) messagesPanel.getComponent(0)).revalidate();
+		// ((MessageTabbed) messagesPanel.getComponent(0)).repaint();
+		//
 		propertiesPanel.revalidate();
 		messagesPanel.revalidate();
 		selectionPanel.revalidate();
@@ -879,6 +942,10 @@ public class AquaWorld extends JFrame
 	 */
 	public static void exitProcess()
 	{
+
+		// Saves the settings the user has in his current session
+		IOmanagment.saveSettings();
+
 		System.exit(0);
 	}
 }

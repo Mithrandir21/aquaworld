@@ -26,6 +26,7 @@ import javax.swing.JTextField;
 
 public class GraficalFunctions
 {
+
 	/**
 	 * TODO - Description
 	 */
@@ -804,7 +805,8 @@ public class GraficalFunctions
 	/**
 	 * TODO - Description
 	 */
-	public static JPanel getBooleanBoxWithExclude(String valuename, ActionListener lis)
+	public static JPanel getBooleanBoxWithExclude(String valuename,
+			ActionListener lis)
 	{
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -813,14 +815,14 @@ public class GraficalFunctions
 		// panel.setMinimumSize(panelSize);
 		// panel.setMaximumSize(panelSize);
 		// panel.setBorder(BorderFactory.createEtchedBorder());
-		
-		
+
+
 		JCheckBox exclude = new JCheckBox("Exclude");
 		exclude.setActionCommand("Exclude_" + valuename);
 		exclude.addActionListener(lis);
 		panel.add(exclude);
-		
-		
+
+
 
 
 		// JPanel checkPanel = new JPanel();

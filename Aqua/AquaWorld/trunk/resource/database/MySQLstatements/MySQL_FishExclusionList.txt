@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS `FishExclusionList` (
+  `FishExclusionID` int(11) NOT NULL AUTO_INCREMENT,
+  `Alone` tinyint(1) NOT NULL,
+  `AloneWithFamily` tinyint(1) NOT NULL,
+  `OnlyOneInFamily` tinyint(1) NOT NULL,
+  `MinimumSchoolSize` int(11) DEFAULT NULL,
+  `OnlyCompatibleWith` text,
+  `NotCompatibleWith` text,
+  `NotCompatibleWithTheseMales` text,
+  `NotCompatibleWithTheseFemales` text,
+  `OnlyOneMale` tinyint(1) NOT NULL,
+  `OnlyOneFemale` tinyint(1) NOT NULL,
+  `OnlyOneMalePerLiter` int(11) DEFAULT NULL,
+  `OnlyOneFemalePerLiter` int(11) DEFAULT NULL,
+  `OnlyOneFishPerLiter` int(11) DEFAULT NULL,
+  `MinimumNumberOfFemalesPerMale` int(11) DEFAULT NULL,
+  `MinimumNumberOfMalesPerFemale` int(11) DEFAULT NULL,
+  `NotReefSafe` text,
+  PRIMARY KEY (`FishExclusionID`)
+) ENGINE=InnoDB COMMENT='The table on what the fish is compatible with.' AUTO_INCREMENT=1 ;

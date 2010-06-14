@@ -4,10 +4,17 @@ package graphics.GUI.ObjectDetails;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.WindowConstants;
+
+import coreObjects.ObjectParameters;
+import coreObjects.Fish.FishExclusions;
+import coreObjects.Fish.FishObject;
+import coreObjects.Fish.FishObject.FishGender;
+
 
 public class ObjectDetailsFrame extends JFrame
 {
@@ -15,6 +22,18 @@ public class ObjectDetailsFrame extends JFrame
 	{
 		super("AquaReg");
 
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		// Get the default toolkit
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+
+		// Get the current screen size
+		Dimension scrnsize = toolkit.getScreenSize();
+
+		// Set size for the settings JFrame
+		Dimension size = new Dimension(650, 525);
+
+		int initYLocation = (scrnsize.height - size.height) / 3;
+		int initXLocation = (scrnsize.width - size.width) / 3;
 
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints d = new GridBagConstraints();
@@ -38,17 +57,62 @@ public class ObjectDetailsFrame extends JFrame
 		this.add(panel1, d);
 
 
+
+
+		double[] sal = { 1.0, 1.0 };
+		double[] ph = { 5.6, 8.0 };
+		double[] gh = { 1.0, 9.0 };
+		double[] temp = { 23, 27.5 };
+		double[] kh = { 6.0, 10.0 };
+		double[] magnesium = { 300, 4500 };
+		double[] calcium = { 1300, 1500 };
+
+		// ---------------------------------------------------
+		ObjectParameters parameter = new ObjectParameters(sal, ph, gh, temp);
+		FishExclusions fishEx = new FishExclusions();
+
+		FishObject fish = new FishObject(00001, "Gullfiskius", "...Gullfish",
+				FishGender.UNISEX, 7.5, parameter, fishEx);
+		fish.setGenusName("Carassius");
+		//
+		// // ---------------------------------------------------
+		// parameter.setKh(kh);
+		// parameter.setMagnesium(magnesium);
+		// parameter.setCalcium(calcium);
+		//
+		// CoralObject coral = new CoralObject(00002, "CoralNavn", "Coralius",
+		// "...Coral", CoralTypes.LargePolipedCoral, parameter);
+		// coral.setGenusName("Acropora");
+		//
+		//
+		// // --------------------------------------------------
+		//
+		// InvertebratesObject invertebrate = new InvertebratesObject(00003,
+		// "Iven", "Ivenius", "...Invertebrate",
+		// InvertebratesTypes.Anemones, parameter);
+		// invertebrate.setGenusName("InvGenus");
+		//
+		//
+		// AbstractObject[] objects = { fish, coral, invertebrate };
+
+
+
+
+
+
 		d.weighty = 1.0; // request any extra vertical space
 		d.gridy = 1; // third row
 
-		JPanel panel2 = new JPanel();
-		panel2.setBorder(BorderFactory.createEtchedBorder());
-		this.add(panel2, d);
+		// JPanel panel2 = new JPanel();
+		// panel2.setBorder(BorderFactory.createEtchedBorder());
+		this.add(new ObjectDetailedInfo(fish), d);
 
 
 
-		this.setResizable(false);
-		this.setPreferredSize(new Dimension(730, 550));
+		// this.setResizable(false);
+		this.setLocation(initXLocation, initYLocation);
+		this.setPreferredSize(new Dimension(700, 600));
+		this.setMinimumSize(new Dimension(600, 500));
 		this.setVisible(true);
 		this.pack();
 	}

@@ -3,6 +3,7 @@ package graphics.GUI.selectionArea.tabContent;
 
 import graphics.AquaWorld;
 import graphics.GUI.graphicalFunctions.GraphicalFunctions;
+import graphics.GUI.selectionArea.ObjectSelection;
 import graphics.GUI.selectionArea.SelectionAreaInterface;
 
 import java.awt.Color;
@@ -38,7 +39,7 @@ public class FishOverview extends JPanel implements SelectionAreaInterface
 		this.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
 		this.setPreferredSize(new Dimension(width, height));
-		
+
 		this.setLayout(new SpringLayout());
 
 		JTextField searchField = new JTextField();
@@ -46,7 +47,7 @@ public class FishOverview extends JPanel implements SelectionAreaInterface
 		searchField.setMaximumSize(new Dimension(150, 20));
 		searchField.setPreferredSize(new Dimension(150, 20));
 
-		JButton searchButton = new JButton("SÃ¸k");
+		JButton searchButton = new JButton("Søk");
 
 		this.add(searchField);
 		this.add(searchButton);
@@ -65,31 +66,31 @@ public class FishOverview extends JPanel implements SelectionAreaInterface
 		JScrollPane scroll = new JScrollPane();
 		scroll.setBorder(BorderFactory.createEmptyBorder());
 
-		JPanel panel = new JPanel(new SpringLayout());
+		// JPanel panel = new JPanel(new SpringLayout());
+		//
+		// JTextField test = new JTextField("Testings");
+		// test.setSize(new Dimension(100, 20));
+		// test.setMaximumSize(new Dimension(100, 20));
+		// test.setPreferredSize(new Dimension(100, 20));
+		// JTextField test1 = new JTextField("Testings1");
+		// test1.setSize(new Dimension(100, 20));
+		// test1.setMaximumSize(new Dimension(100, 20));
+		// test1.setPreferredSize(new Dimension(100, 20));
+		// JButton test2 = new JButton("Testings2");
+		//
+		//
+		// panel.add(test);
+		// panel.add(test1);
+		// panel.add(test2);
+		//
+		//
+		// // Lay out the panel.
+		// GraphicalFunctions.make1xGrid(panel, panel.getComponentCount(), 6, 6, // initX,
+		// // initY
+		// 6, 6); // xPad, yPad
 
-		JTextField test = new JTextField("Testings");
-		test.setSize(new Dimension(100, 20));
-		test.setMaximumSize(new Dimension(100, 20));
-		test.setPreferredSize(new Dimension(100, 20));
-		JTextField test1 = new JTextField("Testings1");
-		test1.setSize(new Dimension(100, 20));
-		test1.setMaximumSize(new Dimension(100, 20));
-		test1.setPreferredSize(new Dimension(100, 20));
-		JButton test2 = new JButton("Testings2");
+		scroll.setViewportView(new ObjectSelection());
 
-
-		panel.add(test);
-		panel.add(test1);
-		panel.add(test2);
-
-
-		// Lay out the panel.
-		GraphicalFunctions.make1xGrid(panel, panel.getComponentCount(), 6, 6, // initX,
-				// initY
-				6, 6); // xPad, yPad
-		
-		scroll.setViewportView(panel);
-		
 		this.add(scroll);
 	}
 

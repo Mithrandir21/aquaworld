@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JFrame;
 
+
 public class ExclusionFrame extends JFrame
 {
 	public ExclusionFrame()
@@ -21,13 +22,13 @@ public class ExclusionFrame extends JFrame
 		// d.ipady = 0; // reset to default
 		// d.ipadx = 0; // reset to default
 		d.weighty = 1.0; // request any extra vertical space
-		d.weightx = 1.0; // request any extra vertical space
-		// d.anchor = GridBagConstraints.CENTER; // bottom of space
-		// d.insets = new Insets(10, 10, 10, 10); // top padding
-		// d.gridwidth = 1; // 2 columns wide
+		d.weightx = 1.0; // request any extra horizontal space
+		// d.anchor = GridBagConstraints.CENTER; // location
+		// d.insets = new Insets(10, 10, 10, 10); // padding
+		// d.gridwidth = 1; // 2 row wide
 		// d.gridheight = 1; // 2 columns wide
-		d.gridy = 0; // third row
-		d.gridx = 0; // third row
+		d.gridy = 0; // row
+		d.gridx = 0; // column
 
 
 
@@ -38,6 +39,6 @@ public class ExclusionFrame extends JFrame
 		this.setPreferredSize(new Dimension(700, 500));
 		this.setMinimumSize(new Dimension(700, 500));
 		this.setVisible(true);
-		// this.pack();
+		this.pack();
 	}
 }
