@@ -170,77 +170,6 @@ public class AquaWorld extends JFrame
 		// Tries to retrieve the users previous settings
 		IOmanagment.openSettings();
 
-		// load the sqlite-JDBC driver using the current class loader
-		try
-		{
-			Class.forName("org.sqlite.JDBC");
-			// Class.forName("com.mysql.jdbc.Driver");
-		}
-		catch ( ClassNotFoundException e1 )
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		Connection connection = null;
-		try
-		{
-			// String url = "jdbc:mysql://db4free.net:3306/aquaworld";
-			// String url = "jdbc:sqlite:Fish.db";
-			// String user = "mithrandir21";
-			// String pass = "sauron21";
-			// create a database connection
-			// connection = DriverManager.getConnection(url, user, pass);
-
-			connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
-			SQLfunctions.databaseTruncate(connection);
-
-			File fishExFile = new File(
-					"./resource/database/SQLiteStatements/SQLite_FishExclusionList.txt");
-			String fishExString = IOmanagment.getSQLtableString(fishExFile);
-			SQLfunctions.databaseCreation(connection, fishExString);
-
-			File fishGroupFile = new File(
-					"./resource/database/SQLiteStatements/SQLite_FishGroup.txt");
-			String fishGroupString = IOmanagment
-					.getSQLtableString(fishGroupFile);
-			SQLfunctions.databaseCreation(connection, fishGroupString);
-
-			File objectParFile = new File(
-					"./resource/database/SQLiteStatements/SQLite_ObjectParameters.txt");
-			String objParString = IOmanagment.getSQLtableString(objectParFile);
-			SQLfunctions.databaseCreation(connection, objParString);
-
-			File fishObjectFile = new File(
-					"./resource/database/SQLiteStatements/SQLite_FishObject.txt");
-			String fishObjectString = IOmanagment
-					.getSQLtableString(fishObjectFile);
-			SQLfunctions.databaseCreation(connection, fishObjectString);
-
-			// File alterFile = new File(
-			// "./resource/database/SQLiteStatements/SQLite_ALTER.txt");
-			// String alterString = IOmanagment.getSQLtableString(alterFile);
-			// SQLfunctions.databaseCreation(connection, alterString);
-		}
-		catch ( SQLException e )
-		{
-			// if the error message is "out of memory",
-			// it probably means no database file is found
-			System.err.println(e.getMessage());
-		}
-		finally
-		{
-			try
-			{
-				if ( connection != null )
-					connection.close();
-			}
-			catch ( SQLException e )
-			{
-				// connection close failed.
-				System.err.println(e);
-			}
-		}
 
 		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
@@ -410,19 +339,22 @@ public class AquaWorld extends JFrame
 		double[] calcium = { 1300, 1500 };
 
 		// ---------------------------------------------------
-		ObjectParameters parameter = new ObjectParameters(sal, ph, gh, temp);
-		FishExclusions fishEx = new FishExclusions();
+		ObjectParameters parameter = new ObjectParameters(31, sal, ph, gh, temp);
+		// ---------------------------------------------------
+		
+		
+		parameter.setKh(kh);
+		parameter.setMagnesium(magnesium);
+		parameter.setCalcium(calcium);
+		FishExclusions fishEx = new FishExclusions(441);
 
 		FishObject fish = new FishObject(00001, "Gullfiskius", "...Gullfish",
 				FishGender.UNISEX, 7.5, parameter, fishEx);
 		WidgetFish widFish = new WidgetFish(currentCanvas.getScene(), fish,
 				null);
 
-
 		// ---------------------------------------------------
-		parameter.setKh(kh);
-		parameter.setMagnesium(magnesium);
-		parameter.setCalcium(calcium);
+
 
 		CoralObject coral = new CoralObject(00002, "CoralNavn", "Coralius",
 				"...Coral", CoralTypes.LargePolipedCoral, parameter);
@@ -473,6 +405,101 @@ public class AquaWorld extends JFrame
 		TabbedSelection sel = new TabbedSelection();
 		selectionPanel.add(sel);
 
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		// load the sqlite-JDBC driver using the current class loader
+		try
+		{
+			Class.forName("org.sqlite.JDBC");
+			Class.forName("com.mysql.jdbc.Driver");
+		}
+		catch ( ClassNotFoundException e1 )
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		Connection connection = null;
+		try
+		{
+			String url = "jdbc:mysql://db4free.net:3306/aquaworld";
+			String user = "mithrandir21";
+			String pass = "sauron21";
+			// create a database connection
+			connection = DriverManager.getConnection(url, user, pass);
+			File fishExFile = new File("./resource/database/MySQLstatements/MySQL_FishExclusionList.txt");
+			File fishGroupFile = new File("./resource/database/MySQLstatements/MySQL_FishGroup.txt");
+			File objectParFile = new File("./resource/database/MySQLstatements/MySQL_ObjectParameters.txt");
+			File fishObjectFile = new File("./resource/database/MySQLstatements/MySQL_FishObject.txt");
+			File alterFile = new File("./resource/database/MySQLstatements/MySQL_ALTER.txt");
+				
+
+//			connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
+//			File fishExFile = new File("./resource/database/SQLiteStatements/SQLite_FishExclusionList.txt");
+//			File fishGroupFile = new File("./resource/database/SQLiteStatements/SQLite_FishGroup.txt");
+//			File objectParFile = new File("./resource/database/SQLiteStatements/SQLite_ObjectParameters.txt");
+//			File fishObjectFile = new File("./resource/database/SQLiteStatements/SQLite_FishObject.txt");
+//			File alterFile = new File("./resource/database/SQLiteStatements/SQLite_ALTER.txt");
+
+			
+			SQLfunctions.databaseTablesDrop(connection);
+
+			
+			String fishExString = IOmanagment.getSQLtableString(fishExFile);
+			SQLfunctions.databaseStatementExecution(connection, fishExString);
+
+			String fishGroupString = IOmanagment
+					.getSQLtableString(fishGroupFile);
+			SQLfunctions.databaseStatementExecution(connection, fishGroupString);
+
+			String objParString = IOmanagment.getSQLtableString(objectParFile);
+			SQLfunctions.databaseStatementExecution(connection, objParString);
+
+			String fishObjectString = IOmanagment
+					.getSQLtableString(fishObjectFile);
+			SQLfunctions.databaseStatementExecution(connection, fishObjectString);
+
+			String alterString = IOmanagment.getSQLtableString(alterFile);
+			SQLfunctions.databaseStatementExecution(connection, alterString);
+			
+			
+			
+			
+			
+
+			SQLfunctions.databaseAddFishObjectParameters(connection, fish);
+			
+			SQLfunctions.databaseAddFishExclusionsList(connection, fish);
+			
+			SQLfunctions.databaseAddFishObject(connection, fish);
+		}
+		catch ( SQLException e )
+		{
+			// if the error message is "out of memory",
+			// it probably means no database file is found
+			System.err.println(e.getMessage());
+		}
+		finally
+		{
+			try
+			{
+				if ( connection != null )
+					connection.close();
+			}
+			catch ( SQLException e )
+			{
+				// connection close failed.
+				System.err.println(e);
+			}
+		}
+		
 
 
 

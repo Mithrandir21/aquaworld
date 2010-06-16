@@ -282,13 +282,13 @@ public class ObjectDetailedInfo extends JPanel
 		d.gridx = 1;
 		panel.add(getUniqueBooleanPanel(AquaWorld.texts
 				.getString("objectAloneWithFamilyLabel"), ex
-				.isAloneWithFamily()), d);
+				.isAloneWithSpecies()), d);
 
 		d.gridy = 0;
 		d.gridx = 2;
 		panel.add(getUniqueBooleanPanel(AquaWorld.texts
 				.getString("objectOnlyOneInFamilyLabel"), ex
-				.isOnlyOneInFamily()), d);
+				.isOnlyOneInSpecies()), d);
 
 		d.gridy = 1;
 		d.gridx = 0;

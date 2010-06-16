@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS `ObjectParameters` (
-  `ObjectParametersID` int(11) NOT NULL,
+  `ObjectParametersID` INTEGER PRIMARY KEY,
   `SalinityLow` double NOT NULL,
   `SalinityHigh` double NOT NULL,
   `PHLow` double NOT NULL,
@@ -12,10 +12,9 @@ CREATE TABLE IF NOT EXISTS `ObjectParameters` (
   `KHHigh` double DEFAULT NULL,
   `MagnesiumLow` double DEFAULT NULL,
   `MagnesiumHigh` double DEFAULT NULL,
-  `CalsiumLow` double DEFAULT NULL,
-  `CalsiumHigh` double DEFAULT NULL,
+  `CalciumLow` double DEFAULT NULL,
+  `CalciumHigh` double DEFAULT NULL,
   `SpaceNeeded` double DEFAULT NULL,
   `OthersSizeLow` double DEFAULT NULL,
-  `OthersSizeHigh` double DEFAULT NULL,
-  PRIMARY KEY (`ObjectParametersID`)
+  `OthersSizeHigh` double DEFAULT NULL
 );

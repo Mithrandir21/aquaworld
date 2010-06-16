@@ -1,3 +1,0 @@
-ALTER TABLE `FishObject`
-  ADD CONSTRAINT `FishExclusion` FOREIGN KEY (`FishExclusionID`) REFERENCES `FishExclusionList` (`FishExclusionID`),
-  ADD CONSTRAINT `FishParameters` FOREIGN KEY (`FishParametersID`) REFERENCES `ObjectParameters` (`ObjectParametersID`);

@@ -2,6 +2,14 @@ package coreObjects;
 
 public class ObjectParameters
 {
+	
+	/**
+	 * The ID of the class instance.
+	 */
+	private int objectParametersID;
+
+
+
 	/**
 	 * The salt/water ratio. (For freshwater object the ratio will be 1.)
 	 */
@@ -72,9 +80,10 @@ public class ObjectParameters
 	 * @param GH
 	 * @param temperature
 	 */
-	public ObjectParameters(double[] salinity, double[] PH, double[] GH,
+	public ObjectParameters(int ID,double[] salinity, double[] PH, double[] GH,
 			double[] temperature)
 	{
+		this.objectParametersID = ID;
 		this.salinity = salinity;
 		this.PH = PH;
 		this.GH = GH;
@@ -85,6 +94,17 @@ public class ObjectParameters
 
 
 	// GETTERS
+
+
+	/**
+	 * Gets the ID(int) of the class instance.
+	 * 
+	 * @return the objectParametersID
+	 */
+	public int getObjectParametersID()
+	{
+		return objectParametersID;
+	}
 
 
 	/**

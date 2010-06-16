@@ -14,7 +14,7 @@ public class FishExclusions
 	/**
 	 * The ID of any given instance of this class.
 	 */
-	private long FishExclusionID;
+	private int FishExclusionID;
 
 
 
@@ -65,6 +65,12 @@ public class FishExclusions
 
 
 	/**
+	 * How many liters of water can hold one female from this fishes family.
+	 */
+	private int onlyOneFishPerLiter;
+
+
+	/**
 	 * The minimum number of females per male in a tank.
 	 */
 	private int MinumimFemalesPerMale;
@@ -86,33 +92,40 @@ public class FishExclusions
 	 * The objects that are compatible with this fish. The syntax for the string
 	 * must be ID's separated by a comma.
 	 * 
-	 * If this has any content(is not NULL), the variable notCompatibleWith will be NULL.
+	 * If this has any content(is not ""), the variable notCompatibleWith will be NULL.
 	 */
-	private String onlyCompatibleWith;
+	private String onlyCompatibleWith = "";
 
 
 	/**
 	 * The objects that are NOT compatible with this fish. The syntax for the
 	 * string must be ID's separated by a comma.
 	 * 
-	 * If this has any content(is not NULL), the variable onlyCompatibleWith
+	 * If this has any content(is not ""), the variable onlyCompatibleWith
 	 * will be NULL.
 	 */
-	private String notCompatibleWith;
+	private String notCompatibleWith = "";
 
 
 	/**
 	 * The male fish that are NOT compatible with this fish. The syntax for the
 	 * string must be ID's separated by a comma.
 	 */
-	private String notCompatibleWithTheseMales;
+	private String notCompatibleWithTheseMales = "";
 
 
 	/**
 	 * The female fish that are NOT compatible with this fish. The syntax for
 	 * the string must be ID's separated by a comma.
 	 */
-	private String notCompatibleWithTheseFemales;
+	private String notCompatibleWithTheseFemales = "";
+
+
+	/**
+	 * A string on what reefs the fish accepts The syntax for
+	 * the string must be ID's separated by a comma.
+	 */
+	private String reefSafeString = "";
 
 
 	/**
@@ -123,7 +136,7 @@ public class FishExclusions
 		// Default seed comes from system time.
 		Random r = new Random();
 
-		FishExclusionID = r.nextLong();
+		FishExclusionID = r.nextInt();
 	}
 
 
@@ -138,7 +151,7 @@ public class FishExclusions
 	 * @param ID
 	 *            The ID of this class.
 	 */
-	public FishExclusions(long ID)
+	public FishExclusions(int ID)
 	{
 		FishExclusionID = ID;
 	}
@@ -177,7 +190,7 @@ public class FishExclusions
 	 * 
 	 * @return the aloneWithFamily
 	 */
-	public boolean isAloneWithFamily()
+	public boolean isAloneWithSpecies()
 	{
 		return aloneWithFamily;
 	}
@@ -188,7 +201,7 @@ public class FishExclusions
 	 * 
 	 * @return the onlyOneInFamily
 	 */
-	public boolean isOnlyOneInFamily()
+	public boolean isOnlyOneInSpecies()
 	{
 		return onlyOneInFamily;
 	}
@@ -235,6 +248,17 @@ public class FishExclusions
 	public int getOnlyOneFemalePerLiter()
 	{
 		return onlyOneFemalePerLiter;
+	}
+
+
+	/**
+	 * TODO - Description NEEDED!
+	 * 
+	 * @return the onlyOneFishPerLiter
+	 */
+	public int getOnlyOneFishPerLiter()
+	{
+		return onlyOneFishPerLiter;
 	}
 
 
@@ -318,6 +342,15 @@ public class FishExclusions
 
 
 	// SETTERS
+
+
+	/**
+	 * @return the reefSafeString
+	 */
+	public String getReefSafeString() {
+		return reefSafeString;
+	}
+
 
 
 	/**
@@ -407,6 +440,18 @@ public class FishExclusions
 	/**
 	 * TODO - Description NEEDED!
 	 * 
+	 * @param onlyOneFishPerLiter
+	 *            the onlyOneFishPerLiter to set
+	 */
+	public void setOnlyOneFishPerLiter(int onlyOneFishPerLiter)
+	{
+		this.onlyOneFishPerLiter = onlyOneFishPerLiter;
+	}
+
+
+	/**
+	 * TODO - Description NEEDED!
+	 * 
 	 * @param minumimFemalesPerMale
 	 *            the minumimFemalesPerMale to set
 	 */
@@ -487,6 +532,15 @@ public class FishExclusions
 			String notCompatibleWithTheseFemales)
 	{
 		this.notCompatibleWithTheseFemales = notCompatibleWithTheseFemales;
+	}
+
+
+
+	/**
+	 * @param reefSafeString the reefSafeString to set
+	 */
+	public void setReefSafeString(String reefSafeString) {
+		this.reefSafeString = reefSafeString;
 	}
 
 

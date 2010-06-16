@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS `FishGroup` (
-  `FishGroupID` int(11) NOT NULL,
+  `FishGroupID` int(11) NOT NULL AUTO_INCREMENT,
   `Description` longtext NOT NULL,
   `GroupFish` longtext NOT NULL,
   PRIMARY KEY (`FishGroupID`)

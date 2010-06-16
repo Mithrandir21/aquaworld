@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `FishObject` (
   `Family` text,
   `Description` mediumtext,
   `Size` double NOT NULL,
-  `Gender` enum('MALE','FEMALE','UNISEX') NOT NULL,
+  `Gender` text NOT NULL,
   `FishParametersID` int(11) NOT NULL,
   `FishExclusionID` int(11) NOT NULL,
   PRIMARY KEY (`FishObjectID`),

@@ -15,7 +15,7 @@ public abstract class AbstractObject
 	/**
 	 * The ID of the object(set only from the SQL object table).
 	 */
-	private int ID;
+	private int objectID;
 
 
 	/**
@@ -57,7 +57,7 @@ public abstract class AbstractObject
 	 */
 	public AbstractObject(int id, String latinName, ObjectParameters par)
 	{
-		this.ID = id;
+		this.objectID = id;
 		this.speciesName = latinName;
 		this.parameters = par;
 	}
@@ -70,9 +70,9 @@ public abstract class AbstractObject
 	 * 
 	 * @return the name
 	 */
-	public int getID()
+	public int getFishID()
 	{
-		return ID;
+		return objectID;
 	}
 
 

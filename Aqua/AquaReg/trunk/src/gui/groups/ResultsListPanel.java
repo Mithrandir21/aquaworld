@@ -64,17 +64,17 @@ public class ResultsListPanel extends JPanel
 		double[] calcium = { 1300, 1500 };
 
 		// ---------------------------------------------------
-		ObjectParameters parameter = new ObjectParameters(sal, ph, gh, temp);
-		FishExclusions fishEx = new FishExclusions();
+		ObjectParameters parameter = new ObjectParameters(00001, sal, ph, gh, temp);
+		parameter.setKh(kh);
+		parameter.setMagnesium(magnesium);
+		parameter.setCalcium(calcium);
+		FishExclusions fishEx = new FishExclusions(00001);
 
 		FishObject fish = new FishObject(00001, "Gullfiskius", "...Gullfish",
 				FishGender.UNISEX, 7.5, parameter, fishEx);
 		fish.setGenusName("Carassius");
 
 		// ---------------------------------------------------
-		parameter.setKh(kh);
-		parameter.setMagnesium(magnesium);
-		parameter.setCalcium(calcium);
 
 		CoralObject coral = new CoralObject(00002, "CoralNavn", "Coralius",
 				"...Coral", CoralTypes.LargePolipedCoral, parameter);
