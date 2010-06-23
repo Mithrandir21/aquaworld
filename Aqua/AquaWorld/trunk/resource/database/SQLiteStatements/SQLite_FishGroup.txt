@@ -1,6 +1,0 @@
-CREATE TABLE IF NOT EXISTS `FishGroup` (
-  `FishGroupID` int(11) NOT NULL,
-  `Description` longtext NOT NULL,
-  `GroupFish` longtext NOT NULL,
-  PRIMARY KEY (`FishGroupID`)
-);

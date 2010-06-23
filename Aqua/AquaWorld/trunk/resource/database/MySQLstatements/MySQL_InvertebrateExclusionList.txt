@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS `InvertebrateExclusionList` (
+  `InvertebrateExclusionID` int(11) NOT NULL AUTO_INCREMENT,
+  `OnlyOneInFamily` tinyint(1) NOT NULL,
+  `OnlyOneInvertebratePerLiter` int(11) DEFAULT NULL,
+  `OnlyCompatibleWith` text,
+  `NotCompatibleWith` text,
+  PRIMARY KEY (`InvertebrateExclusionID`)
+) ENGINE=InnoDB COMMENT='The table on what the Invertebrate is compatible with.' AUTO_INCREMENT=1 ;

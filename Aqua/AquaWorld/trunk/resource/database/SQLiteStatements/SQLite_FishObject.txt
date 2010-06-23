@@ -1,14 +1,13 @@
 CREATE TABLE IF NOT EXISTS `FishObject` (
   `FishObjectID` int(11) NOT NULL,
-  `Name` text NOT NULL,
-  `LatinName` text NOT NULL,
-  `Family` text,
+  `PopularName` text NOT NULL,
+  `Species` text NOT NULL,
+  `Genus` text,
   `Description` mediumtext,
   `Size` double NOT NULL,
-  `Gender` text NOT NULL,
-  `FishParametersID` int(11) NOT NULL,
+  `ObjectParametersID` int(11) NOT NULL,
   `FishExclusionID` int(11) NOT NULL,
   PRIMARY KEY (`FishObjectID`),
   FOREIGN KEY (FishExclusionID) REFERENCES FishExclusion,
-  FOREIGN KEY (FishParametersID) REFERENCES FishParameters
+  FOREIGN KEY (ObjectParametersID) REFERENCES ObjectParameters
 );

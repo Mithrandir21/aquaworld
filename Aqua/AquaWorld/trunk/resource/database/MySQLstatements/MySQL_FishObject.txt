@@ -1,14 +1,13 @@
 CREATE TABLE IF NOT EXISTS `FishObject` (
   `FishObjectID` int(11) NOT NULL AUTO_INCREMENT,
-  `Name` text NOT NULL,
-  `LatinName` text NOT NULL,
-  `Family` text,
-  `Description` mediumtext,
+  `PopularName` text NOT NULL,
+  `Species` text NOT NULL,
+  `Genus` text,
+  `Description` text,
   `Size` double NOT NULL,
-  `Gender` text NOT NULL,
-  `FishParametersID` int(11) NOT NULL,
+  `ObjectParametersID` int(11) NOT NULL,
   `FishExclusionID` int(11) NOT NULL,
   PRIMARY KEY (`FishObjectID`),
-  KEY `FishExclusion` (`FishExclusionID`),
-  KEY `FishParameters` (`FishParametersID`)
+  CONSTRAINT `FishExclusion` FOREIGN KEY `FishExclusion`(`FishExclusionID`) REFERENCES `FishExclusionList` (`FishExclusionID`),
+  CONSTRAINT `FishParameters` FOREIGN KEY `FishParameters`(`ObjectParametersID`) REFERENCES `ObjectParameters` (`ObjectParametersID`)  
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;

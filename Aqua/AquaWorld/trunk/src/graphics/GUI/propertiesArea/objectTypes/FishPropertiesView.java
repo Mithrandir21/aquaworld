@@ -5,11 +5,15 @@ import graphics.AquaWorld;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
+import org.jdesktop.swingx.JXCollapsiblePane;
 
 import widgets.WidgetFish;
 import coreObjects.ObjectParameters;
@@ -34,9 +38,27 @@ public class FishPropertiesView
 	/**
 	 * TODO - Description
 	 */
-	public static void getFishProperties(JPanel panel, WidgetFish fishWidget,
-			boolean additionalInfo)
+	public static JPanel getFishProperties(WidgetFish fishWidget)
 	{
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints d = new GridBagConstraints();
+
+
+		d.fill = GridBagConstraints.BOTH;
+		// d.ipady = 0; // reset to default
+		// d.ipadx = 0; // reset to default
+		// d.weighty = 1.0; // request any extra vertical space
+		// d.weightx = 1.0; // request any extra vertical space
+		// d.anchor = GridBagConstraints.CENTER; // bottom of space
+		// d.insets = new Insets(10, 10, 10, 10); // top padding
+		// d.gridwidth = 1; // 2 columns wide
+		// d.gridheight = 1; // 2 columns wide
+		d.gridx = 0;
+
+
+
+
 		// Gets the fish object
 		fish = fishWidget.getObject();
 
@@ -47,7 +69,8 @@ public class FishPropertiesView
 				.getString("fishLatinNameLabelText"), SwingConstants.TRAILING);
 		latinNameLabel.setToolTipText(AquaWorld.texts
 				.getString("fishLatinNameLabelDescrtiption"));
-		panel.add(latinNameLabel);
+		d.gridy = 0;
+		panel.add(latinNameLabel, d);
 
 
 		JTextField latinNameField = new JTextField(fish.getSpeciesName());
@@ -59,7 +82,8 @@ public class FishPropertiesView
 		latinNameField.setBackground(white);
 		latinNameLabel.setLabelFor(latinNameField);
 		latinNameField.setName("Latin_Name_fish");
-		panel.add(latinNameField);
+		d.gridy = 1;
+		panel.add(latinNameField, d);
 
 
 		// Name ---------------------------------------
@@ -67,7 +91,8 @@ public class FishPropertiesView
 				.getString("fishNameLabelText"), SwingConstants.TRAILING);
 		nameLabel.setToolTipText(AquaWorld.texts
 				.getString("fishNameLabelDescription"));
-		panel.add(nameLabel);
+		d.gridy = 2;
+		panel.add(nameLabel, d);
 
 
 		JTextField nameField = new JTextField(fish.getPopulareName());
@@ -79,7 +104,8 @@ public class FishPropertiesView
 		nameField.setBackground(white);
 		nameLabel.setLabelFor(nameField);
 		nameField.setName("Name_fish");
-		panel.add(nameField);
+		d.gridy = 3;
+		panel.add(nameField, d);
 
 
 
@@ -88,7 +114,8 @@ public class FishPropertiesView
 				.getString("fishGenderLabelText"), SwingConstants.TRAILING);
 		genderLabel.setToolTipText(AquaWorld.texts
 				.getString("fishGenderLabelDescrtiption"));
-		panel.add(genderLabel);
+		d.gridy = 4;
+		panel.add(genderLabel, d);
 
 
 		JTextField genderField = new JTextField(fish.getFishGender().toString());
@@ -100,7 +127,8 @@ public class FishPropertiesView
 		genderField.setBackground(white);
 		genderLabel.setLabelFor(genderField);
 		genderField.setName("Gender_fish");
-		panel.add(genderField);
+		d.gridy = 5;
+		panel.add(genderField, d);
 
 
 
@@ -131,7 +159,8 @@ public class FishPropertiesView
 				.getString("fishSizeLabelText"), SwingConstants.TRAILING);
 		sizeLabel.setToolTipText(AquaWorld.texts
 				.getString("fishSizeLabelDescrtiption"));
-		panel.add(sizeLabel);
+		d.gridy = 6;
+		panel.add(sizeLabel, d);
 
 
 		JTextField sizeField = new JTextField(fish.getSize() + "");
@@ -143,14 +172,13 @@ public class FishPropertiesView
 		sizeField.setBackground(white);
 		sizeLabel.setLabelFor(sizeField);
 		sizeField.setName("Size_fish");
-		panel.add(sizeField);
+		d.weighty = 1.0; // request any extra vertical space
+		d.weightx = 1.0; // request any extra vertical space
+		d.gridy = 7;
+		panel.add(sizeField, d);
 
 
-		if ( additionalInfo )
-		{
-		// Adds info to the additional info panel.
-			additionalInfo(panel, fishWidget);
-		}
+		return panel;
 	}
 
 
@@ -161,8 +189,25 @@ public class FishPropertiesView
 	/**
 	 * Add additional info to the given JPanel about the given Widget object.
 	 */
-	private static void additionalInfo(JPanel moreInfo, WidgetFish fishWidget)
+	public static JXCollapsiblePane additionalInfo(WidgetFish fishWidget)
 	{
+		JXCollapsiblePane panel = new JXCollapsiblePane();
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints d = new GridBagConstraints();
+
+
+		d.fill = GridBagConstraints.BOTH;
+		// d.ipady = 0; // reset to default
+		// d.ipadx = 0; // reset to default
+		// d.weighty = 1.0; // request any extra vertical space
+		// d.weightx = 1.0; // request any extra vertical space
+		// d.anchor = GridBagConstraints.CENTER; // bottom of space
+		// d.insets = new Insets(10, 10, 10, 10); // top padding
+		// d.gridwidth = 1; // 2 columns wide
+		// d.gridheight = 1; // 2 columns wide
+		d.gridx = 0;
+
+
 		// The fishes parameters
 		ObjectParameters par = fishWidget.getObject().getParameters();
 
@@ -172,7 +217,9 @@ public class FishPropertiesView
 				AquaWorld.texts.getString("salinity"), SwingConstants.TRAILING);
 		salinityLabel.setToolTipText(AquaWorld.texts
 				.getString("salinityFieldDescription"));
-		moreInfo.add(salinityLabel);
+
+		d.gridy = 0;
+		panel.add(salinityLabel, d);
 
 
 		String salinityString = par.getSalinityLow() + " - "
@@ -187,14 +234,16 @@ public class FishPropertiesView
 		salinityField.setBackground(white);
 		salinityLabel.setLabelFor(salinityField);
 		salinityField.setName("Salinity_fish");
-		moreInfo.add(salinityField);
+		d.gridy = 1;
+		panel.add(salinityField, d);
 
 
 		// PH Size ---------------------------------------
 		JLabel phLabel = new JLabel(AquaWorld.texts.getString("ph"),
 				SwingConstants.TRAILING);
 		phLabel.setToolTipText(AquaWorld.texts.getString("phFieldDescription"));
-		moreInfo.add(phLabel);
+		d.gridy = 2;
+		panel.add(phLabel, d);
 
 		String phString = par.getPHlow() + " - " + par.getPHhigh();
 
@@ -206,28 +255,29 @@ public class FishPropertiesView
 		phField.setBackground(white);
 		phLabel.setLabelFor(phField);
 		phField.setName("PH_fish");
-		moreInfo.add(phField);
+		d.gridy = 3;
+		panel.add(phField, d);
 
 
 		// GH Size ---------------------------------------
 		JLabel ghLabel = new JLabel(AquaWorld.texts.getString("gh"),
 				SwingConstants.TRAILING);
-		ghLabel.setToolTipText(AquaWorld.texts
-				.getString("ghFieldDescription"));
-		moreInfo.add(ghLabel);
+		ghLabel.setToolTipText(AquaWorld.texts.getString("ghFieldDescription"));
+		d.gridy = 4;
+		panel.add(ghLabel, d);
 
 		String ghString = par.getGHlow() + " - " + par.getGHhigh();
 
 		JTextField ghField = new JTextField(ghString);
-		ghField.setToolTipText(AquaWorld.texts
-				.getString("ghFieldDescription"));
+		ghField.setToolTipText(AquaWorld.texts.getString("ghFieldDescription"));
 		ghField.setMaximumSize(textFieldSize);
 		ghField.setPreferredSize(textFieldSize);
 		ghField.setEditable(false);
 		ghField.setBackground(white);
 		ghLabel.setLabelFor(ghField);
 		ghField.setName("GH_fish");
-		moreInfo.add(ghField);
+		d.gridy = 5;
+		panel.add(ghField, d);
 
 
 		// Temperatur Size ---------------------------------------
@@ -235,7 +285,8 @@ public class FishPropertiesView
 				SwingConstants.TRAILING);
 		tempLabel.setToolTipText(AquaWorld.texts
 				.getString("temperaturFieldDescription"));
-		moreInfo.add(tempLabel);
+		d.gridy = 6;
+		panel.add(tempLabel, d);
 
 		String tempString = par.getTemperatureLow() + " - "
 				+ par.getTemperatureHigh();
@@ -249,15 +300,16 @@ public class FishPropertiesView
 		tempField.setBackground(white);
 		tempLabel.setLabelFor(tempField);
 		tempField.setName("Temperatur_fish");
-		moreInfo.add(tempField);
+		d.gridy = 7;
+		panel.add(tempField, d);
 
 
 		// KH Size ---------------------------------------
 		JLabel khLabel = new JLabel(AquaWorld.texts.getString("kh"),
 				SwingConstants.TRAILING);
-		khLabel.setToolTipText(AquaWorld.texts
-				.getString("khFieldDescription"));
-		moreInfo.add(khLabel);
+		khLabel.setToolTipText(AquaWorld.texts.getString("khFieldDescription"));
+		d.gridy = 8;
+		panel.add(khLabel, d);
 
 		String khString = "";
 
@@ -275,6 +327,12 @@ public class FishPropertiesView
 		sizeField.setBackground(white);
 		khLabel.setLabelFor(sizeField);
 		sizeField.setName("KH_fish");
-		moreInfo.add(sizeField);
+		d.weighty = 1.0; // request any extra vertical space
+		d.weightx = 1.0; // request any extra vertical space
+		d.gridy = 9;
+		panel.add(sizeField, d);
+
+
+		return panel;
 	}
 }

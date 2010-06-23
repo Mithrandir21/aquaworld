@@ -45,7 +45,7 @@ public class FishObject extends AbstractObject
 	 * 
 	 * @param ID
 	 *            The ID for the fish.
-	 * @param latinName
+	 * @param speciesName
 	 *            The scientific name of the fish.
 	 * @param description
 	 *            The description of the fish.
@@ -58,11 +58,11 @@ public class FishObject extends AbstractObject
 	 * @param exclusions
 	 *            The unique exclusions for this fish.
 	 */
-	public FishObject(int ID, String latinName, String description,
+	public FishObject(int ID, String speciesName, String description,
 			FishGender gender, double size, ObjectParameters par,
 			FishExclusions exclusions)
 	{
-		super(ID, latinName, par);
+		super(ID, speciesName, par);
 		this.setDescription(description);
 		this.gender = gender;
 		this.size = size;

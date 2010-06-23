@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS `CoralObject` (
+  `CoralObjectID` int(11) NOT NULL AUTO_INCREMENT,
+  `PopularName` text NOT NULL,
+  `Species` text NOT NULL,
+  `Genus` text,
+  `Description` text,
+  `CoralType` text NOT NULL,
+  `ObjectParametersID` int(11) NOT NULL,
+  PRIMARY KEY (`CoralObjectID`),
+  CONSTRAINT `CoralParameters` FOREIGN KEY `CoralParameters`(`ObjectParametersID`) REFERENCES `ObjectParameters` (`ObjectParametersID`)
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;

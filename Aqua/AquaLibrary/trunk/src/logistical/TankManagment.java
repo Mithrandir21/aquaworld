@@ -195,7 +195,7 @@ public class TankManagment
 				int id = Integer.parseInt(list[i]);
 
 				// If the ID found is the same as the ID of the given Object
-				if ( object.getFishID() == id )
+				if ( object.getObjectID() == id )
 				{
 					return true;
 				}

@@ -22,21 +22,29 @@ public class InvertebratesObject extends AbstractObject
 
 
 	/**
+	 * The unique exclusions for this Invertebrates.
+	 */
+	private InvertebrateExclusions exclusions;
+
+
+
+	/**
 	 * TODO - Description NEEDED!
 	 * 
 	 * @param name
-	 * @param latinName
+	 * @param speciesName
 	 * @param description
 	 * @param type
 	 * @param par
 	 */
-	public InvertebratesObject(int ID, String name, String latinName,
-			String description, InvertebratesTypes type, ObjectParameters par)
+	public InvertebratesObject(int ID, String speciesName, String description,
+			InvertebratesTypes type, ObjectParameters par,
+			InvertebrateExclusions exclusions)
 	{
-		super(ID, latinName, par);
-		this.setPopulareName(name);
+		super(ID, speciesName, par);
 		this.setDescription(description);
 		this.invType = type;
+		this.exclusions = exclusions;
 	}
 
 
@@ -54,8 +62,21 @@ public class InvertebratesObject extends AbstractObject
 	}
 
 
+	/**
+	 * TODO - Description NEEDED!
+	 * 
+	 * @return the exclusions
+	 */
+	public InvertebrateExclusions getExclusions()
+	{
+		return exclusions;
+	}
+
 
 	// SETTERS
+
+
+
 
 	/**
 	 * TODO - Description NEEDED!

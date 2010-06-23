@@ -407,7 +407,7 @@ public class GraficalFunctions
 
 
 		JTextField low = new JTextField();
-		low.setName(valueName);
+		low.setName(valueName + "_Low");
 		// if ( blue )
 		// {
 		// low.setBackground(Color.CYAN);
@@ -428,7 +428,7 @@ public class GraficalFunctions
 
 
 		JTextField high = new JTextField();
-		high.setName(valueName);
+		high.setName(valueName + "_High");
 		// if ( blue )
 		// {
 		// high.setBackground(Color.CYAN);
@@ -530,7 +530,7 @@ public class GraficalFunctions
 
 
 		JTextField low = new JTextField();
-		low.setName(valueName);
+		low.setName(valueName + "_Low");
 		if ( blue )
 		{
 			low.setBackground(Color.CYAN);
@@ -551,7 +551,7 @@ public class GraficalFunctions
 
 
 		JTextField high = new JTextField();
-		high.setName(valueName);
+		high.setName(valueName + "_High");
 		if ( blue )
 		{
 			high.setBackground(Color.CYAN);

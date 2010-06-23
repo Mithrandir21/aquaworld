@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS `ObjectGroup` (
+  `ObjectGroupID` int(11) NOT NULL,
+  `GroupName` text NOT NULL,
+  `Description` text NOT NULL,
+  `GroupFishObjects` text,
+  `GroupCoralObjects` text,
+  `GroupInvertebrateObjects` text,
+  PRIMARY KEY (`ObjectGroupID`)
+);

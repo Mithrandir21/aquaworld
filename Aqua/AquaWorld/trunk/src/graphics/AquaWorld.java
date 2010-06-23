@@ -1,6 +1,7 @@
 package graphics;
 
 
+import exceptions.ObjectIDnotFoundInDatabaseException;
 import graphics.GUI.graphicalFunctions.MakeSystemImageIcons;
 import graphics.GUI.menues.GenericPrimeMenuBar;
 import graphics.GUI.menues.GenericPrimeToolbar;
@@ -9,6 +10,7 @@ import graphics.GUI.messageArea.messageTabs.AquariumAndEquipmentMessage;
 import graphics.GUI.messageArea.messageTabs.FishAnimalsMessage;
 import graphics.GUI.propertiesArea.ObjectScrollProperties;
 import graphics.GUI.selectionArea.TabbedSelection;
+import graphics.GUI.selectionArea.tabContent.FishOverview;
 import graphics.ProgramGUI.TipOfDay;
 import graphics.canvas.WorkareaCanvas;
 import graphics.canvas.WorkareaTabbed;
@@ -67,6 +69,7 @@ import coreObjects.Equipment.CirculationPump;
 import coreObjects.Fish.FishExclusions;
 import coreObjects.Fish.FishObject;
 import coreObjects.Fish.FishObject.FishGender;
+import coreObjects.Invertebrates.InvertebrateExclusions;
 import coreObjects.Invertebrates.InvertebratesObject;
 import coreObjects.Invertebrates.InvertebratesObject.InvertebratesTypes;
 
@@ -341,8 +344,6 @@ public class AquaWorld extends JFrame
 		// ---------------------------------------------------
 		ObjectParameters parameter = new ObjectParameters(31, sal, ph, gh, temp);
 		// ---------------------------------------------------
-		
-		
 		parameter.setKh(kh);
 		parameter.setMagnesium(magnesium);
 		parameter.setCalcium(calcium);
@@ -353,21 +354,47 @@ public class AquaWorld extends JFrame
 		WidgetFish widFish = new WidgetFish(currentCanvas.getScene(), fish,
 				null);
 
+
+
+
+
+		// ---------------------------------------------------
+		ObjectParameters parameter1 = new ObjectParameters(442, sal, ph, gh,
+				temp);
+		// ---------------------------------------------------
+		parameter1.setKh(kh);
+		parameter1.setMagnesium(magnesium);
+		parameter1.setCalcium(calcium);
+
 		// ---------------------------------------------------
 
-
-		CoralObject coral = new CoralObject(00002, "CoralNavn", "Coralius",
-				"...Coral", CoralTypes.LargePolipedCoral, parameter);
+		CoralObject coral = new CoralObject(00002, "Coralius", "...Coral",
+				CoralTypes.LargePolipedCoral, parameter1);
 
 
 		WidgetCoral widCoral = new WidgetCoral(currentCanvas.getScene(), coral,
 				null);
 
+
+
+
+
+
+		// ---------------------------------------------------
+		ObjectParameters parameter2 = new ObjectParameters(875, sal, ph, gh,
+				temp);
+		// ---------------------------------------------------
+		parameter2.setKh(kh);
+		parameter2.setMagnesium(magnesium);
+		parameter2.setCalcium(calcium);
+
+		InvertebrateExclusions invEx = new InvertebrateExclusions(957);
+
 		// --------------------------------------------------
 
-		InvertebratesObject invertebrate = new InvertebratesObject(00003,
-				"Iven", "Ivenius", "...Invertebrate",
-				InvertebratesTypes.Anemones, parameter);
+		InvertebratesObject invertebrate = new InvertebratesObject(00007,
+				"Ivenius", "...Invertebrate", InvertebratesTypes.Anemones,
+				parameter2, invEx);
 
 		WidgetInvertebrates widInv = new WidgetInvertebrates(currentCanvas
 				.getScene(), invertebrate, null);
@@ -379,7 +406,7 @@ public class AquaWorld extends JFrame
 
 		ObjectScrollProperties gg = new ObjectScrollProperties();
 		propertiesPanel.add(gg);
-		gg.newObjectSelectedPropertiesTab(widInv);
+		gg.newObjectSelectedPropertiesTab(widCoral);
 
 
 
@@ -402,18 +429,19 @@ public class AquaWorld extends JFrame
 		// --------------------------------------------------
 		// --------------------------------------------------
 
-		TabbedSelection sel = new TabbedSelection();
+		// TabbedSelection sel = new TabbedSelection();
+		FishOverview sel = new FishOverview();
 		selectionPanel.add(sel);
 
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
+		System.out.println("Starting");
+
+
 		// load the sqlite-JDBC driver using the current class loader
 		try
 		{
@@ -425,7 +453,7 @@ public class AquaWorld extends JFrame
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
+		long time = System.currentTimeMillis();
 		Connection connection = null;
 		try
 		{
@@ -434,57 +462,165 @@ public class AquaWorld extends JFrame
 			String pass = "sauron21";
 			// create a database connection
 			connection = DriverManager.getConnection(url, user, pass);
-			File fishExFile = new File("./resource/database/MySQLstatements/MySQL_FishExclusionList.txt");
-			File fishGroupFile = new File("./resource/database/MySQLstatements/MySQL_FishGroup.txt");
-			File objectParFile = new File("./resource/database/MySQLstatements/MySQL_ObjectParameters.txt");
-			File fishObjectFile = new File("./resource/database/MySQLstatements/MySQL_FishObject.txt");
-			File alterFile = new File("./resource/database/MySQLstatements/MySQL_ALTER.txt");
-				
+			File invExFile = new File(
+					"./resource/database/MySQLstatements/MySQL_InvertebrateExclusionList.txt");
+			File fishExFile = new File(
+					"./resource/database/MySQLstatements/MySQL_FishExclusionList.txt");
+			File objectGroupFile = new File(
+					"./resource/database/MySQLstatements/MySQL_ObjectGroup.txt");
+			File objectParFile = new File(
+					"./resource/database/MySQLstatements/MySQL_ObjectParameters.txt");
+			File fishObjectFile = new File(
+					"./resource/database/MySQLstatements/MySQL_FishObject.txt");
+			File invertebrateObjectFile = new File(
+					"./resource/database/MySQLStatements/MySQL_InvertebrateObject.txt");
+			File coralObjectFile = new File(
+					"./resource/database/MySQLStatements/MySQL_CoralObject.txt");
+			File fishCampaignFile = new File(
+					"./resource/database/MySQLStatements/MySQL_FishCampaign.txt");
+			File coralCampaignFile = new File(
+					"./resource/database/MySQLStatements/MySQL_CoralCampaign.txt");
+			File invertebrateCampaignFile = new File(
+					"./resource/database/MySQLStatements/MySQL_InvertebrateCampaign.txt");
+			// File alterFile = new File(
+			// "./resource/database/MySQLstatements/MySQL_ALTER.txt");
 
-//			connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
-//			File fishExFile = new File("./resource/database/SQLiteStatements/SQLite_FishExclusionList.txt");
-//			File fishGroupFile = new File("./resource/database/SQLiteStatements/SQLite_FishGroup.txt");
-//			File objectParFile = new File("./resource/database/SQLiteStatements/SQLite_ObjectParameters.txt");
-//			File fishObjectFile = new File("./resource/database/SQLiteStatements/SQLite_FishObject.txt");
-//			File alterFile = new File("./resource/database/SQLiteStatements/SQLite_ALTER.txt");
 
-			
+			// connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
+			// File invExFile = new File(
+			// "./resource/database/SQLiteStatements/SQLite_InvertebrateExclusionList.txt");
+			// File fishExFile = new File(
+			// "./resource/database/SQLiteStatements/SQLite_FishExclusionList.txt");
+			// File objectGroupFile = new File(
+			// "./resource/database/SQLiteStatements/SQLite_ObjectGroup.txt");
+			// File objectParFile = new File(
+			// "./resource/database/SQLiteStatements/SQLite_ObjectParameters.txt");
+			// File fishObjectFile = new File(
+			// "./resource/database/SQLiteStatements/SQLite_FishObject.txt");
+			// File invertebrateObjectFile = new File(
+			// "./resource/database/SQLiteStatements/SQLite_InvertebrateObject.txt");
+			// File coralObjectFile = new File(
+			// "./resource/database/SQLiteStatements/SQLite_CoralObject.txt");
+			// File fishCampaignFile = new File(
+			// "./resource/database/SQLiteStatements/SQLite_FishCampaign.txt");
+			// File coralCampaignFile = new File(
+			// "./resource/database/SQLiteStatements/SQLite_CoralCampaign.txt");
+			// File invertebrateCampaignFile = new File(
+			// "./resource/database/SQLiteStatements/SQLite_InvertebrateCampaign.txt");
+			// // File alterFile = new File(
+			// // "./resource/database/SQLiteStatements/SQLite_ALTER.txt");
+
+
+
 			SQLfunctions.databaseTablesDrop(connection);
 
-			
+			// InvertebrateExclusion
+			String invExString = IOmanagment.getSQLtableString(invExFile);
+			SQLfunctions.databaseStatementExecution(connection, invExString);
+
+			// FishExclusion
 			String fishExString = IOmanagment.getSQLtableString(fishExFile);
 			SQLfunctions.databaseStatementExecution(connection, fishExString);
 
+			// FishGroup
 			String fishGroupString = IOmanagment
-					.getSQLtableString(fishGroupFile);
-			SQLfunctions.databaseStatementExecution(connection, fishGroupString);
+					.getSQLtableString(objectGroupFile);
+			SQLfunctions
+					.databaseStatementExecution(connection, fishGroupString);
 
+			// ObjectParameters
 			String objParString = IOmanagment.getSQLtableString(objectParFile);
 			SQLfunctions.databaseStatementExecution(connection, objParString);
 
+			// FishObject
 			String fishObjectString = IOmanagment
 					.getSQLtableString(fishObjectFile);
-			SQLfunctions.databaseStatementExecution(connection, fishObjectString);
+			SQLfunctions.databaseStatementExecution(connection,
+					fishObjectString);
 
-			String alterString = IOmanagment.getSQLtableString(alterFile);
-			SQLfunctions.databaseStatementExecution(connection, alterString);
-			
-			
-			
-			
-			
+			// InvertebrateObject
+			String invertebrateObjectString = IOmanagment
+					.getSQLtableString(invertebrateObjectFile);
+			SQLfunctions.databaseStatementExecution(connection,
+					invertebrateObjectString);
 
-			SQLfunctions.databaseAddFishObjectParameters(connection, fish);
-			
-			SQLfunctions.databaseAddFishExclusionsList(connection, fish);
-			
-			SQLfunctions.databaseAddFishObject(connection, fish);
+			// CoralObject
+			String coralObjectString = IOmanagment
+					.getSQLtableString(coralObjectFile);
+			SQLfunctions.databaseStatementExecution(connection,
+					coralObjectString);
+
+			// FishCampaing
+			String fishCampaignString = IOmanagment
+					.getSQLtableString(fishCampaignFile);
+			SQLfunctions.databaseStatementExecution(connection,
+					fishCampaignString);
+
+			// InvertebrateCampaign
+			String invertebrateCampaignString = IOmanagment
+					.getSQLtableString(invertebrateCampaignFile);
+			SQLfunctions.databaseStatementExecution(connection,
+					invertebrateCampaignString);
+
+			// CoralCampaign
+			String coralCampaignString = IOmanagment
+					.getSQLtableString(coralCampaignFile);
+			SQLfunctions.databaseStatementExecution(connection,
+					coralCampaignString);
+
+			// ALTER
+			// String alterString = IOmanagment.getSQLtableString(alterFile);
+			// SQLfunctions.databaseStatementExecution(connection, alterString);
+
+
+
+
+			SQLfunctions.databaseAddFishObjectAndParametersAndExclusions(
+					connection, fish);
+
+			SQLfunctions.databaseAddCoralObjectAndCoralParameters(connection,
+					coral);
+
+			SQLfunctions
+					.databaseAddInvertebrateObjectAndParametersAndExclusions(
+							connection, invertebrate);
+
+
+			// SQLfunctions.databaseAddGroup(connection, "MiscGroup1",
+			// "GroupTesting");
+			//
+			//
+			// SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
+			// fish);
+			//
+			// SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
+			// coral);
+			//
+			// SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
+			// invertebrate);
+
+			//
+			CoralObject coralObj = SQLfunctions.databaseGetCoralObject(
+					connection, 2);
+
+
+			InvertebratesObject invObj = SQLfunctions
+					.databaseGetInvertebrateObject(connection, 7);
+
+
+			FishObject fishObj = SQLfunctions.databaseGetFishObject(connection,
+					1);
 		}
 		catch ( SQLException e )
 		{
 			// if the error message is "out of memory",
 			// it probably means no database file is found
 			System.err.println(e.getMessage());
+		}
+		catch ( ObjectIDnotFoundInDatabaseException e )
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		finally
 		{
@@ -499,12 +635,9 @@ public class AquaWorld extends JFrame
 				System.err.println(e);
 			}
 		}
-		
 
-
-
-
-
+		System.out.println("Ending");
+		System.exit(0);
 
 		this.setJMenuBar(new GenericPrimeMenuBar());
 		//

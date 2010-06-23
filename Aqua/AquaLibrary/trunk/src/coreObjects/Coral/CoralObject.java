@@ -22,17 +22,15 @@ public class CoralObject extends AbstractObject
 	 * TODO - Description NEEDED!
 	 * 
 	 * @param name
-	 * @param latinName
+	 * @param speciesName
 	 * @param description
 	 * @param coralType
 	 * @param par
 	 */
-	public CoralObject(int ID, String name, String latinName,
-			String description,
+	public CoralObject(int ID, String speciesName, String description,
 			CoralTypes coralType, ObjectParameters par)
 	{
-		super(ID, latinName, par);
-		this.setPopulareName(name);
+		super(ID, speciesName, par);
 		this.setDescription(description);
 		this.coralType = coralType;
 	}
@@ -67,9 +65,9 @@ public class CoralObject extends AbstractObject
 	{
 		this.coralType = coralType;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * TODO - Description NEEDED!
 	 * 

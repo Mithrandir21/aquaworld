@@ -1,0 +1,7 @@
+CREATE TABLE `CoralCampaign` (
+  `CoralCampaignID` int(11) NOT NULL AUTO_INCREMENT,
+  `CampaignDescription` text NOT NULL,
+  `CoralObjectID` int(11) NOT NULL,
+  PRIMARY KEY (`CoralCampaignID`),
+  CONSTRAINT `CoralCampaignFishID` FOREIGN KEY `CoralCampaignFishID`(`CoralObjectID`) REFERENCES `CoralObject` (`CoralObjectID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='A single advertisment for a single coral species' AUTO_INCREMENT=1 ;

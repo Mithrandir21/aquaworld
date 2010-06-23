@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS `InvertebrateObject` (
+  `InvertebrateObjectID` int(11) NOT NULL,
+  `PopularName` text NOT NULL,
+  `Species` text NOT NULL,
+  `Genus` text,
+  `Description` text,
+  `InvertebratesType` text NOT NULL,
+  `ObjectParametersID` int(11) NOT NULL,
+  `InvertebrateExclusionID` int(11) NOT NULL,
+  PRIMARY KEY (`InvertebrateObjectID`),
+  FOREIGN KEY (ObjectParametersID) REFERENCES ObjectParameters,
+  FOREIGN KEY (InvertebrateExclusionID) REFERENCES InvertebrateExclusion
+)

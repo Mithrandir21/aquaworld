@@ -5,11 +5,15 @@ import graphics.AquaWorld;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
+import org.jdesktop.swingx.JXCollapsiblePane;
 
 import widgets.WidgetCoral;
 import coreObjects.ObjectParameters;
@@ -35,10 +39,25 @@ public class CoralPropertiesView
 	/**
 	 * TODO - Description
 	 */
-	public static void getCoralProperties(JPanel panel,
-			WidgetCoral coralWidget,
-			boolean additionalInfo)
+	public static JPanel getCoralProperties(WidgetCoral coralWidget)
 	{
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints d = new GridBagConstraints();
+
+
+		d.fill = GridBagConstraints.BOTH;
+		// d.ipady = 0; // reset to default
+		// d.ipadx = 0; // reset to default
+		// d.weighty = 1.0; // request any extra vertical space
+		// d.weightx = 1.0; // request any extra vertical space
+		// d.anchor = GridBagConstraints.CENTER; // bottom of space
+		// d.insets = new Insets(10, 10, 10, 10); // top padding
+		// d.gridwidth = 1; // 2 columns wide
+		// d.gridheight = 1; // 2 columns wide
+		d.gridx = 0;
+
+
 		// Gets the coral object where the information is
 		coral = coralWidget.getObject();
 
@@ -48,7 +67,8 @@ public class CoralPropertiesView
 				.getString("coralLatinNameLabelText"), SwingConstants.TRAILING);
 		latinNameLabel.setToolTipText(AquaWorld.texts
 				.getString("coralLatinNameLabelDescrtiption"));
-		panel.add(latinNameLabel);
+		d.gridy = 0;
+		panel.add(latinNameLabel, d);
 
 
 		JTextField latinNameField = new JTextField(coral.getSpeciesName());
@@ -60,7 +80,8 @@ public class CoralPropertiesView
 		latinNameField.setBackground(white);
 		latinNameLabel.setLabelFor(latinNameField);
 		latinNameField.setName("Latin_Name_coral");
-		panel.add(latinNameField);
+		d.gridy = 1;
+		panel.add(latinNameField, d);
 
 
 		// Name ---------------------------------------
@@ -68,7 +89,8 @@ public class CoralPropertiesView
 				.getString("coralNameLabelText"), SwingConstants.TRAILING);
 		nameLabel.setToolTipText(AquaWorld.texts
 				.getString("coralNameLabelDescription"));
-		panel.add(nameLabel);
+		d.gridy = 2;
+		panel.add(nameLabel, d);
 
 
 		JTextField nameField = new JTextField(coral.getPopulareName());
@@ -80,7 +102,8 @@ public class CoralPropertiesView
 		nameField.setBackground(white);
 		nameLabel.setLabelFor(nameField);
 		nameField.setName("Name_coral");
-		panel.add(nameField);
+		d.gridy = 3;
+		panel.add(nameField, d);
 
 
 		// Type ---------------------------------------
@@ -88,7 +111,8 @@ public class CoralPropertiesView
 				.getString("coralTypeLabelText"), SwingConstants.TRAILING);
 		typeLabel.setToolTipText(AquaWorld.texts
 				.getString("coralTypeLabelDescription"));
-		panel.add(typeLabel);
+		d.gridy = 4;
+		panel.add(typeLabel, d);
 
 
 		JTextField typeField = new JTextField(coral.getCoralType().toString());
@@ -100,24 +124,37 @@ public class CoralPropertiesView
 		typeField.setBackground(white);
 		typeLabel.setLabelFor(typeField);
 		typeField.setName("Type_coral");
-		panel.add(typeField);
+		d.weighty = 1.0; // request any extra vertical space
+		d.weightx = 1.0; // request any extra vertical space
+		d.gridy = 5;
+		panel.add(typeField, d);
 
 
-
-		if ( additionalInfo )
-		{
-			additionalInfo(panel, coralWidget);
-		}
+		return panel;
 	}
-
 
 
 	/**
 	 * Add additional info to the given JPanel about the given Widget object.
 	 */
-	private static void additionalInfo(JPanel moreInfo, WidgetCoral coralWidget)
+	public static JXCollapsiblePane additionalInfo(WidgetCoral coralWidget)
 	{
-		// The corals parameters
+		JXCollapsiblePane panel = new JXCollapsiblePane();
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints d = new GridBagConstraints();
+
+
+		d.fill = GridBagConstraints.BOTH;
+		// d.ipady = 0; // reset to default
+		// d.ipadx = 0; // reset to default
+		// d.anchor = GridBagConstraints.CENTER; // bottom of space
+		// d.insets = new Insets(10, 10, 10, 10); // top padding
+		// d.gridwidth = 1; // 2 columns wide
+		// d.gridheight = 1; // 2 columns wide
+		d.gridx = 0;
+
+
+		// The invertebrate parameters
 		ObjectParameters par = coralWidget.getObject().getParameters();
 
 
@@ -126,7 +163,8 @@ public class CoralPropertiesView
 				AquaWorld.texts.getString("salinity"), SwingConstants.TRAILING);
 		salinityLabel.setToolTipText(AquaWorld.texts
 				.getString("salinityFieldDescription"));
-		moreInfo.add(salinityLabel);
+		d.gridy = 0;
+		panel.add(salinityLabel, d);
 
 
 		String salinityString = par.getSalinityLow() + " - "
@@ -140,15 +178,17 @@ public class CoralPropertiesView
 		salinityField.setEditable(false);
 		salinityField.setBackground(white);
 		salinityLabel.setLabelFor(salinityField);
-		salinityField.setName("Salinity_coral");
-		moreInfo.add(salinityField);
+		salinityField.setName("Salinity_invertebrate");
+		d.gridy = 1;
+		panel.add(salinityField, d);
 
 
 		// PH Size ---------------------------------------
 		JLabel phLabel = new JLabel(AquaWorld.texts.getString("ph"),
 				SwingConstants.TRAILING);
 		phLabel.setToolTipText(AquaWorld.texts.getString("phFieldDescription"));
-		moreInfo.add(phLabel);
+		d.gridy = 2;
+		panel.add(phLabel, d);
 
 		String phString = par.getPHlow() + " - " + par.getPHhigh();
 
@@ -159,15 +199,17 @@ public class CoralPropertiesView
 		phField.setEditable(false);
 		phField.setBackground(white);
 		phLabel.setLabelFor(phField);
-		phField.setName("PH_coral");
-		moreInfo.add(phField);
+		phField.setName("PH_invertebrate");
+		d.gridy = 3;
+		panel.add(phField, d);
 
 
 		// GH Size ---------------------------------------
 		JLabel ghLabel = new JLabel(AquaWorld.texts.getString("gh"),
 				SwingConstants.TRAILING);
 		ghLabel.setToolTipText(AquaWorld.texts.getString("ghFieldDescription"));
-		moreInfo.add(ghLabel);
+		d.gridy = 4;
+		panel.add(ghLabel, d);
 
 		String ghString = par.getGHlow() + " - " + par.getGHhigh();
 
@@ -178,8 +220,9 @@ public class CoralPropertiesView
 		ghField.setEditable(false);
 		ghField.setBackground(white);
 		ghLabel.setLabelFor(ghField);
-		ghField.setName("GH_coral");
-		moreInfo.add(ghField);
+		ghField.setName("GH_invertebrate");
+		d.gridy = 5;
+		panel.add(ghField, d);
 
 
 		// Temperatur Size ---------------------------------------
@@ -187,7 +230,8 @@ public class CoralPropertiesView
 				SwingConstants.TRAILING);
 		tempLabel.setToolTipText(AquaWorld.texts
 				.getString("temperaturFieldDescription"));
-		moreInfo.add(tempLabel);
+		d.gridy = 6;
+		panel.add(tempLabel, d);
 
 		String tempString = par.getTemperatureLow() + " - "
 				+ par.getTemperatureHigh();
@@ -200,15 +244,17 @@ public class CoralPropertiesView
 		tempField.setEditable(false);
 		tempField.setBackground(white);
 		tempLabel.setLabelFor(tempField);
-		tempField.setName("Temperatur_coral");
-		moreInfo.add(tempField);
+		tempField.setName("Temperatur_invertebrate");
+		d.gridy = 7;
+		panel.add(tempField, d);
 
 
 		// KH Size ---------------------------------------
 		JLabel khLabel = new JLabel(AquaWorld.texts.getString("kh"),
 				SwingConstants.TRAILING);
 		khLabel.setToolTipText(AquaWorld.texts.getString("khFieldDescription"));
-		moreInfo.add(khLabel);
+		d.gridy = 8;
+		panel.add(khLabel, d);
 
 		String khString = "";
 
@@ -225,8 +271,9 @@ public class CoralPropertiesView
 		sizeField.setEditable(false);
 		sizeField.setBackground(white);
 		khLabel.setLabelFor(sizeField);
-		sizeField.setName("KH_coral");
-		moreInfo.add(sizeField);
+		sizeField.setName("KH_invertebrate");
+		d.gridy = 9;
+		panel.add(sizeField, d);
 
 
 		// Magnesium Size ---------------------------------------
@@ -234,7 +281,8 @@ public class CoralPropertiesView
 				.getString("magnesium"), SwingConstants.TRAILING);
 		magnesiumLabel.setToolTipText(AquaWorld.texts
 				.getString("magnesiumFieldDescription"));
-		moreInfo.add(magnesiumLabel);
+		d.gridy = 10;
+		panel.add(magnesiumLabel, d);
 
 		String magnesiumString = "";
 
@@ -252,8 +300,9 @@ public class CoralPropertiesView
 		magnesiumField.setEditable(false);
 		magnesiumField.setBackground(white);
 		magnesiumLabel.setLabelFor(magnesiumField);
-		magnesiumField.setName("Magnesium_coral");
-		moreInfo.add(magnesiumField);
+		magnesiumField.setName("Magnesium_invertebrate");
+		d.gridy = 11;
+		panel.add(magnesiumField, d);
 
 
 		// Calsium Size ---------------------------------------
@@ -261,7 +310,8 @@ public class CoralPropertiesView
 				SwingConstants.TRAILING);
 		calciumLabel.setToolTipText(AquaWorld.texts
 				.getString("calciumFieldDescription"));
-		moreInfo.add(calciumLabel);
+		d.gridy = 12;
+		panel.add(calciumLabel, d);
 
 		String calciumString = "";
 
@@ -278,7 +328,14 @@ public class CoralPropertiesView
 		calciumField.setEditable(false);
 		calciumField.setBackground(white);
 		calciumLabel.setLabelFor(calciumField);
-		calciumField.setName("Calcium_coral");
-		moreInfo.add(calciumField);
+		calciumField.setName("Calcium_invertebrate");
+		d.weighty = 1.0; // request any extra vertical space
+		d.weightx = 1.0; // request any extra vertical space
+		d.gridy = 13;
+		panel.add(calciumField, d);
+
+
+
+		return panel;
 	}
 }

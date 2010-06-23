@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS `InvertebrateExclusionList` (
+  `InvertebrateExclusionID` int(11) PRIMARY KEY,
+  `OnlyOneInFamily` tinyint(1) NOT NULL,
+  `OnlyOneInvertebratePerLiter` int(11) DEFAULT NULL,
+  `OnlyCompatibleWith` text,
+  `NotCompatibleWith` text
+);

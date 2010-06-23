@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS `CoralObject` (
+  `CoralObjectID` int(11) NOT NULL,
+  `PopularName` text NOT NULL,
+  `Species` text NOT NULL,
+  `Genus` text,
+  `Description` text,
+  `CoralType` text NOT NULL,
+  `ObjectParametersID` int(11) NOT NULL,
+  PRIMARY KEY (`CoralObjectID`),
+  FOREIGN KEY (ObjectParametersID) REFERENCES ObjectParameters
+)

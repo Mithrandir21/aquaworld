@@ -1,6 +1,8 @@
 package gui.exclusions;
 
 
+import graphics.RoundedBorder;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -8,13 +10,11 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 
 
@@ -22,7 +22,6 @@ import javax.swing.border.Border;
  * TODO - Description NEEDED!
  * 
  * @author Bahram Malaekeh
- * 
  */
 public class FishAdvancedExclusionsPanel extends JPanel
 {
@@ -36,6 +35,7 @@ public class FishAdvancedExclusionsPanel extends JPanel
 	{
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints d = new GridBagConstraints();
+		this.setBackground(Color.WHITE);
 
 
 		d.fill = GridBagConstraints.BOTH;
@@ -66,6 +66,7 @@ public class FishAdvancedExclusionsPanel extends JPanel
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints d = new GridBagConstraints();
 		// panel.setBorder(BorderFactory.createEtchedBorder());
+		panel.setBackground(Color.WHITE);
 
 
 		d.fill = GridBagConstraints.BOTH;
@@ -100,6 +101,7 @@ public class FishAdvancedExclusionsPanel extends JPanel
 		JPanel panel = new JPanel(new GridBagLayout());
 		GridBagConstraints d = new GridBagConstraints();
 		// panel.setBorder(BorderFactory.createEtchedBorder());
+		panel.setOpaque(false);
 
 
 		d.fill = GridBagConstraints.HORIZONTAL;
@@ -117,6 +119,7 @@ public class FishAdvancedExclusionsPanel extends JPanel
 
 
 		JCheckBox groupBox = new JCheckBox("Johans Group");
+		groupBox.setBackground(Color.WHITE);
 		groupBox.addActionListener(lis);
 		panel.add(groupBox, d);
 
@@ -128,7 +131,7 @@ public class FishAdvancedExclusionsPanel extends JPanel
 		d.weighty = 0.2; // request any extra vertical space
 		d.weightx = 0.3; // request any extra vertical space
 		d.anchor = GridBagConstraints.NORTH; // bottom of space
-		d.insets = new Insets(10, 10, 10, 10); // top padding
+		d.insets = new Insets(15, 15, 15, 15); // top padding
 		d.gridwidth = 1; // 2 columns wide
 		// d.gridheight = 1; // 2 columns wide
 		d.gridy = 1;
@@ -136,8 +139,9 @@ public class FishAdvancedExclusionsPanel extends JPanel
 
 
 		int panels = 33;
-		Border border = BorderFactory.createBevelBorder(BevelBorder.RAISED,
-				Color.WHITE, Color.BLACK);
+		// Border border = BorderFactory.createBevelBorder(BevelBorder.RAISED,
+		// Color.WHITE, Color.BLACK);
+		Border border = new RoundedBorder(10, 2.0f, new Color(0, 191, 255));
 
 
 
@@ -156,13 +160,11 @@ public class FishAdvancedExclusionsPanel extends JPanel
 
 			if ( i % 6 == 0 )
 			{
-				border = BorderFactory.createBevelBorder(BevelBorder.LOWERED,
-						Color.WHITE, Color.BLACK);
+				border = new RoundedBorder(10, 7.0f, new Color(30, 144, 255));
 			}
 			else
 			{
-				border = BorderFactory.createBevelBorder(BevelBorder.RAISED,
-						Color.WHITE, Color.BLACK);
+				border = new RoundedBorder(10, 2.0f, new Color(0, 191, 255));
 			}
 
 
@@ -187,6 +189,7 @@ public class FishAdvancedExclusionsPanel extends JPanel
 		panel.setMinimumSize(dim);
 		panel.setMaximumSize(dim);
 		panel.setPreferredSize(dim);
+		panel.setOpaque(false);
 
 
 		d.fill = GridBagConstraints.HORIZONTAL;

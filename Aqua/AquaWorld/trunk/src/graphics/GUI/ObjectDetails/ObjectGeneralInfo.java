@@ -2,6 +2,7 @@ package graphics.GUI.ObjectDetails;
 
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -20,6 +21,9 @@ public class ObjectGeneralInfo extends JPanel
 	{
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints d = new GridBagConstraints();
+		Dimension scrollDim = new Dimension(50, 150);
+		this.setPreferredSize(scrollDim);
+		this.setMinimumSize(scrollDim);
 
 
 		d.fill = GridBagConstraints.BOTH;

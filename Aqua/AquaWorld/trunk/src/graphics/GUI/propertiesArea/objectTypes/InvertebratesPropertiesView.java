@@ -5,11 +5,15 @@ import graphics.AquaWorld;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
+import org.jdesktop.swingx.JXCollapsiblePane;
 
 import widgets.WidgetInvertebrates;
 import coreObjects.ObjectParameters;
@@ -36,9 +40,26 @@ public class InvertebratesPropertiesView
 	/**
 	 * TODO - Description
 	 */
-	public static void getInvertebratesProperties(JPanel panel,
-			WidgetInvertebrates WidInvertebrate, boolean additionalInfo)
+	public static JPanel getInvertebratesProperties(
+			WidgetInvertebrates WidInvertebrate)
 	{
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints d = new GridBagConstraints();
+
+
+		d.fill = GridBagConstraints.BOTH;
+		// d.ipady = 0; // reset to default
+		// d.ipadx = 0; // reset to default
+		// d.weighty = 1.0; // request any extra vertical space
+		// d.weightx = 1.0; // request any extra vertical space
+		// d.anchor = GridBagConstraints.CENTER; // bottom of space
+		// d.insets = new Insets(10, 10, 10, 10); // top padding
+		// d.gridwidth = 1; // 2 columns wide
+		// d.gridheight = 1; // 2 columns wide
+		d.gridx = 0;
+
+
 		// Gets the coral object where the information is
 		invertebrate = WidInvertebrate.getObject();
 
@@ -49,10 +70,12 @@ public class InvertebratesPropertiesView
 				SwingConstants.TRAILING);
 		latinNameLabel.setToolTipText(AquaWorld.texts
 				.getString("invertebrateLatinNameLabelDescrtiption"));
-		panel.add(latinNameLabel);
+		d.gridy = 0;
+		panel.add(latinNameLabel, d);
 
 
-		JTextField latinNameField = new JTextField(invertebrate.getSpeciesName());
+		JTextField latinNameField = new JTextField(invertebrate
+				.getSpeciesName());
 		latinNameField.setToolTipText(AquaWorld.texts
 				.getString("invertebrateLatinNameLabelDescrtiption"));
 		latinNameField.setMaximumSize(textFieldSize);
@@ -61,7 +84,8 @@ public class InvertebratesPropertiesView
 		latinNameField.setBackground(white);
 		latinNameLabel.setLabelFor(latinNameField);
 		latinNameField.setName("Latin_Name_invertebrate");
-		panel.add(latinNameField);
+		d.gridy = 1;
+		panel.add(latinNameField, d);
 
 
 		// Name ---------------------------------------
@@ -70,7 +94,8 @@ public class InvertebratesPropertiesView
 				SwingConstants.TRAILING);
 		nameLabel.setToolTipText(AquaWorld.texts
 				.getString("invertebrateNameLabelDescription"));
-		panel.add(nameLabel);
+		d.gridy = 2;
+		panel.add(nameLabel, d);
 
 
 		JTextField nameField = new JTextField(invertebrate.getPopulareName());
@@ -82,7 +107,8 @@ public class InvertebratesPropertiesView
 		nameField.setBackground(white);
 		nameLabel.setLabelFor(nameField);
 		nameField.setName("Name_invertebrate");
-		panel.add(nameField);
+		d.gridy = 3;
+		panel.add(nameField, d);
 
 
 		// Type ---------------------------------------
@@ -91,7 +117,8 @@ public class InvertebratesPropertiesView
 				SwingConstants.TRAILING);
 		typeLabel.setToolTipText(AquaWorld.texts
 				.getString("invertebrateTypeLabelDescription"));
-		panel.add(typeLabel);
+		d.gridy = 4;
+		panel.add(typeLabel, d);
 
 
 		JTextField typeField = new JTextField(invertebrate
@@ -104,26 +131,41 @@ public class InvertebratesPropertiesView
 		typeField.setBackground(white);
 		typeLabel.setLabelFor(typeField);
 		typeField.setName("Type_invertebrate");
-		panel.add(typeField);
+		d.weighty = 1.0; // request any extra vertical space
+		d.weightx = 1.0; // request any extra vertical space
+		d.gridy = 5;
+		panel.add(typeField, d);
 
 
 
-		if ( additionalInfo )
-		{
-			additionalInfo(panel, WidInvertebrate);
-		}
+
+		return panel;
 	}
 
 
 	/**
 	 * Add additional info to the given JPanel about the given Widget object.
 	 */
-	private static void additionalInfo(JPanel moreInfo,
+	public static JXCollapsiblePane additionalInfo(
 			WidgetInvertebrates invertebrateWidget)
 	{
+		JXCollapsiblePane panel = new JXCollapsiblePane();
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints d = new GridBagConstraints();
+
+
+		d.fill = GridBagConstraints.BOTH;
+		// d.ipady = 0; // reset to default
+		// d.ipadx = 0; // reset to default
+		// d.anchor = GridBagConstraints.CENTER; // bottom of space
+		// d.insets = new Insets(10, 10, 10, 10); // top padding
+		// d.gridwidth = 1; // 2 columns wide
+		// d.gridheight = 1; // 2 columns wide
+		d.gridx = 0;
+
+
 		// The invertebrate parameters
-		ObjectParameters par = invertebrateWidget.getObject()
-				.getParameters();
+		ObjectParameters par = invertebrateWidget.getObject().getParameters();
 
 
 		// Salinity ---------------------------------------
@@ -131,7 +173,8 @@ public class InvertebratesPropertiesView
 				AquaWorld.texts.getString("salinity"), SwingConstants.TRAILING);
 		salinityLabel.setToolTipText(AquaWorld.texts
 				.getString("salinityFieldDescription"));
-		moreInfo.add(salinityLabel);
+		d.gridy = 0;
+		panel.add(salinityLabel, d);
 
 
 		String salinityString = par.getSalinityLow() + " - "
@@ -146,14 +189,16 @@ public class InvertebratesPropertiesView
 		salinityField.setBackground(white);
 		salinityLabel.setLabelFor(salinityField);
 		salinityField.setName("Salinity_invertebrate");
-		moreInfo.add(salinityField);
+		d.gridy = 1;
+		panel.add(salinityField, d);
 
 
 		// PH Size ---------------------------------------
 		JLabel phLabel = new JLabel(AquaWorld.texts.getString("ph"),
 				SwingConstants.TRAILING);
 		phLabel.setToolTipText(AquaWorld.texts.getString("phFieldDescription"));
-		moreInfo.add(phLabel);
+		d.gridy = 2;
+		panel.add(phLabel, d);
 
 		String phString = par.getPHlow() + " - " + par.getPHhigh();
 
@@ -165,14 +210,16 @@ public class InvertebratesPropertiesView
 		phField.setBackground(white);
 		phLabel.setLabelFor(phField);
 		phField.setName("PH_invertebrate");
-		moreInfo.add(phField);
+		d.gridy = 3;
+		panel.add(phField, d);
 
 
 		// GH Size ---------------------------------------
 		JLabel ghLabel = new JLabel(AquaWorld.texts.getString("gh"),
 				SwingConstants.TRAILING);
 		ghLabel.setToolTipText(AquaWorld.texts.getString("ghFieldDescription"));
-		moreInfo.add(ghLabel);
+		d.gridy = 4;
+		panel.add(ghLabel, d);
 
 		String ghString = par.getGHlow() + " - " + par.getGHhigh();
 
@@ -184,7 +231,8 @@ public class InvertebratesPropertiesView
 		ghField.setBackground(white);
 		ghLabel.setLabelFor(ghField);
 		ghField.setName("GH_invertebrate");
-		moreInfo.add(ghField);
+		d.gridy = 5;
+		panel.add(ghField, d);
 
 
 		// Temperatur Size ---------------------------------------
@@ -192,7 +240,8 @@ public class InvertebratesPropertiesView
 				SwingConstants.TRAILING);
 		tempLabel.setToolTipText(AquaWorld.texts
 				.getString("temperaturFieldDescription"));
-		moreInfo.add(tempLabel);
+		d.gridy = 6;
+		panel.add(tempLabel, d);
 
 		String tempString = par.getTemperatureLow() + " - "
 				+ par.getTemperatureHigh();
@@ -206,14 +255,16 @@ public class InvertebratesPropertiesView
 		tempField.setBackground(white);
 		tempLabel.setLabelFor(tempField);
 		tempField.setName("Temperatur_invertebrate");
-		moreInfo.add(tempField);
+		d.gridy = 7;
+		panel.add(tempField, d);
 
 
 		// KH Size ---------------------------------------
 		JLabel khLabel = new JLabel(AquaWorld.texts.getString("kh"),
 				SwingConstants.TRAILING);
 		khLabel.setToolTipText(AquaWorld.texts.getString("khFieldDescription"));
-		moreInfo.add(khLabel);
+		d.gridy = 8;
+		panel.add(khLabel, d);
 
 		String khString = "";
 
@@ -231,7 +282,8 @@ public class InvertebratesPropertiesView
 		sizeField.setBackground(white);
 		khLabel.setLabelFor(sizeField);
 		sizeField.setName("KH_invertebrate");
-		moreInfo.add(sizeField);
+		d.gridy = 9;
+		panel.add(sizeField, d);
 
 
 		// Magnesium Size ---------------------------------------
@@ -239,7 +291,8 @@ public class InvertebratesPropertiesView
 				.getString("magnesium"), SwingConstants.TRAILING);
 		magnesiumLabel.setToolTipText(AquaWorld.texts
 				.getString("magnesiumFieldDescription"));
-		moreInfo.add(magnesiumLabel);
+		d.gridy = 10;
+		panel.add(magnesiumLabel, d);
 
 		String magnesiumString = "";
 
@@ -258,7 +311,8 @@ public class InvertebratesPropertiesView
 		magnesiumField.setBackground(white);
 		magnesiumLabel.setLabelFor(magnesiumField);
 		magnesiumField.setName("Magnesium_invertebrate");
-		moreInfo.add(magnesiumField);
+		d.gridy = 11;
+		panel.add(magnesiumField, d);
 
 
 		// Calsium Size ---------------------------------------
@@ -266,7 +320,8 @@ public class InvertebratesPropertiesView
 				SwingConstants.TRAILING);
 		calciumLabel.setToolTipText(AquaWorld.texts
 				.getString("calciumFieldDescription"));
-		moreInfo.add(calciumLabel);
+		d.gridy = 12;
+		panel.add(calciumLabel, d);
 
 		String calciumString = "";
 
@@ -284,6 +339,13 @@ public class InvertebratesPropertiesView
 		calciumField.setBackground(white);
 		calciumLabel.setLabelFor(calciumField);
 		calciumField.setName("Calcium_invertebrate");
-		moreInfo.add(calciumField);
+		d.weighty = 1.0; // request any extra vertical space
+		d.weightx = 1.0; // request any extra vertical space
+		d.gridy = 13;
+		panel.add(calciumField, d);
+
+
+
+		return panel;
 	}
 }

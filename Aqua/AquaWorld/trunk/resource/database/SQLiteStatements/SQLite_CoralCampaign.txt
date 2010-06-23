@@ -1,0 +1,7 @@
+CREATE TABLE `CoralCampaign` (
+  `CoralCampaignID` int(11) NOT NULL,
+  `CampaignDescription` text NOT NULL,
+  `CoralObjectID` int(11) NOT NULL,
+  PRIMARY KEY (`CoralCampaignID`),
+  FOREIGN KEY (CoralObjectID) REFERENCES CoralObject
+)

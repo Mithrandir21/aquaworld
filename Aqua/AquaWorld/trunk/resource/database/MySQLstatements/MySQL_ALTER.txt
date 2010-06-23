@@ -1,3 +1,11 @@
 ALTER TABLE `FishObject`
   ADD CONSTRAINT `FishExclusion` FOREIGN KEY (`FishExclusionID`) REFERENCES `FishExclusionList` (`FishExclusionID`),
-  ADD CONSTRAINT `FishParameters` FOREIGN KEY (`FishParametersID`) REFERENCES `ObjectParameters` (`ObjectParametersID`);
+  ADD CONSTRAINT `FishParameters` FOREIGN KEY (`ObjectParametersID`) REFERENCES `ObjectParameters` (`ObjectParametersID`)  
+ALTER TABLE `CoralObject`
+  ADD CONSTRAINT `CoralParameters` FOREIGN KEY (`ObjectParametersID`) REFERENCES `ObjectParameters` (`ObjectParametersID`);
+  
+ALTER TABLE `InvertebrateObject`
+  ADD CONSTRAINT `InvertebrateParameters` FOREIGN KEY (`ObjectParametersID`) REFERENCES `ObjectParameters` (`ObjectParametersID`);
+  
+ALTER TABLE `FishCampaign`
+  ADD CONSTRAINT `FishCampaignFishID` FOREIGN KEY (`FishObjectID`) REFERENCES `FishObject` (`FishObjectID`);

@@ -1,0 +1,7 @@
+CREATE TABLE `InvertebrateCampaign` (
+  `InvertebrateCampaignID` int(11) NOT NULL,
+  `CampaignDescription` text NOT NULL,
+  `InvertebrateObjectID` int(11) NOT NULL,
+  PRIMARY KEY (`InvertebrateCampaignID`),
+  FOREIGN KEY (InvertebrateObjectID) REFERENCES InvertebrateObject
+)

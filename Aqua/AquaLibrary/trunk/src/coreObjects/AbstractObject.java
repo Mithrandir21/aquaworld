@@ -52,13 +52,13 @@ public abstract class AbstractObject
 	/**
 	 * TODO - Description NEEDED!
 	 * 
-	 * @param latinName
+	 * @param speciesName
 	 * @param par
 	 */
-	public AbstractObject(int id, String latinName, ObjectParameters par)
+	public AbstractObject(int id, String speciesName, ObjectParameters par)
 	{
 		this.objectID = id;
-		this.speciesName = latinName;
+		this.speciesName = speciesName;
 		this.parameters = par;
 	}
 
@@ -70,7 +70,7 @@ public abstract class AbstractObject
 	 * 
 	 * @return the name
 	 */
-	public int getFishID()
+	public int getObjectID()
 	{
 		return objectID;
 	}
@@ -93,7 +93,7 @@ public abstract class AbstractObject
 	/**
 	 * TODO - Description NEEDED!
 	 * 
-	 * @return the speciesNamespeciesName
+	 * @return the speciesName
 	 */
 	public String getSpeciesName()
 	{
@@ -191,7 +191,7 @@ public abstract class AbstractObject
 	}
 
 
-	
+
 	/**
 	 * Sets the {@link ObjectParameters} belonging to the object.
 	 */

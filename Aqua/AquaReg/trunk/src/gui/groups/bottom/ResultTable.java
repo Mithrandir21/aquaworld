@@ -16,6 +16,7 @@ import coreObjects.Coral.CoralObject.CoralTypes;
 import coreObjects.Fish.FishExclusions;
 import coreObjects.Fish.FishObject;
 import coreObjects.Fish.FishObject.FishGender;
+import coreObjects.Invertebrates.InvertebrateExclusions;
 import coreObjects.Invertebrates.InvertebratesObject;
 import coreObjects.Invertebrates.InvertebratesObject.InvertebratesTypes;
 
@@ -136,7 +137,8 @@ public class ResultTable extends JPanel
 		double[] calcium = { 1300, 1500 };
 
 		// ---------------------------------------------------
-		ObjectParameters parameter = new ObjectParameters(00001, sal, ph, gh, temp);
+		ObjectParameters parameter = new ObjectParameters(00001, sal, ph, gh,
+				temp);
 		parameter.setKh(kh);
 		parameter.setMagnesium(magnesium);
 		parameter.setCalcium(calcium);
@@ -148,16 +150,17 @@ public class ResultTable extends JPanel
 
 		// ---------------------------------------------------
 
-		CoralObject coral = new CoralObject(00002, "CoralNavn", "Coralius",
-				"...Coral", CoralTypes.LargePolipedCoral, parameter);
+		CoralObject coral = new CoralObject(00002, "Coralius", "...Coral",
+				CoralTypes.LargePolipedCoral, parameter);
 		coral.setGenusName("Acropora");
 
 
+		InvertebrateExclusions invEx = new InvertebrateExclusions(957);
 		// --------------------------------------------------
 
 		InvertebratesObject invertebrate = new InvertebratesObject(00003,
-				"Iven", "Ivenius", "...Invertebrate",
-				InvertebratesTypes.Anemones, parameter);
+				"Ivenius", "...Invertebrate", InvertebratesTypes.Anemones,
+				parameter, invEx);
 		invertebrate.setGenusName("InvGenus");
 
 
@@ -168,36 +171,6 @@ public class ResultTable extends JPanel
 
 		// String[][] data = DataRetrival.getObjectsData(objects);
 
-
-		// /**
-		// * sample data column names
-		// */
-		// String[] columnNames = { "Latin Name", "Salinity", "PH", "GH",
-		// "Temperature", "KH", "Magnesium", "Calcium", "Space Needed",
-		// "Others Sizes" };
-		//
-		//
-		// JXTable table = new JXTable();
-		// DefaultTableModel model = new DefaultTableModel(data, columnNames);
-		// table.setAutoResizeMode(JXTable.AUTO_RESIZE_OFF);
-		// Font f = table.getFont();
-		// table.setFont(f.deriveFont(Font.BOLD));
-		// table.setEditable(false);
-		//
-		// table.setModel(model);
-		// Color gridColor = Color.BLACK;
-		// int rowHeight = 25;
-		// // if not on 1.6 comment this out
-		// table.setFillsViewportHeight(true);
-		//
-		// table.setGridColor(gridColor);
-		//
-		// table.setRowHeight(rowHeight);
-
-		// Dimension size = new Dimension(1000, 1);
-		// table.setPreferredScrollableViewportSize(size);
-		// table.setPreferredSize(size);
-		// table.setMinimumSize(size);
 
 
 		// JScrollPane scroll = new JScrollPane(table);

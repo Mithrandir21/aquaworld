@@ -1,0 +1,7 @@
+CREATE TABLE `FishCampaign` (
+  `FishCampaignID` int(11) NOT NULL,
+  `CampaignDescription` text NOT NULL,
+  `FishObjectID` int(11) NOT NULL,
+  PRIMARY KEY (`FishCampaignID`),
+  FOREIGN KEY (FishObjectID) REFERENCES FishObject
+)

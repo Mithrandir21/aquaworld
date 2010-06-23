@@ -1,7 +1,6 @@
 package coreObjects.Fish;
 
 
-import java.util.Random;
 
 
 /**
@@ -65,7 +64,7 @@ public class FishExclusions
 
 
 	/**
-	 * How many liters of water can hold one female from this fishes family.
+	 * How many liters of water can hold one fish from this fishes family.
 	 */
 	private int onlyOneFishPerLiter;
 
@@ -91,7 +90,6 @@ public class FishExclusions
 	/**
 	 * The objects that are compatible with this fish. The syntax for the string
 	 * must be ID's separated by a comma.
-	 * 
 	 * If this has any content(is not ""), the variable notCompatibleWith will be NULL.
 	 */
 	private String onlyCompatibleWith = "";
@@ -100,7 +98,6 @@ public class FishExclusions
 	/**
 	 * The objects that are NOT compatible with this fish. The syntax for the
 	 * string must be ID's separated by a comma.
-	 * 
 	 * If this has any content(is not ""), the variable onlyCompatibleWith
 	 * will be NULL.
 	 */
@@ -129,21 +126,20 @@ public class FishExclusions
 
 
 	/**
-	 * A default constructor for this class that also produces the classes ID.
+	 * A default constructor for this class (NO ID is set).
 	 */
 	public FishExclusions()
 	{
-		// Default seed comes from system time.
-		Random r = new Random();
-
-		FishExclusionID = r.nextInt();
+		// // Default seed comes from system time.
+		// Random r = new Random();
+		//
+		// FishExclusionID = r.nextInt();
 	}
 
 
 
 	/**
 	 * A constructor for this class that sets the ID for the class.
-	 * 
 	 * <i>(Should normally be used when initiating a new instance of this class
 	 * from previously saved instances, like from a database or from
 	 * imports.)</i>
@@ -347,7 +343,8 @@ public class FishExclusions
 	/**
 	 * @return the reefSafeString
 	 */
-	public String getReefSafeString() {
+	public String getReefSafeString()
+	{
 		return reefSafeString;
 	}
 
@@ -537,9 +534,11 @@ public class FishExclusions
 
 
 	/**
-	 * @param reefSafeString the reefSafeString to set
+	 * @param reefSafeString
+	 *            the reefSafeString to set
 	 */
-	public void setReefSafeString(String reefSafeString) {
+	public void setReefSafeString(String reefSafeString)
+	{
 		this.reefSafeString = reefSafeString;
 	}
 

@@ -42,12 +42,12 @@ public class ObjectDetailsFrame extends JFrame
 
 		d.fill = GridBagConstraints.BOTH;
 		// d.ipady = 0; // reset to default
-		d.weighty = 0.25; // request any extra vertical space
+		// d.weighty = 0.25; // request any extra vertical space
 		d.weightx = 1.0; // request any extra vertical space
 		d.anchor = GridBagConstraints.NORTH; // bottom of space
 		// d.insets = new Insets(10, 10, 10, 10); // top padding
 		d.gridwidth = 1; // 2 columns wide
-		d.gridy = 0; // third row
+		d.gridy = 0;
 		d.gridx = 0;
 
 
@@ -68,7 +68,8 @@ public class ObjectDetailsFrame extends JFrame
 		double[] calcium = { 1300, 1500 };
 
 		// ---------------------------------------------------
-		ObjectParameters parameter = new ObjectParameters(00001, sal, ph, gh, temp);
+		ObjectParameters parameter = new ObjectParameters(00001, sal, ph, gh,
+				temp);
 		parameter.setKh(kh);
 		parameter.setMagnesium(magnesium);
 		parameter.setCalcium(calcium);
@@ -114,7 +115,7 @@ public class ObjectDetailsFrame extends JFrame
 		this.setPreferredSize(new Dimension(700, 600));
 		this.setMinimumSize(new Dimension(600, 500));
 		this.setVisible(true);
-		this.pack();
+		// this.pack();
 	}
 
 

@@ -19,6 +19,7 @@ import coreObjects.Coral.CoralObject.CoralTypes;
 import coreObjects.Fish.FishExclusions;
 import coreObjects.Fish.FishObject;
 import coreObjects.Fish.FishObject.FishGender;
+import coreObjects.Invertebrates.InvertebrateExclusions;
 import coreObjects.Invertebrates.InvertebratesObject;
 import coreObjects.Invertebrates.InvertebratesObject.InvertebratesTypes;
 
@@ -64,7 +65,8 @@ public class ResultsListPanel extends JPanel
 		double[] calcium = { 1300, 1500 };
 
 		// ---------------------------------------------------
-		ObjectParameters parameter = new ObjectParameters(00001, sal, ph, gh, temp);
+		ObjectParameters parameter = new ObjectParameters(00001, sal, ph, gh,
+				temp);
 		parameter.setKh(kh);
 		parameter.setMagnesium(magnesium);
 		parameter.setCalcium(calcium);
@@ -76,16 +78,17 @@ public class ResultsListPanel extends JPanel
 
 		// ---------------------------------------------------
 
-		CoralObject coral = new CoralObject(00002, "CoralNavn", "Coralius",
-				"...Coral", CoralTypes.LargePolipedCoral, parameter);
+		CoralObject coral = new CoralObject(00002, "Coralius", "...Coral",
+				CoralTypes.LargePolipedCoral, parameter);
 		coral.setGenusName("Acropora");
 
 
+		InvertebrateExclusions invEx = new InvertebrateExclusions(957);
 		// --------------------------------------------------
 
 		InvertebratesObject invertebrate = new InvertebratesObject(00003,
-				"Iven", "Ivenius", "...Invertebrate",
-				InvertebratesTypes.Anemones, parameter);
+				"Ivenius", "...Invertebrate", InvertebratesTypes.Anemones,
+				parameter, invEx);
 		invertebrate.setGenusName("InvGenus");
 
 
