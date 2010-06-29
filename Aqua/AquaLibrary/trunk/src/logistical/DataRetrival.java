@@ -13,27 +13,35 @@ public class DataRetrival
 	 */
 	public static String[][] getObjectsData(AbstractObject[] objects)
 	{
-		String[][] data = new String[objects.length][10];
-
-		for ( int i = 0; i < objects.length; i++ )
+		if ( objects != null )
 		{
-			data[i][0] = objects[i].toString();
-			data[i][1] = getRangeString(objects[i].getParameters()
-					.getSalinity());
-			data[i][2] = getRangeString(objects[i].getParameters().getPH());
-			data[i][3] = getRangeString(objects[i].getParameters().getGH());
-			data[i][4] = getRangeString(objects[i].getParameters().getKh());
-			data[i][5] = getRangeString(objects[i].getParameters()
-					.getTemperature());
-			data[i][6] = getRangeString(objects[i].getParameters()
-					.getMagnesium());
-			data[i][7] = getRangeString(objects[i].getParameters().getCalcium());
-			data[i][8] = "" + objects[i].getParameters().getSpaceNeeded();
-			data[i][9] = getRangeString(objects[i].getParameters()
-					.getOthersSize());
+			String[][] data = new String[objects.length][12];
+
+			for ( int i = 0; i < objects.length; i++ )
+			{
+				data[i][0] = getValidTextString(objects[i].getGenusName());
+				data[i][1] = getValidTextString(objects[i].getSpeciesName());
+				data[i][2] = getValidTextString(objects[i].getPopulareName());
+				data[i][3] = getRangeString(objects[i].getParameters()
+						.getSalinity());
+				data[i][4] = getRangeString(objects[i].getParameters().getPH());
+				data[i][5] = getRangeString(objects[i].getParameters().getGH());
+				data[i][6] = getRangeString(objects[i].getParameters().getKh());
+				data[i][7] = getRangeString(objects[i].getParameters()
+						.getTemperature());
+				data[i][8] = getRangeString(objects[i].getParameters()
+						.getMagnesium());
+				data[i][9] = getRangeString(objects[i].getParameters()
+						.getCalcium());
+				data[i][10] = "" + objects[i].getParameters().getSpaceNeeded();
+				data[i][11] = getRangeString(objects[i].getParameters()
+						.getOthersSize());
+			}
+
+			return data;
 		}
 
-		return data;
+		return null;
 	}
 
 
@@ -57,6 +65,26 @@ public class DataRetrival
 		data[9] = getRangeString(objects.getParameters().getOthersSize());
 
 		return data;
+	}
+
+
+
+
+	/**
+	 * TODO - Description
+	 * 
+	 */
+	public static String getValidTextString(String text)
+	{
+		if ( text != null && !(text.equals(""))
+				&& !(text.equalsIgnoreCase("null")) )
+		{
+			return text;
+		}
+		else
+		{
+			return "-";
+		}
 	}
 
 
@@ -218,4 +246,24 @@ public class DataRetrival
 		return shortDesc;
 	}
 
+
+
+	/**
+	 * TODO - Description
+	 * 
+	 */
+	public static String getToStringObject(String genus, String species)
+	{
+		String ret = "";
+
+		if ( genus != null && !(genus.equalsIgnoreCase(""))
+				&& !(genus.equalsIgnoreCase("null")) )
+		{
+			ret = getShortendGenus(genus) + " ";
+		}
+
+		ret = ret + species;
+
+		return ret;
+	}
 }

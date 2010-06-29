@@ -1,66 +1,196 @@
 package gui.groups.bottom;
 
 
+import gui.editing.AquaJList;
+import gui.groups.GroupsFrame;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JScrollPane;
+
+import coreObjects.AbstractObject;
 
 
 public class GroupBottomPanel extends JPanel implements ActionListener
 {
+	public static JScrollPane search;
+
+	private static JPanel rsTable;
+
+	private JPanel listPanel;
+
+	private static boolean searchingMode = false;
+
+
+
 	/**
 	 * TODO - Description NEEDED!
 	 */
 	public GroupBottomPanel()
 	{
+
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints d = new GridBagConstraints();
+		// this.setBorder(BorderFactory.createEtchedBorder());
 
 
-		d.fill = GridBagConstraints.NONE;
+		d.fill = GridBagConstraints.BOTH;
 		// d.ipady = 0; // reset to default
-		// d.weighty = 0.7; // request any extra vertical space
-		// d.weightx = 0.7; // request any extra vertical space
+		d.weighty = 1.0; // request any extra vertical space
+		d.weightx = 0.2; // request any extra vertical space
+		d.anchor = GridBagConstraints.WEST; // bottom of space
+		// d.insets = new Insets(10, 10, 10, 10); // top padding
+		d.gridwidth = 1; // 2 columns wide
+		d.gridy = 0; // third row
+		d.gridx = 0;
+
+		listPanel = ResultsListPanel(this, null);
+		this.add(listPanel, d);
+
+
+
+		d.weighty = 1.0; // request any extra vertical space
+		d.weightx = 1.0; // request any extra vertical space
+		d.gridx = 1;
+		this.add(GroupBottomSearchResultsPanel(this), d);
+
+
+		Dimension size = new Dimension(1000, 400);
+		this.setPreferredSize(size);
+		this.setMinimumSize(size);
+	}
+
+
+
+	/**
+	 * TODO - Description NEEDED!
+	 */
+	public JPanel ResultsListPanel(ActionListener lis, AbstractObject[] data)
+	{
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints d = new GridBagConstraints();
+		panel.setBorder(BorderFactory.createEtchedBorder());
+		Dimension dim = new Dimension(220, 0);
+		panel.setPreferredSize(dim);
+		panel.setMinimumSize(dim);
+
+
+
+		JScrollPane scroll = new JScrollPane();
+		scroll
+				.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scroll
+				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+
+
+		d.fill = GridBagConstraints.BOTH;
+		// d.ipady = 0; // reset to default
+		// d.weighty = 1.0; // request any extra vertical space
+		// d.weightx = 1.0; // request any extra vertical space
+		d.anchor = GridBagConstraints.NORTH; // bottom of space
+		d.insets = new Insets(10, 10, 10, 10); // top padding
+		d.gridwidth = 1; // 2 columns wide
+		d.gridy = 0; // third row
+		d.gridx = 0;
+
+
+		JButton searchButton = new JButton("Search");
+		searchButton.setActionCommand("searchToggle");
+		searchButton.addActionListener(lis);
+		panel.add(searchButton, d);
+
+
+		JPanel listPanel = new JPanel();
+		GroupsFrame.groupObjectsList = new AquaJList(data);
+		// list.setCellRenderer(new CustomAquaObjectListRenderer());
+		listPanel.setLayout(new GridLayout());
+
+		listPanel.add(GroupsFrame.groupObjectsList);
+
+
+		scroll.setViewportView(listPanel);
+		d.fill = GridBagConstraints.BOTH;
+		// d.ipady = 0; // reset to default
+		d.weighty = 1.0; // request any extra vertical space
+		d.weightx = 1.0; // request any extra vertical space
+		d.anchor = GridBagConstraints.WEST; // bottom of space
+		d.insets = new Insets(0, 0, 0, 0); // top padding
+		d.gridwidth = 1; // 2 columns wide
+		d.gridy = 1; // second row
+		d.gridx = 0;
+
+		panel.add(scroll, d);
+
+
+		return panel;
+	}
+
+
+
+	public static void changeMode()
+	{
+		searchingMode = !searchingMode;
+
+		search.setVisible(searchingMode);
+		rsTable.setVisible(!searchingMode);
+	}
+
+
+
+
+	public JPanel GroupBottomSearchResultsPanel(ActionListener lis)
+	{
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints d = new GridBagConstraints();
+
+		d.fill = GridBagConstraints.BOTH;
+		// d.ipady = 0; // reset to default
+		d.weighty = 1.0; // request any extra vertical space
+		d.weightx = 1.0; // request any extra vertical space
 		d.anchor = GridBagConstraints.NORTH; // bottom of space
 		// d.insets = new Insets(0, 80, 80, 80); // top padding
 		d.gridwidth = 1; // 2 columns wide
 		d.gridy = 0; // third row
 		d.gridx = 0;
 
-
-		GroupSearchPanel search = new GroupSearchPanel(this);
-		Dimension searchSize = new Dimension(760, 530);
-		search.setPreferredSize(searchSize);
-		search.setMinimumSize(searchSize);
-		search.setMaximumSize(searchSize);
+		JPanel searchPanel = new GroupSearchPanel();
+		search = new JScrollPane(searchPanel);
 		search.setVisible(false);
-		this.add(search, d);
+		panel.add(search, d);
 
 
-
+		rsTable = new ResultTable();
+		rsTable.setVisible(true);
 		d.fill = GridBagConstraints.BOTH;
 		// d.ipady = 0; // reset to default
 		d.weighty = 1.0; // request any extra vertical space
 		d.weightx = 1.0; // request any extra vertical space
-		d.anchor = GridBagConstraints.CENTER; // bottom of space
-		d.insets = new Insets(0, 0, 0, 0); // top padding
+		d.anchor = GridBagConstraints.NORTH; // bottom of space
+		// d.insets = new Insets(0, 80, 80, 80); // top padding
 		d.gridwidth = 1; // 2 columns wide
 		d.gridy = 0; // third row
 		d.gridx = 0;
+		panel.add(rsTable, d);
 
 
-		JPanel results = new GroupResultsPanel(this);
-		// results.setVisible(false);
-		this.add(results, d);
+		return panel;
 	}
+
+
+
+
 
 	@Override
 	public void actionPerformed(ActionEvent e)
@@ -68,212 +198,10 @@ public class GroupBottomPanel extends JPanel implements ActionListener
 		if ( e.getSource() instanceof JButton )
 		{
 			String action = e.getActionCommand();
-
-			if ( action.equalsIgnoreCase("Reset") )
+			if ( action.equalsIgnoreCase("searchToggle") )
 			{
-				GroupSearchPanel search = new GroupSearchPanel(this);
-				Dimension searchSize = new Dimension(760, 530);
-				search.setPreferredSize(searchSize);
-				search.setMinimumSize(searchSize);
-				search.setMaximumSize(searchSize);
-
-				this.remove(0);
-
-				this.add(search, 0);
-
-				this.revalidate();
-				this.repaint();
+				changeMode();
 			}
-			else if ( action.equalsIgnoreCase("Search") )
-			{
-
-			}
-		}
-		else if ( e.getSource() instanceof JCheckBox )
-		{
-			String action = e.getActionCommand();
-
-			if ( action.equalsIgnoreCase("Exclude_Alone") )
-			{
-				GroupSearchPanel p1 = (GroupSearchPanel) this.getComponent(0);
-				
-				for ( int i = 0; i < p1.getComponentCount(); i++ )
-				{
-					if ( p1.getComponent(i) instanceof JPanel )
-					{
-						JPanel p2 = (JPanel) p1.getComponent(i);
-
-						for ( int j = 0; j < p2.getComponentCount(); j++ )
-						{
-							if ( p2.getComponent(j) instanceof JPanel )
-							{
-								JPanel p3 = (JPanel) p2.getComponent(j);
-
-								for ( int k = 0; k < p3.getComponentCount(); k++ )
-								{
-									if ( p3.getComponent(k) instanceof JCheckBox )
-									{
-										JCheckBox box = (JCheckBox) p3
-												.getComponent(k);
-
-										if ( box.getActionCommand()
-												.equalsIgnoreCase("Alone") )
-										{
-											box.setEnabled(!(box.isEnabled()));
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			else if ( action.equalsIgnoreCase("Exclude_Only With Family") )
-			{
-				GroupSearchPanel p1 = (GroupSearchPanel) this.getComponent(0);
-
-				for ( int i = 0; i < p1.getComponentCount(); i++ )
-				{
-					if ( p1.getComponent(i) instanceof JPanel )
-					{
-						JPanel p2 = (JPanel) p1.getComponent(i);
-
-						for ( int j = 0; j < p2.getComponentCount(); j++ )
-						{
-							if ( p2.getComponent(j) instanceof JPanel )
-							{
-								JPanel p3 = (JPanel) p2.getComponent(j);
-
-								for ( int k = 0; k < p3.getComponentCount(); k++ )
-								{
-									if ( p3.getComponent(k) instanceof JCheckBox )
-									{
-										JCheckBox box = (JCheckBox) p3
-												.getComponent(k);
-
-										if ( box.getActionCommand()
-												.equalsIgnoreCase(
-														"Only With Family") )
-										{
-											box.setEnabled(!(box.isEnabled()));
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			else if ( action.equalsIgnoreCase("Exclude_1 of Family") )
-			{
-				GroupSearchPanel p1 = (GroupSearchPanel) this.getComponent(0);
-
-				for ( int i = 0; i < p1.getComponentCount(); i++ )
-				{
-					if ( p1.getComponent(i) instanceof JPanel )
-					{
-						JPanel p2 = (JPanel) p1.getComponent(i);
-
-						for ( int j = 0; j < p2.getComponentCount(); j++ )
-						{
-							if ( p2.getComponent(j) instanceof JPanel )
-							{
-								JPanel p3 = (JPanel) p2.getComponent(j);
-
-								for ( int k = 0; k < p3.getComponentCount(); k++ )
-								{
-									if ( p3.getComponent(k) instanceof JCheckBox )
-									{
-										JCheckBox box = (JCheckBox) p3
-												.getComponent(k);
-
-										if ( box.getActionCommand()
-												.equalsIgnoreCase("1 of Family") )
-										{
-											box.setEnabled(!(box.isEnabled()));
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			else if ( action.equalsIgnoreCase("Exclude_1 Male Only") )
-			{
-				GroupSearchPanel p1 = (GroupSearchPanel) this.getComponent(0);
-
-				for ( int i = 0; i < p1.getComponentCount(); i++ )
-				{
-					if ( p1.getComponent(i) instanceof JPanel )
-					{
-						JPanel p2 = (JPanel) p1.getComponent(i);
-
-						for ( int j = 0; j < p2.getComponentCount(); j++ )
-						{
-							if ( p2.getComponent(j) instanceof JPanel )
-							{
-								JPanel p3 = (JPanel) p2.getComponent(j);
-
-								for ( int k = 0; k < p3.getComponentCount(); k++ )
-								{
-									if ( p3.getComponent(k) instanceof JCheckBox )
-									{
-										JCheckBox box = (JCheckBox) p3
-												.getComponent(k);
-
-										if ( box.getActionCommand()
-												.equalsIgnoreCase("1 Male Only") )
-										{
-											box.setEnabled(!(box.isEnabled()));
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			else if ( action.equalsIgnoreCase("Exclude_1 Female Only") )
-			{
-				GroupSearchPanel p1 = (GroupSearchPanel) this.getComponent(0);
-
-				for ( int i = 0; i < p1.getComponentCount(); i++ )
-				{
-					if ( p1.getComponent(i) instanceof JPanel )
-					{
-						JPanel p2 = (JPanel) p1.getComponent(i);
-
-						for ( int j = 0; j < p2.getComponentCount(); j++ )
-						{
-							if ( p2.getComponent(j) instanceof JPanel )
-							{
-								JPanel p3 = (JPanel) p2.getComponent(j);
-
-								for ( int k = 0; k < p3.getComponentCount(); k++ )
-								{
-									if ( p3.getComponent(k) instanceof JCheckBox )
-									{
-										JCheckBox box = (JCheckBox) p3
-												.getComponent(k);
-
-										if ( box.getActionCommand()
-												.equalsIgnoreCase(
-														"1 Female Only") )
-										{
-											box.setEnabled(!(box.isEnabled()));
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		else if ( e.getSource() instanceof JTextField )
-		{
-
 		}
 	}
 }

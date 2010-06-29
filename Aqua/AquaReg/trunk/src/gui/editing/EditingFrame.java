@@ -1,6 +1,8 @@
 package gui.editing;
 
 
+import gui.views.EditingView;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -8,9 +10,23 @@ import java.awt.GridBagLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 
+import coreObjects.AbstractObject;
+
 
 public class EditingFrame extends JFrame
 {
+	/**
+	 * The object being shown.
+	 */
+	public static AbstractObject editingObject;
+
+
+	/**
+	 * 
+	 */
+	public static EditingView editingObjectView = new EditingView();
+
+
 	public EditingFrame()
 	{
 		super("Editing");
@@ -49,9 +65,9 @@ public class EditingFrame extends JFrame
 
 
 
-		EditingPanel info = new EditingPanel();
-		info.setBorder(BorderFactory.createEtchedBorder());
-		this.add(info, d);
+
+		editingObjectView.setBorder(BorderFactory.createEtchedBorder());
+		this.add(editingObjectView, d);
 
 
 

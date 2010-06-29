@@ -20,9 +20,6 @@ public class AquaReg extends JFrame
 {
 	public static TabbedPanel tabPanel;
 
-	// The connection to the database.
-	public static Connection connection;
-
 
 	public static void main(String[] args)
 	{
@@ -74,6 +71,7 @@ public class AquaReg extends JFrame
 
 	public void verifyConnection()
 	{
+		Connection connection = null;
 		// load the sqlite-JDBC driver using the current class loader
 		try
 		{
@@ -119,20 +117,21 @@ public class AquaReg extends JFrame
 
 	public static Connection getConnectionToDB()
 	{
+		Connection connection = null;
 		try
 		{
-			// Class.forName("org.sqlite.JDBC");
+			Class.forName("org.sqlite.JDBC");
 			Class.forName("com.mysql.jdbc.Driver");
 
 
-			String url = "jdbc:mysql://db4free.net:3306/aquaworld";
-			String user = "mithrandir21";
-			String pass = "sauron21";
-			// create a database connection
-			connection = DriverManager.getConnection(url, user, pass);
+//			String url = "jdbc:mysql://db4free.net:3306/aquaworld";
+//			String user = "mithrandir21";
+//			String pass = "sauron21";
+//			// create a database connection
+//			connection = DriverManager.getConnection(url, user, pass);
 
+			 connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
 			return connection;
-			// connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
 		}
 		catch ( ClassNotFoundException e1 )
 		{
@@ -148,5 +147,21 @@ public class AquaReg extends JFrame
 
 
 		return null;
+	}
+
+
+
+	public static void closeConnection(Connection con)
+	{
+		try
+		{
+			if ( con != null )
+				con.close();
+		}
+		catch ( SQLException e )
+		{
+			// connection close failed.
+			System.err.println(e);
+		}
 	}
 }

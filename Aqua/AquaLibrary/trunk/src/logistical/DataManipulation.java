@@ -136,4 +136,23 @@ public class DataManipulation
 		return result.toString();
 	}
 
+
+
+	/**
+	 * TODO - Description
+	 * 
+	 */
+	public static int[] stringArraytoIntArray(String[] array) throws Exception
+	{
+		if ( array != null )
+		{
+			int intarray[] = new int[array.length];
+			for ( int i = 0; i < array.length; i++ )
+			{
+				intarray[i] = Integer.parseInt(array[i]);
+			}
+			return intarray;
+		}
+		return null;
+	}
 }

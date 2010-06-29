@@ -5,8 +5,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import logistical.DataManipulation;
+import logistical.DataRetrival;
 import coreObjects.AbstractObject;
 import coreObjects.ObjectParameters;
 import coreObjects.Coral.CoralObject;
@@ -17,6 +19,7 @@ import coreObjects.Fish.FishObject.FishGender;
 import coreObjects.Invertebrates.InvertebrateExclusions;
 import coreObjects.Invertebrates.InvertebratesObject;
 import coreObjects.Invertebrates.InvertebratesObject.InvertebratesTypes;
+import exceptions.MoreTheOneResultObject;
 import exceptions.ObjectAlreadyInDatabaseException;
 import exceptions.ObjectIDnotFoundInDatabaseException;
 
@@ -103,6 +106,18 @@ public class SQLfunctions
 
 
 	/**
+	 * Attempts to remove the the row in the FishExclusionList table with the given ID.
+	 */
+	public static boolean databaseRemoveInvertebrateExclusionID(Connection con,
+			int ID)
+	{
+		return databaseRemoveFromTableWithID(con,
+				invertebrateExclusionListTable, "InvertebrateExclusionID", ID);
+	}
+
+
+
+	/**
 	 * This function removes a row with the given Unique ID(int)
 	 * from the table with the given name.
 	 * 
@@ -141,6 +156,7 @@ public class SQLfunctions
 	}
 
 
+
 	/**
 	 * This function attempts to create a new ObjectGroup in the given
 	 * database with the given name and description.
@@ -149,37 +165,149 @@ public class SQLfunctions
 	 * It also returns false if there is a {@link SQLException}.
 	 */
 	public static boolean databaseAddGroup(Connection con, String groupName,
-			String groupDescription)
+			String groupDescription, int ID)
 	{
 		if ( con != null && groupName != "" && groupDescription != "" )
 		{
-			String parameters = "INSERT INTO " + objectGroupTable + " VALUES ("
-					+ null + ", '" + groupName // The name of the group
-					+ "', '" + groupDescription // The description of the group
-					+ "', " + null // FishObjectsString
-					+ ", " + null // CoralObjectsString
-					+ ", " + null // InvertebrateObjectsString
-					+ ");";
+			// If a group does not exist with the same name as the given name
+			if ( databaseGroupDoesNotExists(con, groupName) )
+			{
+				String parameters = "";
+				if ( ID > 0 )
+				{
+					// If a group does not exist with the same name as the given name
+					if ( databaseGroupDoesNotExists(con, ID) )
+					{
+						parameters = "INSERT INTO " + objectGroupTable
+								+ " VALUES (" + ID + ", '" // The ID of the group
+								+ groupName // The name of the group
+								+ "', '" + groupDescription // The description of the group
+								+ "', " + null // FishObjectsString
+								+ ", " + null // CoralObjectsString
+								+ ", " + null // InvertebrateObjectsString
+								+ ");";
+					}
+				}
+				else
+				{
+					parameters = "INSERT INTO " + objectGroupTable
+							+ " VALUES (" + null + ", '" + groupName // The name of the group
+							+ "', '" + groupDescription // The description of the group
+							+ "', " + null // FishObjectsString
+							+ ", " + null // CoralObjectsString
+							+ ", " + null // InvertebrateObjectsString
+							+ ");";
+				}
+
+				try
+				{
+					Statement statement = con.createStatement();
+					statement.setQueryTimeout(30); // set timeout to 30 sec.
+
+					statement.executeUpdate("BEGIN;");
+					statement.executeUpdate(parameters);
+					statement.executeUpdate("COMMIT;");
+
+					return true;
+				}
+				catch ( SQLException e )
+				{
+					// if the error message is "out of memory",
+					// it probably means no database file is found
+					System.err.println(e.getMessage());
+				}
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * This function attempts to get description(String) of the group with the given name.
+	 * 
+	 * Returns null if no group is found.
+	 * 
+	 * @throws ObjectIDnotFoundInDatabaseException
+	 */
+	public static String databaseGetGroupDescription(Connection con,
+			String groupName) throws MoreTheOneResultObject
+	{
+		if ( con != null )
+		{
+			// If a group does exist with the same name as the given name
+			if ( !(databaseGroupDoesNotExists(con, groupName)) )
+			{
+				try
+				{
+					Statement stmt = con.createStatement();
+
+					String query = "SELECT * " + "FROM " + objectGroupTable
+							+ " WHERE GroupName='" + groupName + "'";
+
+					ResultSet rs = stmt.executeQuery(query);
+
+					onlyOneResultSetRow(con, groupName, query);
+
+					while ( rs.next() )
+					{
+						return rs.getString("Description");
+					}
+				}
+				catch ( SQLException e )
+				{
+					// if the error message is "out of memory",
+					// it probably means no database file is found
+					System.err.println(e.getMessage());
+				}
+			}
+		}
+
+		return null;
+	}
+
+
+
+	/**
+	 * This function attempts to get all the group names in the object group table.
+	 */
+	public static String[] databaseGetGroupNames(Connection con)
+	{
+		if ( con != null )
+		{
+			ArrayList<String> groupNames = new ArrayList<String>();
+			String[] stringArray = new String[1];
 
 			try
 			{
-				Statement statement = con.createStatement();
-				statement.setQueryTimeout(30); // set timeout to 30 sec.
+				Statement stmt = con.createStatement();
 
-				statement.executeUpdate("BEGIN;");
-				statement.executeUpdate(parameters);
-				statement.executeUpdate("COMMIT;");
+				String query = "SELECT GroupName " + "FROM " + objectGroupTable;
+
+				ResultSet rs = stmt.executeQuery(query);
+
+
+				while ( rs.next() )
+				{
+					String name = rs.getString("GroupName");
+					if ( name != "" )
+					{
+						groupNames.add(name);
+					}
+				}
 			}
 			catch ( SQLException e )
 			{
 				// if the error message is "out of memory",
 				// it probably means no database file is found
 				System.err.println(e.getMessage());
-				return false;
 			}
+
+			stringArray = groupNames.toArray(stringArray);
+			return stringArray;
 		}
 
-		return true;
+		return null;
 	}
 
 
@@ -272,6 +400,772 @@ public class SQLfunctions
 
 		return false;
 	}
+
+
+
+	/**
+	 * This function attempts to add the given ID(int) to the ObjectGroup in the database with the
+	 * same name as the given group name. The group type to add the ID to is determined by the given class.
+	 * 
+	 * If either the given connection, group name object class is empty false will be returned. Also if the ID is lower then 1.
+	 * It also returns false if there is a {@link SQLException}.
+	 */
+	public static boolean databaseAddObjectIDToGroup(Connection con,
+			String groupName, Class objClass, int objID)
+	{
+		if ( con != null && groupName != "" && objClass != null && objID > 0 )
+		{
+			ResultSet rs;
+			String[] oldIDs;
+			String[] newIDs;
+			String oldIDsString = "";
+			String newIDsString = "";
+
+			String groupType = "";
+
+			if ( objClass.equals(CoralObject.class) )
+			{
+				groupType = "GroupCoralObjects";
+			}
+			else if ( objClass.equals(InvertebratesObject.class) )
+			{
+				groupType = "GroupInvertebrateObjects";
+			}
+			else if ( objClass.equals(FishObject.class) )
+			{
+				groupType = "GroupFishObjects";
+			}
+
+			if ( groupType != "" )
+			{
+				try
+				{
+					// Statement stmt = con.createStatement(
+					// ResultSet.TYPE_SCROLL_INSENSITIVE,
+					// ResultSet.CONCUR_READ_ONLY);
+					Statement stmt = con.createStatement();
+
+					String query = "SELECT * " + "FROM " + objectGroupTable
+							+ " WHERE GroupName='" + groupName + "'";
+
+					rs = stmt.executeQuery(query);
+					while ( rs.next() )
+					{
+						// Delimiter
+						String delimiter = ", ";
+
+						// Gets all the ID's in the field as a string
+						oldIDsString = rs.getString(groupType);
+
+						// Given string will be split by the argument delimiter provided
+						oldIDs = DataManipulation.stringToArray(oldIDsString,
+								delimiter);
+
+						// Adds the ID of the given object to the array
+						newIDs = DataManipulation.placeObjectIDinSortedArray(
+								objID, oldIDs);
+
+						// Creates a new IDs string with the new ID
+						newIDsString = DataManipulation.arrayToString(newIDs,
+								delimiter);
+					}
+
+					String updateString = "UPDATE " + objectGroupTable
+							+ " SET " + groupType + " = '" + newIDsString
+							+ "' WHERE GroupName='" + groupName + "'";
+
+					stmt.executeUpdate("BEGIN;");
+					stmt.executeUpdate(updateString);
+					stmt.executeUpdate("COMMIT;");
+
+					return true;
+				}
+				catch ( SQLException e )
+				{
+					// if the error message is "out of memory",
+					// it probably means no database file is found
+					System.err.println(e.getMessage());
+					return false;
+				}
+			}
+		}
+
+		return false;
+	}
+
+
+
+	/**
+	 * TODO - Description
+	 * 
+	 */
+	public static int[] databaseGetGroupObjectIDs(Connection con,
+			String groupName, Class objectType)
+	{
+		if ( con != null && groupName != "" && objectType != null )
+		{
+			// If a group does exist with the same name as the given name
+			if ( !(databaseGroupDoesNotExists(con, groupName)) )
+			{
+				ResultSet rs;
+				String[] IDs = null;
+				String IDsString = "";
+
+				String groupType = "";
+
+				if ( objectType.equals(CoralObject.class) )
+				{
+					groupType = "GroupCoralObjects";
+				}
+				else if ( objectType.equals(InvertebratesObject.class) )
+				{
+					groupType = "GroupInvertebrateObjects";
+				}
+				else if ( objectType.equals(FishObject.class) )
+				{
+					groupType = "GroupFishObjects";
+				}
+
+				if ( groupType != "" )
+				{
+					try
+					{
+						// Statement stmt = con.createStatement(
+						// ResultSet.TYPE_SCROLL_INSENSITIVE,
+						// ResultSet.CONCUR_READ_ONLY);
+						Statement stmt = con.createStatement();
+
+						String query = "SELECT * " + "FROM " + objectGroupTable
+								+ " WHERE GroupName='" + groupName + "'";
+
+						rs = stmt.executeQuery(query);
+						while ( rs.next() )
+						{
+							// Delimiter
+							String delimiter = ", ";
+
+							// Gets all the ID's in the field as a string
+							IDsString = rs.getString(groupType);
+
+							// Given string will be split by the argument delimiter provided
+							IDs = DataManipulation.stringToArray(IDsString,
+									delimiter);
+						}
+
+						return DataManipulation.stringArraytoIntArray(IDs);
+					}
+					catch ( SQLException e )
+					{
+						// if the error message is "out of memory",
+						// it probably means no database file is found
+						System.err.println(e.getMessage());
+					}
+					catch ( Exception e )
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
+		return null;
+	}
+
+
+
+	/**
+	 * TODO - Description
+	 * 
+	 */
+	public static int[] databaseGetGroupObjectIDs(Connection con,
+			String groupName)
+	{
+		if ( con != null && groupName != "" )
+		{
+			// If a group does exist with the same name as the given name
+			if ( !(databaseGroupDoesNotExists(con, groupName)) )
+			{
+				ResultSet rs;
+				String[] fishIDs = null;
+				String fishIDsString = "";
+				String[] coralIDs = null;
+				String coralIDsString = "";
+				String[] invertebrateIDs = null;
+				String invertebrateIDsString = "";
+
+				try
+				{
+					// Statement stmt = con.createStatement(
+					// ResultSet.TYPE_SCROLL_INSENSITIVE,
+					// ResultSet.CONCUR_READ_ONLY);
+					Statement stmt = con.createStatement();
+
+					String query = "SELECT * " + "FROM " + objectGroupTable
+							+ " WHERE GroupName='" + groupName + "'";
+
+					rs = stmt.executeQuery(query);
+					while ( rs.next() )
+					{
+						// Delimiter
+						String delimiter = ", ";
+
+						// Gets all the ID's in the field as a string
+						fishIDsString = rs.getString("GroupFishObjects");
+
+						// Given string will be split by the argument delimiter provided
+						fishIDs = DataManipulation.stringToArray(fishIDsString,
+								delimiter);
+
+						// Gets all the ID's in the field as a string
+						coralIDsString = rs.getString("GroupCoralObjects");
+
+						// Given string will be split by the argument delimiter provided
+						coralIDs = DataManipulation.stringToArray(
+								coralIDsString, delimiter);
+
+						// Gets all the ID's in the field as a string
+						invertebrateIDsString = rs
+								.getString("GroupInvertebrateObjects");
+
+						// Given string will be split by the argument delimiter provided
+						invertebrateIDs = DataManipulation.stringToArray(
+								invertebrateIDsString, delimiter);
+					}
+
+					int newArrayLenght = 0;
+
+					if ( fishIDs != null && fishIDs.length > 0 )
+					{
+						newArrayLenght = newArrayLenght + fishIDs.length;
+					}
+					else
+					{
+						fishIDs = new String[0];
+					}
+
+					if ( coralIDs != null && coralIDs.length > 0 )
+					{
+						newArrayLenght = newArrayLenght + coralIDs.length;
+					}
+					else
+					{
+						coralIDs = new String[0];
+					}
+
+					if ( invertebrateIDs != null && invertebrateIDs.length > 0 )
+					{
+						newArrayLenght = newArrayLenght
+								+ invertebrateIDs.length;
+					}
+					else
+					{
+						invertebrateIDs = new String[0];
+					}
+
+					String[] allObjects = new String[newArrayLenght];
+
+					System.arraycopy(fishIDs, 0, allObjects, 0, fishIDs.length);
+					System.arraycopy(coralIDs, 0, allObjects, fishIDs.length,
+							coralIDs.length);
+					System.arraycopy(invertebrateIDs, 0, allObjects,
+							(fishIDs.length + coralIDs.length),
+							invertebrateIDs.length);
+
+
+
+					return DataManipulation.stringArraytoIntArray(allObjects);
+				}
+				catch ( SQLException e )
+				{
+					// if the error message is "out of memory",
+					// it probably means no database file is found
+					System.err.println(e.getMessage());
+				}
+				catch ( Exception e )
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return null;
+	}
+
+
+
+	/**
+	 * TODO - Description
+	 * 
+	 */
+	public static int databaseGetNumberOfObjectsInGroup(Connection con,
+			String groupName)
+	{
+		if ( con != null && groupName != "" )
+		{
+			// If a group does exist with the same name as the given name
+			if ( !(databaseGroupDoesNotExists(con, groupName)) )
+			{
+				ResultSet rs;
+				String[] fishIDs = null;
+				String fishIDsString = "";
+				String[] coralIDs = null;
+				String coralIDsString = "";
+				String[] invertebrateIDs = null;
+				String invertebrateIDsString = "";
+
+				try
+				{
+					// Statement stmt = con.createStatement(
+					// ResultSet.TYPE_SCROLL_INSENSITIVE,
+					// ResultSet.CONCUR_READ_ONLY);
+					Statement stmt = con.createStatement();
+
+					String query = "SELECT * " + "FROM " + objectGroupTable
+							+ " WHERE GroupName='" + groupName + "'";
+
+					rs = stmt.executeQuery(query);
+					while ( rs.next() )
+					{
+						// Delimiter
+						String delimiter = ", ";
+
+						// Gets all the ID's in the field as a string
+						fishIDsString = rs.getString("GroupFishObjects");
+
+						// Given string will be split by the argument delimiter provided
+						fishIDs = DataManipulation.stringToArray(fishIDsString,
+								delimiter);
+
+						// Gets all the ID's in the field as a string
+						coralIDsString = rs.getString("GroupCoralObjects");
+
+						// Given string will be split by the argument delimiter provided
+						coralIDs = DataManipulation.stringToArray(
+								coralIDsString, delimiter);
+
+						// Gets all the ID's in the field as a string
+						invertebrateIDsString = rs
+								.getString("GroupInvertebrateObjects");
+
+						// Given string will be split by the argument delimiter provided
+						invertebrateIDs = DataManipulation.stringToArray(
+								invertebrateIDsString, delimiter);
+					}
+
+					int lenght = 0;
+
+					if ( fishIDs != null && fishIDs.length > 0 )
+					{
+						lenght += fishIDs.length;
+					}
+
+					if ( coralIDs != null && coralIDs.length > 0 )
+					{
+						lenght += coralIDs.length;
+					}
+
+					if ( invertebrateIDs != null && invertebrateIDs.length > 0 )
+					{
+						lenght += invertebrateIDs.length;
+					}
+
+
+					return lenght;
+				}
+				catch ( SQLException e )
+				{
+					// if the error message is "out of memory",
+					// it probably means no database file is found
+					System.err.println(e.getMessage());
+				}
+				catch ( Exception e )
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return -1;
+	}
+
+
+	/**
+	 * TODO - Description
+	 * 
+	 */
+	public static AbstractObject[] databaseGetObjectsFromGroup(Connection con,
+			String groupName, Class objectType)
+	{
+		if ( con != null && groupName != "" && objectType != null )
+		{
+			// If a group does exist with the same name as the given name
+			if ( !(databaseGroupDoesNotExists(con, groupName)) )
+			{
+				ResultSet rs;
+
+				// Gets the IDs of the objects contained in the group, depending on the objectType
+				int[] IDs = databaseGetGroupObjectIDs(con, groupName,
+						objectType);
+
+				if ( IDs != null && IDs.length > 0 )
+				{
+					String objectTable = "";
+					String columnName = "";
+
+					if ( objectType.equals(CoralObject.class) )
+					{
+						objectTable = coralObjectTable;
+						columnName = "CoralObjectID";
+					}
+					else if ( objectType.equals(InvertebratesObject.class) )
+					{
+						objectTable = invertebrateObjectTable;
+						columnName = "InvertebrateObjectID";
+					}
+					else if ( objectType.equals(FishObject.class) )
+					{
+						objectTable = fishObjectTable;
+						columnName = "FishObjectID";
+					}
+
+
+					if ( objectTable != "" && columnName != "" )
+					{
+						try
+						{
+							ArrayList<AbstractObject> objects = new ArrayList<AbstractObject>();
+
+							// Statement stmt = con.createStatement(
+							// ResultSet.TYPE_SCROLL_INSENSITIVE,
+							// ResultSet.CONCUR_READ_ONLY);
+							Statement stmt = con.createStatement();
+
+							String whereIDinString = IDs[0] + "";
+							for ( int i = 1; i < IDs.length; i++ )
+							{
+
+								whereIDinString += "," + IDs[i];
+							}
+
+							String query = "SELECT * " + "FROM " + objectTable
+									+ " WHERE " + columnName + " IN ("
+									+ whereIDinString + ")";
+
+							rs = stmt.executeQuery(query);
+
+							while ( rs.next() )
+							{
+								AbstractObject tempObj = getObjectFromResultSet(
+										con, rs, objectType);
+
+								if ( tempObj != null )
+								{
+									objects.add(tempObj);
+								}
+							}
+
+							return objects.toArray(new AbstractObject[0]);
+						}
+						catch ( SQLException e )
+						{
+							// if the error message is "out of memory",
+							// it probably means no database file is found
+							System.err.println(e.getMessage());
+						}
+						catch ( Exception e )
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * TODO - Description
+	 * 
+	 */
+	public static AbstractObject[] databaseGetObjectsFromGroup(Connection con,
+			String groupName)
+	{
+		if ( con != null && groupName != "" )
+		{
+			// If a group does exist with the same name as the given name
+			if ( !(databaseGroupDoesNotExists(con, groupName)) )
+			{
+				ResultSet rs;
+
+				// Gets the IDs of the objects contained in the group, depending on the objectType
+				int[] IDs = databaseGetGroupObjectIDs(con, groupName);
+
+				if ( IDs != null && IDs.length > 0 )
+				{
+					try
+					{
+						ArrayList<AbstractObject> objects = new ArrayList<AbstractObject>();
+
+						// Statement stmt = con.createStatement(
+						// ResultSet.TYPE_SCROLL_INSENSITIVE,
+						// ResultSet.CONCUR_READ_ONLY);
+						Statement stmt = con.createStatement();
+
+						String whereIDinString = IDs[0] + "";
+						for ( int i = 1; i < IDs.length; i++ )
+						{
+							whereIDinString += "," + IDs[i];
+						}
+
+						Class[] classes = { CoralObject.class,
+								InvertebratesObject.class, FishObject.class };
+
+						String[] objectTables = { coralObjectTable,
+								invertebrateObjectTable, fishObjectTable };
+
+						String[] columnNames = { "CoralObjectID",
+								"InvertebrateObjectID", "FishObjectID" };
+
+
+						for ( int i = 0; i < 3; i++ )
+						{
+							Class objectType = classes[i];
+							String objectTable = objectTables[i];
+							String columnName = columnNames[i];
+
+							// long time = System.nanoTime();
+
+							String query = "SELECT * " + "FROM " + objectTable
+									+ " WHERE " + columnName + " IN ("
+									+ whereIDinString + ")";
+
+							rs = stmt.executeQuery(query);
+							//
+							// time = System.nanoTime() - time;
+							// System.out.println(query + "  -  " + time);
+
+							while ( rs.next() )
+							{
+								AbstractObject tempObj = getObjectFromResultSet(
+										con, rs, objectType);
+
+								if ( tempObj != null )
+								{
+									objects.add(tempObj);
+								}
+							}
+						}
+
+						return objects.toArray(new AbstractObject[0]);
+					}
+					catch ( SQLException e )
+					{
+						// if the error message is "out of memory",
+						// it probably means no database file is found
+						System.err.println(e.getMessage());
+					}
+					catch ( Exception e )
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					// }
+				}
+			}
+		}
+
+		return null;
+	}
+
+
+
+
+	/**
+	 * TODO - Description
+	 * 
+	 * If either the given connection, group name object class is empty null will be returned.
+	 * It also returns null if there is a {@link SQLException}.
+	 */
+	public static AbstractObject[] databaseGetObjectsFromTable(Connection con,
+			Class objectType)
+	{
+		if ( con != null && objectType != null )
+		{
+			ResultSet rs;
+
+			String objectTable = "";
+			String columnName = "";
+
+			if ( objectType.equals(CoralObject.class) )
+			{
+				objectTable = coralObjectTable;
+				columnName = "CoralObjectID";
+			}
+			else if ( objectType.equals(InvertebratesObject.class) )
+			{
+				objectTable = invertebrateObjectTable;
+				columnName = "InvertebrateObjectID";
+			}
+			else if ( objectType.equals(FishObject.class) )
+			{
+				objectTable = fishObjectTable;
+				columnName = "FishObjectID";
+			}
+
+
+			if ( objectTable != "" && columnName != "" )
+			{
+				try
+				{
+					ArrayList<AbstractObject> objects = new ArrayList<AbstractObject>();
+
+					// Statement stmt = con.createStatement(
+					// ResultSet.TYPE_SCROLL_INSENSITIVE,
+					// ResultSet.CONCUR_READ_ONLY);
+					Statement stmt = con.createStatement();
+
+					String query = "SELECT * " + "FROM " + objectTable;
+
+					rs = stmt.executeQuery(query);
+
+					while ( rs.next() )
+					{
+						AbstractObject tempObj = getObjectFromResultSet(con,
+								rs, objectType);
+
+						if ( tempObj != null )
+						{
+							objects.add(tempObj);
+						}
+					}
+
+					return objects.toArray(new AbstractObject[0]);
+				}
+				catch ( SQLException e )
+				{
+					// if the error message is "out of memory",
+					// it probably means no database file is found
+					System.err.println(e.getMessage());
+				}
+				catch ( Exception e )
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return null;
+	}
+
+
+
+
+	/**
+	 * TODO - Description
+	 * 
+	 * If either the given connection, group name object class is empty null will be returned.
+	 * It also returns null if there is a {@link SQLException}.
+	 */
+	public static String[] databaseGetObjectNamesFromTable(Connection con,
+			Class objectType)
+	{
+		if ( con != null && objectType != null )
+		{
+			ResultSet rs;
+
+			String objectTable = "";
+			String columnName = "";
+
+			if ( objectType.equals(CoralObject.class) )
+			{
+				objectTable = coralObjectTable;
+				columnName = "CoralObjectID";
+			}
+			else if ( objectType.equals(InvertebratesObject.class) )
+			{
+				objectTable = invertebrateObjectTable;
+				columnName = "InvertebrateObjectID";
+			}
+			else if ( objectType.equals(FishObject.class) )
+			{
+				objectTable = fishObjectTable;
+				columnName = "FishObjectID";
+			}
+
+
+			if ( objectTable != "" && columnName != "" )
+			{
+				try
+				{
+					ArrayList<String> objectNames = new ArrayList<String>();
+
+					// Statement stmt = con.createStatement(
+					// ResultSet.TYPE_SCROLL_INSENSITIVE,
+					// ResultSet.CONCUR_READ_ONLY);
+					Statement stmt = con.createStatement();
+
+					String query = "SELECT * " + "FROM " + objectTable;
+
+					rs = stmt.executeQuery(query);
+
+					while ( rs.next() )
+					{
+						if ( objectType.equals(CoralObject.class) )
+						{
+							String genusString = rs.getString("Genus");
+							String speciesString = rs.getString("Species");
+
+							objectNames.add(DataRetrival.getToStringObject(
+									genusString, speciesString));
+						}
+						else if ( objectType.equals(InvertebratesObject.class) )
+						{
+							String genusString = rs.getString("Genus");
+							String speciesString = rs.getString("Species");
+
+							objectNames.add(DataRetrival.getToStringObject(
+									genusString, speciesString));
+						}
+						else if ( objectType.equals(FishObject.class) )
+						{
+							String genusString = rs.getString("Genus");
+							String speciesString = rs.getString("Species");
+
+							objectNames.add(DataRetrival.getToStringObject(
+									genusString, speciesString));
+						}
+					}
+
+					return objectNames.toArray(new String[0]);
+				}
+				catch ( SQLException e )
+				{
+					// if the error message is "out of memory",
+					// it probably means no database file is found
+					System.err.println(e.getMessage());
+				}
+				catch ( Exception e )
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return null;
+	}
+
+
+
+
+
 
 	/**
 	 * This function deletes all the tables inside the given connection.,
@@ -515,6 +1409,61 @@ public class SQLfunctions
 	}
 
 
+	/**
+	 * This function adds a new empty row into the InvertebrateExclusionList table in the database.
+	 * This function should mainly be used when wanting to create a new {@link InvertebrateExclusions} for a fish.
+	 * 
+	 * If the given connection is empty -1 will be returned.
+	 * It also returns -1 if there is a {@link SQLException}.
+	 */
+	public static int databaseAddNewEmptyInvertebrateExclusionsList(
+			Connection con)
+	{
+		int inExID = -1;
+
+		if ( con != null )
+		{
+			String fishExclusiona = "INSERT INTO "
+					+ invertebrateExclusionListTable + " VALUES (" + null + // No Id is set. The ID will be returned.
+					", " + 0 + // Only one in Species
+					", " + 0 + // Only one fish per liter
+					", '" + null + // Only compatible with
+					"', '" + null + // Not compatible with fish
+					"');";
+
+
+			try
+			{
+				Statement statement = con.createStatement();
+				statement.setQueryTimeout(30); // set timeout to 30 sec.
+
+				statement.executeUpdate("BEGIN;");
+
+				statement.executeUpdate(fishExclusiona,
+						Statement.RETURN_GENERATED_KEYS);
+				ResultSet rs = statement.getGeneratedKeys();
+
+				statement.executeUpdate("COMMIT;");
+
+				if ( rs.next() )
+				{
+					inExID = rs.getInt(1);
+				}
+			}
+			catch ( SQLException e )
+			{
+				// if the error message is "out of memory",
+				// it probably means no database file is found
+				System.err.println(e.getMessage());
+				return -1;
+			}
+		}
+
+		return inExID;
+	}
+
+
+
 
 	/**
 	 * This function adds a new empty row into the InvertebrateExclusionList table in the database.
@@ -737,9 +1686,11 @@ public class SQLfunctions
 	 * 
 	 * If the given connection or given coralID is smaller then 1 null will be returned.
 	 * It also returns false if there is a {@link SQLException}.
+	 * 
+	 * @throws ObjectIDnotFoundInDatabaseException
 	 */
 	public static CoralObject databaseGetCoralObject(Connection con, int coralID)
-			throws ObjectIDnotFoundInDatabaseException
+			throws MoreTheOneResultObject, ObjectIDnotFoundInDatabaseException
 	{
 		CoralObject obj = null;
 
@@ -764,24 +1715,9 @@ public class SQLfunctions
 
 				while ( rs.next() )
 				{
-					objParameter = databaseGetParameter(con, rs
-							.getInt("ObjectParametersID"));
-
-					if ( objParameter != null )
-					{
-						obj = new CoralObject(rs.getInt("CoralObjectID"), rs
-								.getString("Species"), rs
-								.getString("Description"), CoralTypes
-								.valueOf(rs.getString("CoralType")),
-								objParameter);
-					}
-					else
-					{
-						System.out.println(objectParametersTable + " is null"
-								+ objParameter == null);
-					}
-
-				}// end while loop
+					obj = (CoralObject) getObjectFromResultSet(con, rs,
+							CoralObject.class);
+				}
 			}
 			catch ( SQLException e )
 			{
@@ -804,16 +1740,13 @@ public class SQLfunctions
 	 * It also returns false if there is a {@link SQLException}.
 	 */
 	public static InvertebratesObject databaseGetInvertebrateObject(
-			Connection con, int invID)
-			throws ObjectIDnotFoundInDatabaseException
+			Connection con, int invID) throws MoreTheOneResultObject,
+			ObjectIDnotFoundInDatabaseException
 	{
 		InvertebratesObject obj = null;
 
 		if ( con != null && invID > 0 )
 		{
-			ObjectParameters objParameter;
-			InvertebrateExclusions invEx;
-
 			try
 			{
 				// Statement stmt = con.createStatement(
@@ -833,30 +1766,9 @@ public class SQLfunctions
 
 				while ( rs.next() )
 				{
-					objParameter = databaseGetParameter(con, rs
-							.getInt("ObjectParametersID"));
-
-					invEx = databaseGetInvertebrateExclusions(con, rs
-							.getInt("InvertebrateExclusionID"));
-
-					if ( objParameter != null && invEx != null )
-					{
-						obj = new InvertebratesObject(rs
-								.getInt("InvertebrateObjectID"), rs
-								.getString("Species"), rs
-								.getString("Description"), InvertebratesTypes
-								.valueOf(rs.getString("InvertebratesType")),
-								objParameter, invEx);
-					}
-					else
-					{
-
-						System.out.println(objectParametersTable + " is null"
-								+ objParameter == null);
-						System.out.println(invertebrateExclusionListTable
-								+ " is null" + invEx == null);
-					}
-				}// end while loop
+					obj = (InvertebratesObject) getObjectFromResultSet(con, rs,
+							InvertebratesObject.class);
+				}
 			}
 			catch ( SQLException e )
 			{
@@ -871,7 +1783,6 @@ public class SQLfunctions
 
 
 
-
 	/**
 	 * This function attempts to retrieve a {@link InvertebratesObject} from with the given ID from the database.
 	 * 
@@ -883,7 +1794,7 @@ public class SQLfunctions
 	 * @throws ObjectIDnotFoundInDatabaseException
 	 */
 	public static FishObject databaseGetFishObject(Connection con, int fishID)
-			throws ObjectIDnotFoundInDatabaseException
+			throws MoreTheOneResultObject, ObjectIDnotFoundInDatabaseException
 	{
 		FishObject obj = null;
 
@@ -910,31 +1821,9 @@ public class SQLfunctions
 
 				while ( rs.next() )
 				{
-					objParameter = databaseGetParameter(con, rs
-							.getInt("ObjectParametersID"));
-
-					fishEx = databaseGetFishExclusions(con, rs
-							.getInt("FishExclusionID"));
-
-					if ( objParameter != null && fishEx != null )
-					{
-
-						obj = new FishObject(rs.getInt("FishObjectID"), rs
-								.getString("Species"), rs
-								.getString("Description"), FishGender.UNISEX,
-								rs.getDouble("Size"), objParameter, fishEx);
-
-					}
-					else
-					{
-						System.out.println(objectParametersTable + " is null"
-								+ objParameter == null);
-						System.out.println(fishExclusionListTable + " is null"
-								+ fishEx == null);
-						// return null;
-					}
-
-				}// end while loop
+					obj = (FishObject) getObjectFromResultSet(con, rs,
+							FishObject.class);
+				}
 
 			}
 			catch ( SQLException e )
@@ -949,6 +1838,204 @@ public class SQLfunctions
 
 
 
+
+
+	/**
+	 * This function attempts to retrieve a {@link InvertebratesObject} from with the given ID from the database.
+	 * 
+	 * If no row is found in the database a {@link ObjectIDnotFoundInDatabaseException} exception is thrown.
+	 * 
+	 * If the given connection or given invID is smaller then 1 null will be returned.
+	 * It also returns false if there is a {@link SQLException}.
+	 * 
+	 * @throws ObjectIDnotFoundInDatabaseException
+	 */
+	public static AbstractObject databaseGetObject(Connection con, int ID,
+			Class objectType) throws MoreTheOneResultObject,
+			ObjectIDnotFoundInDatabaseException
+	{
+		if ( con != null && ID > 0 && objectType != null )
+		{
+			ResultSet rs;
+
+			String objectTable = "";
+			String columnName = "";
+
+			if ( objectType.equals(CoralObject.class) )
+			{
+				objectTable = coralObjectTable;
+				columnName = "CoralObjectID";
+			}
+			else if ( objectType.equals(InvertebratesObject.class) )
+			{
+				objectTable = invertebrateObjectTable;
+				columnName = "InvertebrateObjectID";
+			}
+			else if ( objectType.equals(FishObject.class) )
+			{
+				objectTable = fishObjectTable;
+				columnName = "FishObjectID";
+			}
+
+
+			if ( objectTable != "" && columnName != "" )
+			{
+				try
+				{
+					// Statement stmt = con.createStatement(
+					// ResultSet.TYPE_SCROLL_INSENSITIVE,
+					// ResultSet.CONCUR_READ_ONLY);
+					Statement stmt = con.createStatement();
+
+					String query = "SELECT * " + "FROM " + objectTable
+							+ " WHERE " + columnName + "=" + ID;
+
+					rs = stmt.executeQuery(query);
+
+
+					// // Confirms only one row
+					onlyOneResultSetRow(con, ID, query);
+
+
+					while ( rs.next() )
+					{
+						return getObjectFromResultSet(con, rs, objectType);
+					}
+				}
+				catch ( SQLException e )
+				{
+					// if the error message is "out of memory",
+					// it probably means no database file is found
+					System.err.println(e.getMessage());
+				}
+				catch ( Exception e )
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return null;
+	}
+
+
+
+
+	/**
+	 * TODO - Description
+	 * 
+	 */
+	private static AbstractObject getObjectFromResultSet(Connection con,
+			ResultSet rs, Class objectType) throws MoreTheOneResultObject,
+			ObjectIDnotFoundInDatabaseException, SQLException
+	{
+
+		// If the class type is a CoralObject
+		if ( objectType.equals(CoralObject.class) )
+		{
+			// Gets the objects parameters
+			ObjectParameters objParameter = databaseGetParameter(con, rs
+					.getInt("ObjectParametersID"));
+
+			// If the parameters object is not null
+			if ( objParameter != null )
+			{
+				// Created a new object
+				CoralObject obj = new CoralObject(rs.getInt("CoralObjectID"),
+						rs.getString("Species"), rs.getString("Description"),
+						CoralTypes.valueOf(rs.getString("CoralType")),
+						objParameter);
+
+				// Adds additional fields
+				obj.setGenusName(rs.getString("Genus"));
+				obj.setPopulareName(rs.getString("PopularName"));
+
+				return obj;
+			}
+			else
+			{
+				System.out.println(objectParametersTable + " is null"
+						+ objParameter == null);
+			}
+		}
+		// If the class type is a InvertebrateObject
+		else if ( objectType.equals(InvertebratesObject.class) )
+		{
+			// Gets the objects parameters
+			ObjectParameters objParameter = databaseGetParameter(con, rs
+					.getInt("ObjectParametersID"));
+
+			// Gets the objects exclusions
+			InvertebrateExclusions invEx = databaseGetInvertebrateExclusions(
+					con, rs.getInt("InvertebrateExclusionID"));
+
+			// If the parameters object and exclusions are not null
+			if ( objParameter != null && invEx != null )
+			{
+				// Created a new object
+				InvertebratesObject obj = new InvertebratesObject(rs
+						.getInt("InvertebrateObjectID"), rs
+						.getString("Species"), rs.getString("Description"),
+						InvertebratesTypes.valueOf(rs
+								.getString("InvertebratesType")), objParameter,
+						invEx);
+
+				// Adds additional fields
+				obj.setGenusName(rs.getString("Genus"));
+				obj.setPopulareName(rs.getString("PopularName"));
+
+				return obj;
+			}
+			else
+			{
+
+				System.out.println(objectParametersTable + " is null"
+						+ objParameter == null);
+				System.out.println(invertebrateExclusionListTable + " is null"
+						+ invEx == null);
+			}
+		}
+		// If the class type is a FishObject
+		else if ( objectType.equals(FishObject.class) )
+		{
+			// Gets the objects parameters
+			ObjectParameters objParameter = databaseGetParameter(con, rs
+					.getInt("ObjectParametersID"));
+
+			// Gets the objects exclusions
+			FishExclusions fishEx = databaseGetFishExclusions(con, rs
+					.getInt("FishExclusionID"));
+
+			// If the parameters object and exclusions are not null
+			if ( objParameter != null && fishEx != null )
+			{
+				// Created a new object
+				FishObject obj = new FishObject(rs.getInt("FishObjectID"), rs
+						.getString("Species"), rs.getString("Description"),
+						FishGender.UNISEX, rs.getDouble("Size"), objParameter,
+						fishEx);
+
+				// Adds additional fields
+				obj.setGenusName(rs.getString("Genus"));
+				obj.setPopulareName(rs.getString("PopularName"));
+
+				return obj;
+			}
+			else
+			{
+				System.out.println(objectParametersTable + " is null"
+						+ objParameter == null);
+				System.out
+						.println(fishExclusionListTable + " is null" + fishEx == null);
+			}
+		}
+
+
+		return null;
+	}
+
+
 	/**
 	 * This function attempts to retrieve a {@link ObjectParameters} with the given ID from the database.
 	 * 
@@ -958,7 +2045,8 @@ public class SQLfunctions
 	 * @throws ObjectIDnotFoundInDatabaseException
 	 */
 	public static ObjectParameters databaseGetParameter(Connection con,
-			int parID) throws ObjectIDnotFoundInDatabaseException
+			int parID) throws MoreTheOneResultObject,
+			ObjectIDnotFoundInDatabaseException
 	{
 		ObjectParameters objParameter = null;
 
@@ -1030,7 +2118,8 @@ public class SQLfunctions
 	 * @throws ObjectIDnotFoundInDatabaseException
 	 */
 	public static FishExclusions databaseGetFishExclusions(Connection con,
-			int exID) throws ObjectIDnotFoundInDatabaseException
+			int exID) throws MoreTheOneResultObject,
+			ObjectIDnotFoundInDatabaseException
 	{
 		FishExclusions ex = null;
 
@@ -1131,8 +2220,8 @@ public class SQLfunctions
 	 * @throws ObjectIDnotFoundInDatabaseException
 	 */
 	public static InvertebrateExclusions databaseGetInvertebrateExclusions(
-			Connection con, int exID)
-			throws ObjectIDnotFoundInDatabaseException
+			Connection con, int exID) throws MoreTheOneResultObject,
+			ObjectIDnotFoundInDatabaseException
 	{
 		InvertebrateExclusions ex = null;
 
@@ -1195,9 +2284,11 @@ public class SQLfunctions
 	/**
 	 * This function attempts to
 	 * 
+	 * @throws MoreTheOneResultObject
+	 * @throws SQLException
 	 */
 	public static void onlyOneResultSetRow(Connection con, int ID, String query)
-			throws ObjectIDnotFoundInDatabaseException, SQLException
+			throws MoreTheOneResultObject, SQLException
 	{
 		if ( con != null && ID > 0 )
 		{
@@ -1213,8 +2304,44 @@ public class SQLfunctions
 				if ( foundOne )
 				{
 					rs.close();
-					throw new ObjectIDnotFoundInDatabaseException(ID, con
-							.getMetaData().getURL());
+					throw new MoreTheOneResultObject(ID, con.getMetaData()
+							.getURL());
+				}
+
+				foundOne = true;
+			}
+
+			rs.close();
+		}
+	}
+
+
+
+	/**
+	 * This function attempts to
+	 * 
+	 * @throws MoreTheOneResultObject
+	 * @throws SQLException
+	 */
+	public static void onlyOneResultSetRow(Connection con, String name,
+			String query) throws MoreTheOneResultObject, SQLException
+	{
+		if ( con != null && name != null && name != "" )
+		{
+			ResultSet rs;
+
+			Statement stmt = con.createStatement();
+
+			rs = stmt.executeQuery(query);
+
+			boolean foundOne = false;
+			while ( rs.next() )
+			{
+				if ( foundOne )
+				{
+					rs.close();
+					throw new MoreTheOneResultObject(name, con.getMetaData()
+							.getURL());
 				}
 
 				foundOne = true;
@@ -1232,7 +2359,7 @@ public class SQLfunctions
 	 * @throws ObjectAlreadyInDatabaseException
 	 * @throws SQLException
 	 */
-	public static void databaseContainsObject(Connection con, String species,
+	public static void databaseContainsSpecies(Connection con, String species,
 			String table) throws ObjectAlreadyInDatabaseException, SQLException
 	{
 		if ( con != null && table != "" )
@@ -1262,5 +2389,90 @@ public class SQLfunctions
 
 			rs.close();
 		}
+	}
+
+
+
+	/**
+	 * TODO - Description
+	 */
+	public static boolean databaseGroupDoesNotExists(Connection con,
+			String groupName)
+	{
+		if ( con != null && groupName != "" )
+		{
+			ResultSet rs = null;
+
+			try
+			{
+				Statement stmt = con.createStatement();
+
+				String query = "SELECT * " + "FROM " + objectGroupTable
+						+ " WHERE GroupName='" + groupName + "'";
+
+				rs = stmt.executeQuery(query);
+				while ( rs.next() )
+				{
+					return false;
+				}
+
+
+				rs.close();
+			}
+			catch ( SQLException e )
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			return false;
+		}
+
+
+		return true;
+	}
+
+
+
+	/**
+	 * TODO - Description
+	 */
+	public static boolean databaseGroupDoesNotExists(Connection con, int ID)
+	{
+		if ( con != null && ID > 0 )
+		{
+			ResultSet rs = null;
+
+			try
+			{
+				Statement stmt = con.createStatement();
+
+				String query = "SELECT * " + "FROM " + objectGroupTable
+						+ " WHERE ObjectGroupID=" + ID;
+
+				rs = stmt.executeQuery(query);
+				while ( rs.next() )
+				{
+					return false;
+				}
+
+
+				rs.close();
+			}
+			catch ( SQLException e )
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			return false;
+		}
+
+
+		return true;
 	}
 }

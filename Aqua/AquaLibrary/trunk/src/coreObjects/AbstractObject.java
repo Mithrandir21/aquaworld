@@ -214,7 +214,8 @@ public abstract class AbstractObject
 	{
 		String ret = "";
 
-		if ( genusName != null && genusName != "" )
+		if ( genusName != null && !(genusName.equalsIgnoreCase(""))
+				&& !(genusName.equalsIgnoreCase("null")) )
 		{
 			ret = DataRetrival.getShortendGenus(genusName) + " ";
 		}

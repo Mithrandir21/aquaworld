@@ -41,6 +41,9 @@ public class AquaJList extends JList
 	 */
 	public AquaJList(AbstractObject[] list)
 	{
-		this.setListData(list);
+		if ( list != null )
+		{
+			this.setListData(list);
+		}
 	}
 }

@@ -5,9 +5,11 @@ package graphicalObjects;
  * A ScrollPane which "freezes" the specified number of
  * columns of a JTable.
  */
+import gui.groups.GroupsFrame;
 import gui.listenerClasses.MouseJXtableObjectListener;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.JScrollPane;
@@ -24,28 +26,21 @@ public class AquaObjectsTable extends JScrollPane
 	 * 
 	 * @param data
 	 */
-	public AquaObjectsTable(Object[][] data)
+	public AquaObjectsTable(Object[][] data, JXTable table, Dimension dim)
 	{
-		/**
-		 * sample data column names
-		 */
-		String[] columnNames = { "Latin Name", "Salinity", "PH", "GH",
-				"Temperature", "KH", "Magnesium", "Calcium", "Space Needed",
-				"Others Sizes" };
-
-
-
-		JXTable table = new JXTable();
 		// JTable nonScrollingColumns = new JTable();
-		DefaultTableModel model = new DefaultTableModel(data, columnNames);
+		DefaultTableModel model = new DefaultTableModel(data,
+				GroupsFrame.columnNames);
 		table.setAutoResizeMode(JXTable.AUTO_RESIZE_OFF);
+		// table.setPreferredSize(dim);
+		table.setMinimumSize(dim);
 		Font f = table.getFont();
 		table.setFont(f.deriveFont(Font.BOLD));
 		table.setEditable(false);
 
 		table.setModel(model);
 		Color gridColor = Color.BLACK;
-		int rowHeight = 25;
+		int rowHeight = 35;
 		// if not on 1.6 comment this out
 		table.setFillsViewportHeight(true);
 
@@ -54,11 +49,7 @@ public class AquaObjectsTable extends JScrollPane
 		table.setRowHeight(rowHeight);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-
-
 		table.addMouseListener(new MouseJXtableObjectListener());
-
-
 
 		this.setViewportView(table);
 	}

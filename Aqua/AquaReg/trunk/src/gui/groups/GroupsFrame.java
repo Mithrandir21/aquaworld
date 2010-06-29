@@ -1,6 +1,7 @@
 package gui.groups;
 
 
+import gui.editing.AquaJList;
 import gui.groups.bottom.GroupBottomPanel;
 import gui.groups.top.GroupTopPanel;
 
@@ -9,9 +10,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JPanel;
+
+import org.jdesktop.swingx.JXTable;
 
 
 /**
@@ -21,6 +24,23 @@ import javax.swing.JPanel;
  */
 public class GroupsFrame extends JFrame
 {
+	public static JList groupsList = new JList();
+
+	public static AquaJList groupObjectsList;
+
+	public static JXTable searchResultsTable = new JXTable();
+
+	public static JXTable groupObjectsTable = new JXTable();
+
+
+	/**
+	 * sample data column names
+	 */
+	public static String[] columnNames = { "Genus Name", "Species Name",
+			"Pop Name", "Salinity", "PH", "GH", "Temperature", "KH",
+			"Magnesium", "Calcium", "Space Needed", "Others Sizes" };
+
+
 	/**
 	 * TODO - Description NEEDED!
 	 */
@@ -41,7 +61,7 @@ public class GroupsFrame extends JFrame
 
 
 		JPanel panel1 = new GroupTopPanel();
-		panel1.setBorder(BorderFactory.createEtchedBorder());
+		// panel1.setBorder(BorderFactory.createEtchedBorder());
 		// Dimension panelSize = new Dimension(650, 100);
 		// panel1.setPreferredSize(panelSize);
 		// panel1.setMinimumSize(panelSize);
@@ -59,7 +79,7 @@ public class GroupsFrame extends JFrame
 
 
 		JPanel panel2 = new GroupBottomPanel();
-		panel2.setBorder(BorderFactory.createEtchedBorder());
+		// panel2.setBorder(BorderFactory.createEtchedBorder());
 		// Dimension panel2Size = new Dimension(650, 380);
 		// panel2.setPreferredSize(panel2Size);
 		// panel2.setMinimumSize(panel2Size);
@@ -70,8 +90,8 @@ public class GroupsFrame extends JFrame
 
 
 		// this.setResizable(false);
-		this.setPreferredSize(new Dimension(700, 500));
-		this.setMinimumSize(new Dimension(700, 500));
+		this.setPreferredSize(new Dimension(1000, 700));
+		this.setMinimumSize(new Dimension(1000, 700));
 		this.setVisible(true);
 		this.pack();
 	}

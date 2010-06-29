@@ -1,6 +1,7 @@
 package graphics;
 
 
+import exceptions.MoreTheOneResultObject;
 import exceptions.ObjectIDnotFoundInDatabaseException;
 import graphics.GUI.graphicalFunctions.MakeSystemImageIcons;
 import graphics.GUI.menues.GenericPrimeMenuBar;
@@ -343,15 +344,26 @@ public class AquaWorld extends JFrame
 
 		// ---------------------------------------------------
 		ObjectParameters parameter = new ObjectParameters(31, sal, ph, gh, temp);
+		ObjectParameters parameter11 = new ObjectParameters(366, sal, ph, gh,
+				temp);
 		// ---------------------------------------------------
 		parameter.setKh(kh);
 		parameter.setMagnesium(magnesium);
 		parameter.setCalcium(calcium);
 		FishExclusions fishEx = new FishExclusions(441);
+		FishExclusions fishEx1 = new FishExclusions(352);
 
 		FishObject fish = new FishObject(00001, "Gullfiskius", "...Gullfish",
 				FishGender.UNISEX, 7.5, parameter, fishEx);
+		fish.setGenusName("GullFiskGenus");
 		WidgetFish widFish = new WidgetFish(currentCanvas.getScene(), fish,
+				null);
+
+
+		FishObject fish1 = new FishObject(8888, "AndreGullfish", "...Gullfish",
+				FishGender.UNISEX, 7.5, parameter11, fishEx1);
+		fish1.setGenusName("GullFiskGenus");
+		WidgetFish widFish1 = new WidgetFish(currentCanvas.getScene(), fish1,
 				null);
 
 
@@ -453,62 +465,62 @@ public class AquaWorld extends JFrame
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		long time = System.currentTimeMillis();
+
 		Connection connection = null;
 		try
 		{
-			String url = "jdbc:mysql://db4free.net:3306/aquaworld";
-			String user = "mithrandir21";
-			String pass = "sauron21";
-			// create a database connection
-			connection = DriverManager.getConnection(url, user, pass);
-			File invExFile = new File(
-					"./resource/database/MySQLstatements/MySQL_InvertebrateExclusionList.txt");
-			File fishExFile = new File(
-					"./resource/database/MySQLstatements/MySQL_FishExclusionList.txt");
-			File objectGroupFile = new File(
-					"./resource/database/MySQLstatements/MySQL_ObjectGroup.txt");
-			File objectParFile = new File(
-					"./resource/database/MySQLstatements/MySQL_ObjectParameters.txt");
-			File fishObjectFile = new File(
-					"./resource/database/MySQLstatements/MySQL_FishObject.txt");
-			File invertebrateObjectFile = new File(
-					"./resource/database/MySQLStatements/MySQL_InvertebrateObject.txt");
-			File coralObjectFile = new File(
-					"./resource/database/MySQLStatements/MySQL_CoralObject.txt");
-			File fishCampaignFile = new File(
-					"./resource/database/MySQLStatements/MySQL_FishCampaign.txt");
-			File coralCampaignFile = new File(
-					"./resource/database/MySQLStatements/MySQL_CoralCampaign.txt");
-			File invertebrateCampaignFile = new File(
-					"./resource/database/MySQLStatements/MySQL_InvertebrateCampaign.txt");
-			// File alterFile = new File(
-			// "./resource/database/MySQLstatements/MySQL_ALTER.txt");
-
-
-			// connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
+			// String url = "jdbc:mysql://db4free.net:3306/aquaworld";
+			// String user = "mithrandir21";
+			// String pass = "sauron21";
+			// // create a database connection
+			// connection = DriverManager.getConnection(url, user, pass);
 			// File invExFile = new File(
-			// "./resource/database/SQLiteStatements/SQLite_InvertebrateExclusionList.txt");
+			// "./resource/database/MySQLstatements/MySQL_InvertebrateExclusionList.txt");
 			// File fishExFile = new File(
-			// "./resource/database/SQLiteStatements/SQLite_FishExclusionList.txt");
+			// "./resource/database/MySQLstatements/MySQL_FishExclusionList.txt");
 			// File objectGroupFile = new File(
-			// "./resource/database/SQLiteStatements/SQLite_ObjectGroup.txt");
+			// "./resource/database/MySQLstatements/MySQL_ObjectGroup.txt");
 			// File objectParFile = new File(
-			// "./resource/database/SQLiteStatements/SQLite_ObjectParameters.txt");
+			// "./resource/database/MySQLstatements/MySQL_ObjectParameters.txt");
 			// File fishObjectFile = new File(
-			// "./resource/database/SQLiteStatements/SQLite_FishObject.txt");
+			// "./resource/database/MySQLstatements/MySQL_FishObject.txt");
 			// File invertebrateObjectFile = new File(
-			// "./resource/database/SQLiteStatements/SQLite_InvertebrateObject.txt");
+			// "./resource/database/MySQLStatements/MySQL_InvertebrateObject.txt");
 			// File coralObjectFile = new File(
-			// "./resource/database/SQLiteStatements/SQLite_CoralObject.txt");
+			// "./resource/database/MySQLStatements/MySQL_CoralObject.txt");
 			// File fishCampaignFile = new File(
-			// "./resource/database/SQLiteStatements/SQLite_FishCampaign.txt");
+			// "./resource/database/MySQLStatements/MySQL_FishCampaign.txt");
 			// File coralCampaignFile = new File(
-			// "./resource/database/SQLiteStatements/SQLite_CoralCampaign.txt");
+			// "./resource/database/MySQLStatements/MySQL_CoralCampaign.txt");
 			// File invertebrateCampaignFile = new File(
-			// "./resource/database/SQLiteStatements/SQLite_InvertebrateCampaign.txt");
+			// "./resource/database/MySQLStatements/MySQL_InvertebrateCampaign.txt");
 			// // File alterFile = new File(
-			// // "./resource/database/SQLiteStatements/SQLite_ALTER.txt");
+			// // "./resource/database/MySQLstatements/MySQL_ALTER.txt");
+
+
+			connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
+			File invExFile = new File(
+					"./resource/database/SQLiteStatements/SQLite_InvertebrateExclusionList.txt");
+			File fishExFile = new File(
+					"./resource/database/SQLiteStatements/SQLite_FishExclusionList.txt");
+			File objectGroupFile = new File(
+					"./resource/database/SQLiteStatements/SQLite_ObjectGroup.txt");
+			File objectParFile = new File(
+					"./resource/database/SQLiteStatements/SQLite_ObjectParameters.txt");
+			File fishObjectFile = new File(
+					"./resource/database/SQLiteStatements/SQLite_FishObject.txt");
+			File invertebrateObjectFile = new File(
+					"./resource/database/SQLiteStatements/SQLite_InvertebrateObject.txt");
+			File coralObjectFile = new File(
+					"./resource/database/SQLiteStatements/SQLite_CoralObject.txt");
+			File fishCampaignFile = new File(
+					"./resource/database/SQLiteStatements/SQLite_FishCampaign.txt");
+			File coralCampaignFile = new File(
+					"./resource/database/SQLiteStatements/SQLite_CoralCampaign.txt");
+			File invertebrateCampaignFile = new File(
+					"./resource/database/SQLiteStatements/SQLite_InvertebrateCampaign.txt");
+			// File alterFile = new File(
+			// "./resource/database/SQLiteStatements/SQLite_ALTER.txt");
 
 
 
@@ -578,6 +590,9 @@ public class AquaWorld extends JFrame
 			SQLfunctions.databaseAddFishObjectAndParametersAndExclusions(
 					connection, fish);
 
+			SQLfunctions.databaseAddFishObjectAndParametersAndExclusions(
+					connection, fish1);
+
 			SQLfunctions.databaseAddCoralObjectAndCoralParameters(connection,
 					coral);
 
@@ -586,18 +601,29 @@ public class AquaWorld extends JFrame
 							connection, invertebrate);
 
 
-			// SQLfunctions.databaseAddGroup(connection, "MiscGroup1",
-			// "GroupTesting");
-			//
-			//
-			// SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
-			// fish);
-			//
-			// SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
-			// coral);
-			//
-			// SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
-			// invertebrate);
+			SQLfunctions.databaseAddGroup(connection, "MiscGroup1",
+					"GroupTesting", 1);
+
+			SQLfunctions.databaseAddGroup(connection, "MiscGroup1",
+					"GroupTesting", 1);
+
+			SQLfunctions.databaseAddGroup(connection, "Group Bam",
+					"GroupTesting", 2);
+
+			SQLfunctions.databaseAddGroup(connection, "Group Johan",
+					"GroupTesting", 3);
+
+
+			SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
+					fish);
+			SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
+					fish1);
+
+			SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
+					coral);
+
+			SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
+					invertebrate);
 
 			//
 			CoralObject coralObj = SQLfunctions.databaseGetCoralObject(
@@ -610,6 +636,7 @@ public class AquaWorld extends JFrame
 
 			FishObject fishObj = SQLfunctions.databaseGetFishObject(connection,
 					1);
+
 		}
 		catch ( SQLException e )
 		{
@@ -618,6 +645,11 @@ public class AquaWorld extends JFrame
 			System.err.println(e.getMessage());
 		}
 		catch ( ObjectIDnotFoundInDatabaseException e )
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch ( MoreTheOneResultObject e )
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();

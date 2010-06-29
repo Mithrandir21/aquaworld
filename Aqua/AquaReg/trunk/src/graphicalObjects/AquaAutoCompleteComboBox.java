@@ -7,17 +7,19 @@ package graphicalObjects;
 import java.awt.Color;
 import java.util.List;
 
-import javax.swing.JTextField;
+import javax.swing.JComboBox;
 
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
+import org.jdesktop.swingx.combobox.ListComboBoxModel;
 
 
 /**
  * TODO - Description NEEDED!
  * 
  * @author Bahram Malaekeh
+ * 
  */
-public class AquaField extends JTextField
+public class AquaAutoCompleteComboBox extends JComboBox
 {
 	/**
 	 * Whether or not the field is necessary for the creation of an object.
@@ -25,14 +27,16 @@ public class AquaField extends JTextField
 	public boolean necessaryField = false;
 
 
+
 	/**
 	 * TODO - Description NEEDED!
 	 * 
 	 * @param necField
 	 */
-	public AquaField(boolean necField)
+	public AquaAutoCompleteComboBox(boolean necField)
 	{
 		necessaryField = necField;
+		this.setEditable(true);
 		if ( necField )
 		{
 			this.setBackground(Color.cyan);
@@ -46,8 +50,10 @@ public class AquaField extends JTextField
 	 */
 	public void setAutoComplete(List<String> names)
 	{
-		AutoCompleteDecorator.decorate(this, names, true);
+		this.setModel(new ListComboBoxModel<String>(names));
+		AutoCompleteDecorator.decorate(this);
 	}
+
 
 
 

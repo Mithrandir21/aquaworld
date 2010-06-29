@@ -1,6 +1,8 @@
 package gui;
 
 
+import graphicalObjects.AquaAutoCompleteComboBox;
+import graphicalObjects.AquaField;
 import graphicalObjects.LockCheckBox;
 import graphicalObjects.RangeLockCheckBox;
 
@@ -26,6 +28,277 @@ import javax.swing.JTextField;
 
 public class GraficalFunctions
 {
+
+	/**
+	 * TODO - Description
+	 */
+	public static JPanel getUniquePanel(AquaField field, String valueName,
+			ActionListener lis, boolean necessaryField, boolean lockPossible)
+	{
+		JPanel panel = new JPanel(new GridBagLayout());
+		Dimension panelSize = new Dimension(115, 65);
+		panel.setPreferredSize(panelSize);
+		panel.setMinimumSize(panelSize);
+		panel.setMaximumSize(panelSize);
+		// panel.setBorder(BorderFactory.createEtchedBorder());
+
+		// JPanel panel1 = new JPanel(new GridBagLayout());
+		// Dimension panelSize1 = new Dimension(200, 400);
+		// panel1.setPreferredSize(panelSize1);
+		// panel1.setMinimumSize(panelSize1);
+		// panel1.setMaximumSize(panelSize1);
+		// panel1.setBorder(BorderFactory.createEtchedBorder());
+
+		GridBagConstraints c = new GridBagConstraints();
+
+
+		JLabel label = new JLabel(valueName);
+		c.fill = GridBagConstraints.BOTH;
+		// c.ipady = 0; // reset to default
+		// c.weightx = 1.0; // request any extra vertical space
+		// c.anchor = GridBagConstraints.CENTER; // bottom of space
+		// c.insets = new Insets(10, 0, 0, 0); // top padding
+		// c.gridx = 0; // aligned with button 2
+		// c.gridwidth = 1; // 2 columns wide
+		c.gridy = 0; // third row
+		panel.add(label, c);
+
+
+		field.setActionCommand(valueName);
+		Dimension textSize = new Dimension(100, 20);
+		field.setPreferredSize(textSize);
+		field.setMinimumSize(textSize);
+		field.setMaximumSize(textSize);
+		c.fill = GridBagConstraints.NONE;
+		// c.ipady = 0; // reset to default
+		// c.weightx = 1.0; // request any extra vertical space
+		// c.anchor = GridBagConstraints.PAGE_END; // bottom of space
+		c.insets = new Insets(7, 0, 0, 0); // top padding
+		// c.gridx = 0; // aligned with button 2
+		// c.gridwidth = 1; // 2 columns wide
+		c.gridy = 2; // third row
+		panel.add(field, c);
+
+
+
+		c.fill = GridBagConstraints.BOTH;
+		// c.ipady = 0; // reset to default
+		c.weighty = 1.0; // request any extra vertical space
+		// c.anchor = GridBagConstraints.PAGE_END; // bottom of space
+		// c.insets = new Insets(10, 0, 0, 0); // top padding
+		// c.gridx = 0; // aligned with button 2
+		// c.gridwidth = 2; // 2 columns wide
+		c.gridy = 3; // third row
+
+		JPanel lockPanel = new JPanel(new GridLayout());
+
+		if ( lockPossible )
+		{
+			LockCheckBox lock = new LockCheckBox(field);
+			lock.setActionCommand(valueName);
+			lock.addActionListener(lis);
+			lock.setFocusable(false);
+			lockPanel.add(lock, c);
+		}
+
+		panel.add(lockPanel, c);
+
+
+
+		return panel;
+	}
+
+
+
+	/**
+	 * TODO - Description
+	 */
+	public static JPanel getUniquePanel(AquaAutoCompleteComboBox field,
+			String valueName, ActionListener lis, boolean necessaryField,
+			boolean lockPossible)
+	{
+		JPanel panel = new JPanel(new GridBagLayout());
+		Dimension panelSize = new Dimension(115, 65);
+		panel.setPreferredSize(panelSize);
+		panel.setMinimumSize(panelSize);
+		panel.setMaximumSize(panelSize);
+		// panel.setBorder(BorderFactory.createEtchedBorder());
+
+		// JPanel panel1 = new JPanel(new GridBagLayout());
+		// Dimension panelSize1 = new Dimension(200, 400);
+		// panel1.setPreferredSize(panelSize1);
+		// panel1.setMinimumSize(panelSize1);
+		// panel1.setMaximumSize(panelSize1);
+		// panel1.setBorder(BorderFactory.createEtchedBorder());
+
+		GridBagConstraints c = new GridBagConstraints();
+
+
+		JLabel label = new JLabel(valueName);
+		c.fill = GridBagConstraints.BOTH;
+		// c.ipady = 0; // reset to default
+		// c.weightx = 1.0; // request any extra vertical space
+		// c.anchor = GridBagConstraints.CENTER; // bottom of space
+		// c.insets = new Insets(10, 0, 0, 0); // top padding
+		// c.gridx = 0; // aligned with button 2
+		// c.gridwidth = 1; // 2 columns wide
+		c.gridy = 0; // third row
+		panel.add(label, c);
+
+
+		field.setActionCommand(valueName);
+		Dimension textSize = new Dimension(100, 20);
+		field.setPreferredSize(textSize);
+		field.setMinimumSize(textSize);
+		field.setMaximumSize(textSize);
+		c.fill = GridBagConstraints.NONE;
+		// c.ipady = 0; // reset to default
+		// c.weightx = 1.0; // request any extra vertical space
+		// c.anchor = GridBagConstraints.PAGE_END; // bottom of space
+		c.insets = new Insets(7, 0, 0, 0); // top padding
+		// c.gridx = 0; // aligned with button 2
+		// c.gridwidth = 1; // 2 columns wide
+		c.gridy = 2; // third row
+		panel.add(field, c);
+
+
+
+		c.fill = GridBagConstraints.BOTH;
+		// c.ipady = 0; // reset to default
+		c.weighty = 1.0; // request any extra vertical space
+		// c.anchor = GridBagConstraints.PAGE_END; // bottom of space
+		// c.insets = new Insets(10, 0, 0, 0); // top padding
+		// c.gridx = 0; // aligned with button 2
+		// c.gridwidth = 2; // 2 columns wide
+		c.gridy = 3; // third row
+
+		JPanel lockPanel = new JPanel(new GridLayout());
+
+		// if ( lockPossible )
+		// {
+		// LockCheckBox lock = new LockCheckBox(field);
+		// lock.setActionCommand(valueName);
+		// lock.addActionListener(lis);
+		// lock.setFocusable(false);
+		// lockPanel.add(lock, c);
+		// }
+
+		panel.add(lockPanel, c);
+
+
+
+		return panel;
+	}
+
+
+
+	/**
+	 * TODO - Description
+	 */
+	public static JPanel getLowHighPanel(AquaField low, AquaField high,
+			String valueName, ActionListener lis, boolean necessaryField)
+	{
+		JPanel panel = new JPanel(new GridBagLayout());
+		Dimension panelSize = new Dimension(115, 90);
+		panel.setPreferredSize(panelSize);
+		panel.setMinimumSize(panelSize);
+		panel.setMaximumSize(panelSize);
+		// panel.setBorder(BorderFactory.createEtchedBorder());
+
+		// JPanel panel1 = new JPanel(new GridBagLayout());
+		// Dimension panelSize1 = new Dimension(200, 400);
+		// panel1.setPreferredSize(panelSize1);
+		// panel1.setMinimumSize(panelSize1);
+		// panel1.setMaximumSize(panelSize1);
+		// panel1.setBorder(BorderFactory.createEtchedBorder());
+
+		GridBagConstraints c = new GridBagConstraints();
+
+
+		JLabel label1 = new JLabel(valueName);
+		c.fill = GridBagConstraints.BOTH;
+		// c.ipady = 0; // reset to default
+		// c.weightx = 1.0; // request any extra vertical space
+		// c.anchor = GridBagConstraints.CENTER; // bottom of space
+		// c.insets = new Insets(10, 0, 0, 0); // top padding
+		c.gridx = 0; // aligned with button 2
+		c.gridwidth = 2; // 2 columns wide
+		c.gridy = 0; // third row
+		panel.add(label1, c);
+
+
+		Dimension textSize = new Dimension(40, 20);
+		low.setPreferredSize(textSize);
+		low.setMinimumSize(textSize);
+		low.setMaximumSize(textSize);
+		c.fill = GridBagConstraints.NONE;
+		// c.ipady = 0; // reset to default
+		// c.weightx = 1.0; // request any extra vertical space
+		// c.anchor = GridBagConstraints.PAGE_END; // bottom of space
+		c.insets = new Insets(0, 0, 0, 10); // top padding
+		c.gridx = 0; // aligned with button 2
+		c.gridwidth = 1; // 2 columns wide
+		c.gridy = 1; // third row
+		panel.add(low, c);
+
+
+		high.setPreferredSize(textSize);
+		high.setMinimumSize(textSize);
+		high.setMaximumSize(textSize);
+		c.fill = GridBagConstraints.NONE;
+		// c.ipady = 0; // reset to default
+		// c.weighty = 1.0; // request any extra vertical space
+		// c.anchor = GridBagConstraints.PAGE_END; // bottom of space
+		// c.insets = new Insets(10, 0, 0, 0); // top padding
+		c.gridx = 1; // aligned with button 2
+		c.gridwidth = 1; // 2 columns wide
+		c.gridy = 1; // third row
+		panel.add(high, c);
+
+
+		JLabel label2 = new JLabel("Low");
+		c.fill = GridBagConstraints.BOTH;
+		// c.ipady = 0; // reset to default
+		// c.weighty = 1.0; // request any extra vertical space
+		// c.anchor = GridBagConstraints.PAGE_END; // bottom of space
+		// c.insets = new Insets(10, 0, 0, 0); // top padding
+		c.gridx = 0; // aligned with button 2
+		c.gridwidth = 1; // 2 columns wide
+		c.gridy = 2; // third row
+		panel.add(label2, c);
+
+
+		JLabel label3 = new JLabel("High");
+		c.fill = GridBagConstraints.BOTH;
+		// c.ipady = 0; // reset to default
+		// c.weighty = 1.0; // request any extra vertical space
+		// c.anchor = GridBagConstraints.PAGE_END; // bottom of space
+		// c.insets = new Insets(10, 0, 0, 0); // top padding
+		c.gridx = 1; // aligned with button 2
+		c.gridwidth = 1; // 2 columns wide
+		c.gridy = 2; // third row
+		panel.add(label3, c);
+
+
+		RangeLockCheckBox lock = new RangeLockCheckBox(low, high);
+		lock.setActionCommand(valueName);
+		lock.addActionListener(lis);
+		lock.setFocusable(false);
+		c.fill = GridBagConstraints.BOTH;
+		// c.ipady = 0; // reset to default
+		// c.weighty = 1.0; // request any extra vertical space
+		// c.anchor = GridBagConstraints.PAGE_END; // bottom of space
+		// c.insets = new Insets(10, 0, 0, 0); // top padding
+		c.gridx = 0; // aligned with button 2
+		c.gridwidth = 2; // 2 columns wide
+		c.gridy = 3; // third row
+		panel.add(lock, c);
+
+
+		return panel;
+	}
+
+
 
 	/**
 	 * TODO - Description
@@ -254,6 +527,39 @@ public class GraficalFunctions
 
 
 		return panel;
+	}
+
+
+
+	/**
+	 * TODO - Description
+	 */
+	public static JPanel getDescriptionPanel(JTextArea description,
+			Dimension Size)
+	{
+		JScrollPane scroll = new JScrollPane();
+
+		// description.setBorder(BorderFactory.createEtchedBorder());
+		// description.setFocusable(false);
+		// description.setEditable(true);
+
+		scroll
+				.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scroll
+				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+
+		scroll.setViewportView(description);
+
+
+		JPanel desc = new JPanel(new GridLayout());
+		desc.setPreferredSize(Size);
+		desc.setMinimumSize(Size);
+		desc.setMaximumSize(Size);
+		desc.add(scroll);
+
+
+		return desc;
 	}
 
 
@@ -636,7 +942,7 @@ public class GraficalFunctions
 			ActionListener lis, boolean blue)
 	{
 		JPanel panel = new JPanel(new GridBagLayout());
-		Dimension panelSize = new Dimension(100, 90);
+		Dimension panelSize = new Dimension(100, 100);
 		panel.setPreferredSize(panelSize);
 		panel.setMinimumSize(panelSize);
 		panel.setMaximumSize(panelSize);
@@ -665,7 +971,7 @@ public class GraficalFunctions
 
 
 		JTextField low = new JTextField(4);
-		low.setName(valueName);
+		low.setName(valueName + "_Low");
 		if ( blue )
 		{
 			low.setBackground(Color.CYAN);
@@ -686,7 +992,7 @@ public class GraficalFunctions
 
 
 		JTextField high = new JTextField();
-		high.setName(valueName);
+		high.setName(valueName + "_High");
 		if ( blue )
 		{
 			high.setBackground(Color.CYAN);
@@ -730,7 +1036,7 @@ public class GraficalFunctions
 
 
 		JTextField exact = new JTextField();
-		exact.setName(valueName);
+		exact.setName(valueName + "_Exact");
 		exact.setPreferredSize(textSize);
 		exact.setMinimumSize(textSize);
 		exact.setMaximumSize(textSize);
@@ -751,7 +1057,7 @@ public class GraficalFunctions
 		// c.ipady = 0; // reset to default
 		// c.weighty = 1.0; // request any extra vertical space
 		c.anchor = GridBagConstraints.CENTER; // bottom of space
-		c.insets = new Insets(0, 0, 0, 0); // top padding
+		c.insets = new Insets(0, 0, 5, 0); // top padding
 		c.gridx = 0; // aligned with button 2
 		c.gridwidth = 2; // 2 columns wide
 		c.gridy = 4; // third row

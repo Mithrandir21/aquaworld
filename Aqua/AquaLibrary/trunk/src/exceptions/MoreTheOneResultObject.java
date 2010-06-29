@@ -10,7 +10,7 @@ package exceptions;
  * @author Bahram Malaekeh
  * 
  */
-public class ObjectIDnotFoundInDatabaseException extends Exception
+public class MoreTheOneResultObject extends Exception
 {
 	/**
 	 * The ID of the object that was searched for in the database.
@@ -35,7 +35,7 @@ public class ObjectIDnotFoundInDatabaseException extends Exception
 	 * 
 	 * @param ID
 	 */
-	public ObjectIDnotFoundInDatabaseException(String name, String database)
+	public MoreTheOneResultObject(String name, String database)
 	{
 		objectString = name;
 		databaseName = database;
@@ -47,7 +47,7 @@ public class ObjectIDnotFoundInDatabaseException extends Exception
 	 * 
 	 * @param ID
 	 */
-	public ObjectIDnotFoundInDatabaseException(int ID, String database)
+	public MoreTheOneResultObject(int ID, String database)
 	{
 		objectID = ID;
 		databaseName = database;
@@ -65,13 +65,14 @@ public class ObjectIDnotFoundInDatabaseException extends Exception
 		String output = "";
 		if ( objectString == null )
 		{
-			output = "No Object with the ID: " + objectID
-					+ " in the database: " + databaseName;
+			output = "More then one Object with the ID: " + objectID
+					+ " was found in the database: " + databaseName;
 		}
 		else
 		{
-			output = "No Object with the string indicator: " + objectString
-					+ " in the database: " + databaseName;
+			output = "More then one Object with the string indicator: "
+					+ objectString + " was found in the database: "
+					+ databaseName;
 		}
 
 		return output;
