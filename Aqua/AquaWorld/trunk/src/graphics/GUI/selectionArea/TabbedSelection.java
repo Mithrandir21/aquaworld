@@ -7,7 +7,7 @@ package graphics.GUI.selectionArea;
  */
 
 
-import graphics.GUI.selectionArea.tabContent.FishOverview;
+import graphics.GUI.selectionArea.tabContent.SelectionOverview;
 import graphics.canvas.WorkareaCanvas;
 
 import javax.swing.JPanel;
@@ -40,8 +40,8 @@ public class TabbedSelection extends JTabbedPane
 	 */
 	public TabbedSelection()
 	{
-		FishOverview fish = new FishOverview();
-		FishOverview fish1 = new FishOverview();
+		SelectionOverview fish = new SelectionOverview();
+		SelectionOverview fish1 = new SelectionOverview();
 		addNewMessageTab("FishX", fish);
 		addNewMessageTab("Fish1", fish1);
 

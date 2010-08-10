@@ -124,13 +124,13 @@ public class AquaReg extends JFrame
 			Class.forName("com.mysql.jdbc.Driver");
 
 
-//			String url = "jdbc:mysql://db4free.net:3306/aquaworld";
-//			String user = "mithrandir21";
-//			String pass = "sauron21";
-//			// create a database connection
-//			connection = DriverManager.getConnection(url, user, pass);
+			// String url = "jdbc:mysql://db4free.net:3306/aquaworld";
+			// String user = "mithrandir21";
+			// String pass = "sauron21";
+			// // create a database connection
+			// connection = DriverManager.getConnection(url, user, pass);
 
-			 connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
+			connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
 			return connection;
 		}
 		catch ( ClassNotFoundException e1 )

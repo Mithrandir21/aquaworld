@@ -11,17 +11,14 @@ import graphics.GUI.propertiesArea.objectTypes.EquipmentPropertiesView;
 import graphics.GUI.propertiesArea.objectTypes.FishPropertiesView;
 import graphics.GUI.propertiesArea.objectTypes.InvertebratesPropertiesView;
 import graphics.GUI.propertiesArea.objectTypes.TankPropertiesView;
+import graphics.adGraphics.Square200AdPanel;
 import graphics.canvas.WorkareaCanvas;
 
-import java.awt.Button;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -41,7 +38,7 @@ import widgets.WidgetTransferable;
  * 
  * @author Bahram Malaekeh
  */
-public class ObjectProperties extends JPanel implements ActionListener
+public class ObjectProperties extends JPanel
 {
 	private WidgetTransferable objectViewed = null;
 
@@ -75,6 +72,9 @@ public class ObjectProperties extends JPanel implements ActionListener
 
 		// this.setMinimumSize(new Dimension(width, height));
 		this.setPreferredSize(new Dimension(width, height));
+		// Dimension size = new Dimension(220, 300);
+		// this.setPreferredSize(size);
+		// this.setMinimumSize(size);
 	}
 
 
@@ -107,10 +107,6 @@ public class ObjectProperties extends JPanel implements ActionListener
 
 			TankPropertiesView.getTankProperties(this, canvas.getTank());
 
-			JPanel buttons = createSaveButtons();
-
-			this.add(buttons);
-
 
 			// Lay out the panel.
 			GraphicalFunctions.make1xGrid(this, this.getComponentCount(), 6, 6, // initX, initY
@@ -129,7 +125,34 @@ public class ObjectProperties extends JPanel implements ActionListener
 	 */
 	public ObjectProperties(WidgetTransferable object)
 	{
-		createWidgetProperties(object, false);
+		this.setLayout(new GridBagLayout());
+		GridBagConstraints d = new GridBagConstraints();
+		Dimension size = new Dimension(220, 300);
+		this.setPreferredSize(size);
+		this.setMinimumSize(size);
+
+
+
+		d.fill = GridBagConstraints.BOTH;
+		// d.ipady = 0; // reset to default
+		// d.ipadx = 0; // reset to default
+		// d.weighty = 1.0; // request any extra vertical space
+		// d.weightx = 1.0; // request any extra vertical space
+		d.anchor = GridBagConstraints.NORTH; // bottom of space
+		d.insets = new Insets(10, 10, 10, 10); // top padding
+		// d.gridwidth = 1; // 2 columns wide
+		// d.gridheight = 1; // 2 columns wide
+		d.gridx = 0;
+		d.gridy = 0;
+
+		this.add(createWidgetProperties(object, false), d);
+
+		d.anchor = GridBagConstraints.SOUTH; // bottom of space
+		d.fill = GridBagConstraints.HORIZONTAL;
+		d.weighty = 1.0; // request any extra vertical space
+		d.weightx = 1.0; // request any extra vertical space
+		d.gridy = 1;
+		this.add(new Square200AdPanel(), d);
 	}
 
 
@@ -137,16 +160,13 @@ public class ObjectProperties extends JPanel implements ActionListener
 	/**
 	 * TODO - Description
 	 */
-	public void createWidgetProperties(WidgetTransferable object,
+	public JPanel createWidgetProperties(WidgetTransferable object,
 			boolean additionalInfo)
 	{
+		JPanel panel = new JPanel(new GridBagLayout());
 		if ( object != null )
 		{
-			this.removeAll();
-
 			objectViewed = object;
-
-			this.setLayout(new GridBagLayout());
 			GridBagConstraints d = new GridBagConstraints();
 
 
@@ -156,7 +176,7 @@ public class ObjectProperties extends JPanel implements ActionListener
 			// d.weighty = 1.0; // request any extra vertical space
 			// d.weightx = 1.0; // request any extra vertical space
 			d.anchor = GridBagConstraints.NORTH; // bottom of space
-			d.insets = new Insets(10, 10, 10, 10); // top padding
+			// d.insets = new Insets(10, 10, 10, 10); // top padding
 			// d.gridwidth = 1; // 2 columns wide
 			// d.gridheight = 1; // 2 columns wide
 			d.gridx = 0;
@@ -165,39 +185,39 @@ public class ObjectProperties extends JPanel implements ActionListener
 
 			if ( object instanceof WidgetFish )
 			{
-				this.add(FishPropertiesView
+				panel.add(FishPropertiesView
 						.getFishProperties((WidgetFish) object), d);
 
 				colPanel = FishPropertiesView
 						.additionalInfo((WidgetFish) object);
 				colPanel.setCollapsed(true);
 				d.gridy = 1;
-				this.add(colPanel, d);
+				panel.add(colPanel, d);
 
 				d.weighty = 1.0; // request any extra vertical space
 				d.weightx = 1.0; // request any extra vertical space
 				d.gridy = 2;
-				this.add(createMoreInfoButtons(), d);
+				panel.add(createMoreInfoButtons(), d);
 			}
 			else if ( object instanceof WidgetCoral )
 			{
-				this.add(CoralPropertiesView
+				panel.add(CoralPropertiesView
 						.getCoralProperties((WidgetCoral) object), d);
 
 				colPanel = CoralPropertiesView
 						.additionalInfo((WidgetCoral) object);
 				colPanel.setCollapsed(true);
 				d.gridy = 1;
-				this.add(colPanel, d);
+				panel.add(colPanel, d);
 
 				d.weighty = 1.0; // request any extra vertical space
 				d.weightx = 1.0; // request any extra vertical space
 				d.gridy = 2;
-				this.add(createMoreInfoButtons(), d);
+				panel.add(createMoreInfoButtons(), d);
 			}
 			else if ( object instanceof WidgetInvertebrates )
 			{
-				this
+				panel
 						.add(
 								InvertebratesPropertiesView
 										.getInvertebratesProperties((WidgetInvertebrates) object),
@@ -207,32 +227,27 @@ public class ObjectProperties extends JPanel implements ActionListener
 						.additionalInfo((WidgetInvertebrates) object);
 				colPanel.setCollapsed(true);
 				d.gridy = 1;
-				this.add(colPanel, d);
+				panel.add(colPanel, d);
 
 
 				d.weighty = 1.0; // request any extra vertical space
 				d.weightx = 1.0; // request any extra vertical space
 				d.gridy = 2;
-				this.add(createMoreInfoButtons(), d);
+				panel.add(createMoreInfoButtons(), d);
 			}
 			else if ( object instanceof WidgetEquipment )
 			{
-				EquipmentPropertiesView.getEquipmentProperties(this,
+				EquipmentPropertiesView.getEquipmentProperties(panel,
 						(WidgetEquipment) object);
 
 				d.weighty = 1.0; // request any extra vertical space
 				d.weightx = 1.0; // request any extra vertical space
 				d.gridy = 2;
-				this.add(createMoreInfoButtons(), d);
+				panel.add(createMoreInfoButtons(), d);
 			}
-
-
-		}
-		else
-		{
-			this.removeAll();
 		}
 
+		return panel;
 	}
 
 
@@ -273,52 +288,5 @@ public class ObjectProperties extends JPanel implements ActionListener
 		pp.add(moreInfoButton);
 
 		return pp;
-	}
-
-
-
-	/**
-	 * Creates a JPanel with save buttons that are listened for by
-	 * actionlisteners.
-	 */
-	private JPanel createSaveButtons()
-	{
-		JPanel buttons = new JPanel();
-		buttons.setLayout(new FlowLayout(FlowLayout.TRAILING));
-
-		Button save = new Button(AquaWorld.texts.getString("save"));
-		save.addActionListener(this);
-		save.setActionCommand(AquaWorld.texts.getString("save"));
-
-
-		buttons.add(save);
-
-		return buttons;
-	}
-
-
-	/**
-	 * Javadoc-TODO - Description
-	 */
-	public void saveAction()
-	{
-		Component[] comp = this.getComponents();
-
-
-	}
-
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	@Override
-	public void actionPerformed(ActionEvent e)
-	{
-		if ( e.getActionCommand().equals(AquaWorld.texts.getString("save")) )
-		{
-			saveAction();
-		}
 	}
 }

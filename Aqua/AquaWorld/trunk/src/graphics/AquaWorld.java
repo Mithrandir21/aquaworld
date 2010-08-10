@@ -1,17 +1,16 @@
 package graphics;
 
 
-import exceptions.MoreTheOneResultObject;
-import exceptions.ObjectIDnotFoundInDatabaseException;
 import graphics.GUI.graphicalFunctions.MakeSystemImageIcons;
 import graphics.GUI.menues.GenericPrimeMenuBar;
 import graphics.GUI.menues.GenericPrimeToolbar;
 import graphics.GUI.messageArea.MessageTabbed;
+import graphics.GUI.messageArea.messageTabs.AdMessage;
 import graphics.GUI.messageArea.messageTabs.AquariumAndEquipmentMessage;
 import graphics.GUI.messageArea.messageTabs.FishAnimalsMessage;
 import graphics.GUI.propertiesArea.ObjectScrollProperties;
 import graphics.GUI.selectionArea.TabbedSelection;
-import graphics.GUI.selectionArea.tabContent.FishOverview;
+import graphics.GUI.selectionArea.tabContent.SelectionOverview;
 import graphics.ProgramGUI.TipOfDay;
 import graphics.canvas.WorkareaCanvas;
 import graphics.canvas.WorkareaTabbed;
@@ -31,13 +30,10 @@ import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
@@ -56,7 +52,6 @@ import org.jdesktop.swingx.JXMultiSplitPane;
 import org.jdesktop.swingx.MultiSplitLayout;
 import org.jdesktop.swingx.MultiSplitLayout.Node;
 
-import sqlLogic.SQLfunctions;
 import widgetTank.Tank;
 import widgets.WidgetCoral;
 import widgets.WidgetFish;
@@ -433,16 +428,19 @@ public class AquaWorld extends JFrame
 		FishAnimalsMessage msgTabFish = new FishAnimalsMessage(test);
 		AquariumAndEquipmentMessage msgTabAqua = new AquariumAndEquipmentMessage(
 				test);
+		AdMessage msgAd = new AdMessage();
 
-		tabbed.addNewMessageTab("Fisk Og Dyr", msgTabFish);
-		tabbed.addNewMessageTab("Aquarium And Equipment", msgTabAqua);
+		tabbed.addNewMessageTab("Fisk og Dyr", msgTabFish);
+		tabbed.addNewMessageTab("Aquarium og Utstyr", msgTabAqua);
+		tabbed.addNewMessageTab("Tilbud", msgAd);
+		// tabbed.boldTab(msgAd.getClass());
 
 
 		// --------------------------------------------------
 		// --------------------------------------------------
 
 		// TabbedSelection sel = new TabbedSelection();
-		FishOverview sel = new FishOverview();
+		SelectionOverview sel = new SelectionOverview();
 		selectionPanel.add(sel);
 
 
@@ -451,225 +449,225 @@ public class AquaWorld extends JFrame
 
 
 
-		System.out.println("Starting");
-
-
-		// load the sqlite-JDBC driver using the current class loader
-		try
-		{
-			Class.forName("org.sqlite.JDBC");
-			Class.forName("com.mysql.jdbc.Driver");
-		}
-		catch ( ClassNotFoundException e1 )
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		Connection connection = null;
-		try
-		{
-			// String url = "jdbc:mysql://db4free.net:3306/aquaworld";
-			// String user = "mithrandir21";
-			// String pass = "sauron21";
-			// // create a database connection
-			// connection = DriverManager.getConnection(url, user, pass);
-			// File invExFile = new File(
-			// "./resource/database/MySQLstatements/MySQL_InvertebrateExclusionList.txt");
-			// File fishExFile = new File(
-			// "./resource/database/MySQLstatements/MySQL_FishExclusionList.txt");
-			// File objectGroupFile = new File(
-			// "./resource/database/MySQLstatements/MySQL_ObjectGroup.txt");
-			// File objectParFile = new File(
-			// "./resource/database/MySQLstatements/MySQL_ObjectParameters.txt");
-			// File fishObjectFile = new File(
-			// "./resource/database/MySQLstatements/MySQL_FishObject.txt");
-			// File invertebrateObjectFile = new File(
-			// "./resource/database/MySQLStatements/MySQL_InvertebrateObject.txt");
-			// File coralObjectFile = new File(
-			// "./resource/database/MySQLStatements/MySQL_CoralObject.txt");
-			// File fishCampaignFile = new File(
-			// "./resource/database/MySQLStatements/MySQL_FishCampaign.txt");
-			// File coralCampaignFile = new File(
-			// "./resource/database/MySQLStatements/MySQL_CoralCampaign.txt");
-			// File invertebrateCampaignFile = new File(
-			// "./resource/database/MySQLStatements/MySQL_InvertebrateCampaign.txt");
-			// // File alterFile = new File(
-			// // "./resource/database/MySQLstatements/MySQL_ALTER.txt");
-
-
-			connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
-			File invExFile = new File(
-					"./resource/database/SQLiteStatements/SQLite_InvertebrateExclusionList.txt");
-			File fishExFile = new File(
-					"./resource/database/SQLiteStatements/SQLite_FishExclusionList.txt");
-			File objectGroupFile = new File(
-					"./resource/database/SQLiteStatements/SQLite_ObjectGroup.txt");
-			File objectParFile = new File(
-					"./resource/database/SQLiteStatements/SQLite_ObjectParameters.txt");
-			File fishObjectFile = new File(
-					"./resource/database/SQLiteStatements/SQLite_FishObject.txt");
-			File invertebrateObjectFile = new File(
-					"./resource/database/SQLiteStatements/SQLite_InvertebrateObject.txt");
-			File coralObjectFile = new File(
-					"./resource/database/SQLiteStatements/SQLite_CoralObject.txt");
-			File fishCampaignFile = new File(
-					"./resource/database/SQLiteStatements/SQLite_FishCampaign.txt");
-			File coralCampaignFile = new File(
-					"./resource/database/SQLiteStatements/SQLite_CoralCampaign.txt");
-			File invertebrateCampaignFile = new File(
-					"./resource/database/SQLiteStatements/SQLite_InvertebrateCampaign.txt");
-			// File alterFile = new File(
-			// "./resource/database/SQLiteStatements/SQLite_ALTER.txt");
-
-
-
-			SQLfunctions.databaseTablesDrop(connection);
-
-			// InvertebrateExclusion
-			String invExString = IOmanagment.getSQLtableString(invExFile);
-			SQLfunctions.databaseStatementExecution(connection, invExString);
-
-			// FishExclusion
-			String fishExString = IOmanagment.getSQLtableString(fishExFile);
-			SQLfunctions.databaseStatementExecution(connection, fishExString);
-
-			// FishGroup
-			String fishGroupString = IOmanagment
-					.getSQLtableString(objectGroupFile);
-			SQLfunctions
-					.databaseStatementExecution(connection, fishGroupString);
-
-			// ObjectParameters
-			String objParString = IOmanagment.getSQLtableString(objectParFile);
-			SQLfunctions.databaseStatementExecution(connection, objParString);
-
-			// FishObject
-			String fishObjectString = IOmanagment
-					.getSQLtableString(fishObjectFile);
-			SQLfunctions.databaseStatementExecution(connection,
-					fishObjectString);
-
-			// InvertebrateObject
-			String invertebrateObjectString = IOmanagment
-					.getSQLtableString(invertebrateObjectFile);
-			SQLfunctions.databaseStatementExecution(connection,
-					invertebrateObjectString);
-
-			// CoralObject
-			String coralObjectString = IOmanagment
-					.getSQLtableString(coralObjectFile);
-			SQLfunctions.databaseStatementExecution(connection,
-					coralObjectString);
-
-			// FishCampaing
-			String fishCampaignString = IOmanagment
-					.getSQLtableString(fishCampaignFile);
-			SQLfunctions.databaseStatementExecution(connection,
-					fishCampaignString);
-
-			// InvertebrateCampaign
-			String invertebrateCampaignString = IOmanagment
-					.getSQLtableString(invertebrateCampaignFile);
-			SQLfunctions.databaseStatementExecution(connection,
-					invertebrateCampaignString);
-
-			// CoralCampaign
-			String coralCampaignString = IOmanagment
-					.getSQLtableString(coralCampaignFile);
-			SQLfunctions.databaseStatementExecution(connection,
-					coralCampaignString);
-
-			// ALTER
-			// String alterString = IOmanagment.getSQLtableString(alterFile);
-			// SQLfunctions.databaseStatementExecution(connection, alterString);
-
-
-
-
-			SQLfunctions.databaseAddFishObjectAndParametersAndExclusions(
-					connection, fish);
-
-			SQLfunctions.databaseAddFishObjectAndParametersAndExclusions(
-					connection, fish1);
-
-			SQLfunctions.databaseAddCoralObjectAndCoralParameters(connection,
-					coral);
-
-			SQLfunctions
-					.databaseAddInvertebrateObjectAndParametersAndExclusions(
-							connection, invertebrate);
-
-
-			SQLfunctions.databaseAddGroup(connection, "MiscGroup1",
-					"GroupTesting", 1);
-
-			SQLfunctions.databaseAddGroup(connection, "MiscGroup1",
-					"GroupTesting", 1);
-
-			SQLfunctions.databaseAddGroup(connection, "Group Bam",
-					"GroupTesting", 2);
-
-			SQLfunctions.databaseAddGroup(connection, "Group Johan",
-					"GroupTesting", 3);
-
-
-			SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
-					fish);
-			SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
-					fish1);
-
-			SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
-					coral);
-
-			SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
-					invertebrate);
-
-			//
-			CoralObject coralObj = SQLfunctions.databaseGetCoralObject(
-					connection, 2);
-
-
-			InvertebratesObject invObj = SQLfunctions
-					.databaseGetInvertebrateObject(connection, 7);
-
-
-			FishObject fishObj = SQLfunctions.databaseGetFishObject(connection,
-					1);
-
-		}
-		catch ( SQLException e )
-		{
-			// if the error message is "out of memory",
-			// it probably means no database file is found
-			System.err.println(e.getMessage());
-		}
-		catch ( ObjectIDnotFoundInDatabaseException e )
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch ( MoreTheOneResultObject e )
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		finally
-		{
-			try
-			{
-				if ( connection != null )
-					connection.close();
-			}
-			catch ( SQLException e )
-			{
-				// connection close failed.
-				System.err.println(e);
-			}
-		}
-
-		System.out.println("Ending");
-		System.exit(0);
+		// System.out.println("Starting");
+		//
+		//
+		// // load the sqlite-JDBC driver using the current class loader
+		// try
+		// {
+		// Class.forName("org.sqlite.JDBC");
+		// Class.forName("com.mysql.jdbc.Driver");
+		// }
+		// catch ( ClassNotFoundException e1 )
+		// {
+		// // TODO Auto-generated catch block
+		// e1.printStackTrace();
+		// }
+		//
+		// Connection connection = null;
+		// try
+		// {
+		// // String url = "jdbc:mysql://db4free.net:3306/aquaworld";
+		// // String user = "mithrandir21";
+		// // String pass = "sauron21";
+		// // // create a database connection
+		// // connection = DriverManager.getConnection(url, user, pass);
+		// // File invExFile = new File(
+		// // "./resource/database/MySQLstatements/MySQL_InvertebrateExclusionList.txt");
+		// // File fishExFile = new File(
+		// // "./resource/database/MySQLstatements/MySQL_FishExclusionList.txt");
+		// // File objectGroupFile = new File(
+		// // "./resource/database/MySQLstatements/MySQL_ObjectGroup.txt");
+		// // File objectParFile = new File(
+		// // "./resource/database/MySQLstatements/MySQL_ObjectParameters.txt");
+		// // File fishObjectFile = new File(
+		// // "./resource/database/MySQLstatements/MySQL_FishObject.txt");
+		// // File invertebrateObjectFile = new File(
+		// // "./resource/database/MySQLStatements/MySQL_InvertebrateObject.txt");
+		// // File coralObjectFile = new File(
+		// // "./resource/database/MySQLStatements/MySQL_CoralObject.txt");
+		// // File fishCampaignFile = new File(
+		// // "./resource/database/MySQLStatements/MySQL_FishCampaign.txt");
+		// // File coralCampaignFile = new File(
+		// // "./resource/database/MySQLStatements/MySQL_CoralCampaign.txt");
+		// // File invertebrateCampaignFile = new File(
+		// // "./resource/database/MySQLStatements/MySQL_InvertebrateCampaign.txt");
+		// // // File alterFile = new File(
+		// // // "./resource/database/MySQLstatements/MySQL_ALTER.txt");
+		//
+		//
+		// connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
+		// File invExFile = new File(
+		// "./resource/database/SQLiteStatements/SQLite_InvertebrateExclusionList.txt");
+		// File fishExFile = new File(
+		// "./resource/database/SQLiteStatements/SQLite_FishExclusionList.txt");
+		// File objectGroupFile = new File(
+		// "./resource/database/SQLiteStatements/SQLite_ObjectGroup.txt");
+		// File objectParFile = new File(
+		// "./resource/database/SQLiteStatements/SQLite_ObjectParameters.txt");
+		// File fishObjectFile = new File(
+		// "./resource/database/SQLiteStatements/SQLite_FishObject.txt");
+		// File invertebrateObjectFile = new File(
+		// "./resource/database/SQLiteStatements/SQLite_InvertebrateObject.txt");
+		// File coralObjectFile = new File(
+		// "./resource/database/SQLiteStatements/SQLite_CoralObject.txt");
+		// File fishCampaignFile = new File(
+		// "./resource/database/SQLiteStatements/SQLite_FishCampaign.txt");
+		// File coralCampaignFile = new File(
+		// "./resource/database/SQLiteStatements/SQLite_CoralCampaign.txt");
+		// File invertebrateCampaignFile = new File(
+		// "./resource/database/SQLiteStatements/SQLite_InvertebrateCampaign.txt");
+		// // File alterFile = new File(
+		// // "./resource/database/SQLiteStatements/SQLite_ALTER.txt");
+		//
+		//
+		//
+		// SQLfunctions.databaseTablesDrop(connection);
+		//
+		// // InvertebrateExclusion
+		// String invExString = IOmanagment.getSQLtableString(invExFile);
+		// SQLfunctions.databaseStatementExecution(connection, invExString);
+		//
+		// // FishExclusion
+		// String fishExString = IOmanagment.getSQLtableString(fishExFile);
+		// SQLfunctions.databaseStatementExecution(connection, fishExString);
+		//
+		// // FishGroup
+		// String fishGroupString = IOmanagment
+		// .getSQLtableString(objectGroupFile);
+		// SQLfunctions
+		// .databaseStatementExecution(connection, fishGroupString);
+		//
+		// // ObjectParameters
+		// String objParString = IOmanagment.getSQLtableString(objectParFile);
+		// SQLfunctions.databaseStatementExecution(connection, objParString);
+		//
+		// // FishObject
+		// String fishObjectString = IOmanagment
+		// .getSQLtableString(fishObjectFile);
+		// SQLfunctions.databaseStatementExecution(connection,
+		// fishObjectString);
+		//
+		// // InvertebrateObject
+		// String invertebrateObjectString = IOmanagment
+		// .getSQLtableString(invertebrateObjectFile);
+		// SQLfunctions.databaseStatementExecution(connection,
+		// invertebrateObjectString);
+		//
+		// // CoralObject
+		// String coralObjectString = IOmanagment
+		// .getSQLtableString(coralObjectFile);
+		// SQLfunctions.databaseStatementExecution(connection,
+		// coralObjectString);
+		//
+		// // FishCampaing
+		// String fishCampaignString = IOmanagment
+		// .getSQLtableString(fishCampaignFile);
+		// SQLfunctions.databaseStatementExecution(connection,
+		// fishCampaignString);
+		//
+		// // InvertebrateCampaign
+		// String invertebrateCampaignString = IOmanagment
+		// .getSQLtableString(invertebrateCampaignFile);
+		// SQLfunctions.databaseStatementExecution(connection,
+		// invertebrateCampaignString);
+		//
+		// // CoralCampaign
+		// String coralCampaignString = IOmanagment
+		// .getSQLtableString(coralCampaignFile);
+		// SQLfunctions.databaseStatementExecution(connection,
+		// coralCampaignString);
+		//
+		// // ALTER
+		// // String alterString = IOmanagment.getSQLtableString(alterFile);
+		// // SQLfunctions.databaseStatementExecution(connection, alterString);
+		//
+		//
+		//
+		//
+		// SQLfunctions.databaseAddFishObjectAndParametersAndExclusions(
+		// connection, fish);
+		//
+		// SQLfunctions.databaseAddFishObjectAndParametersAndExclusions(
+		// connection, fish1);
+		//
+		// SQLfunctions.databaseAddCoralObjectAndCoralParameters(connection,
+		// coral);
+		//
+		// SQLfunctions
+		// .databaseAddInvertebrateObjectAndParametersAndExclusions(
+		// connection, invertebrate);
+		//
+		//
+		// SQLfunctions.databaseAddGroup(connection, "MiscGroup1",
+		// "GroupTesting", 1);
+		//
+		// SQLfunctions.databaseAddGroup(connection, "MiscGroup1",
+		// "GroupTesting", 1);
+		//
+		// SQLfunctions.databaseAddGroup(connection, "Group Bam",
+		// "GroupTesting", 2);
+		//
+		// SQLfunctions.databaseAddGroup(connection, "Group Johan",
+		// "GroupTesting", 3);
+		//
+		//
+		// SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
+		// fish);
+		// SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
+		// fish1);
+		//
+		// SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
+		// coral);
+		//
+		// SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
+		// invertebrate);
+		//
+		// //
+		// CoralObject coralObj = SQLfunctions.databaseGetCoralObject(
+		// connection, 2);
+		//
+		//
+		// InvertebratesObject invObj = SQLfunctions
+		// .databaseGetInvertebrateObject(connection, 7);
+		//
+		//
+		// FishObject fishObj = SQLfunctions.databaseGetFishObject(connection,
+		// 1);
+		//
+		// }
+		// catch ( SQLException e )
+		// {
+		// // if the error message is "out of memory",
+		// // it probably means no database file is found
+		// System.err.println(e.getMessage());
+		// }
+		// catch ( ObjectIDnotFoundInDatabaseException e )
+		// {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// catch ( MoreTheOneResultObject e )
+		// {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// finally
+		// {
+		// try
+		// {
+		// if ( connection != null )
+		// connection.close();
+		// }
+		// catch ( SQLException e )
+		// {
+		// // connection close failed.
+		// System.err.println(e);
+		// }
+		// }
+		//
+		// System.out.println("Ending");
+		// System.exit(0);
 
 		this.setJMenuBar(new GenericPrimeMenuBar());
 		//
@@ -708,6 +706,7 @@ public class AquaWorld extends JFrame
 		}
 	}
 
+
 	/**
 	 * The programs Main function.
 	 */
@@ -725,7 +724,6 @@ public class AquaWorld extends JFrame
 				exitProcess();
 			}
 		});
-
 	}
 
 

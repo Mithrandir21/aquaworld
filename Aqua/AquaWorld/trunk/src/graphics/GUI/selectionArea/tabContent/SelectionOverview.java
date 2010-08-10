@@ -4,6 +4,7 @@ package graphics.GUI.selectionArea.tabContent;
 import graphics.AquaWorld;
 import graphics.GUI.selectionArea.ObjectSelection;
 import graphics.GUI.selectionArea.SelectionAreaInterface;
+import graphics.adGraphics.Square200AdPanel;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -29,14 +30,14 @@ import org.jdesktop.swingx.JXCollapsiblePane;
  * 
  * @author Bahram Malaekeh
  */
-public class FishOverview extends JPanel implements SelectionAreaInterface
+public class SelectionOverview extends JPanel implements SelectionAreaInterface
 {
 	JXCollapsiblePane colPanel;
 
 	/**
 	 * TODO - Description NEEDED!
 	 */
-	public FishOverview()
+	public SelectionOverview()
 	{
 		int width = (int) (AquaWorld.width * 0.15);
 
@@ -68,6 +69,13 @@ public class FishOverview extends JPanel implements SelectionAreaInterface
 		d.weightx = 1.0; // request any extra vertical space
 		d.gridy = 1;
 		this.add(getResultsArea(), d);
+
+		d.fill = GridBagConstraints.HORIZONTAL;
+		d.anchor = GridBagConstraints.SOUTH; // bottom of space
+		d.weighty = 0; // request any extra vertical space
+		d.weightx = 0; // request any extra vertical space
+		d.gridy = 2;
+		this.add(new Square200AdPanel(), d);
 	}
 
 

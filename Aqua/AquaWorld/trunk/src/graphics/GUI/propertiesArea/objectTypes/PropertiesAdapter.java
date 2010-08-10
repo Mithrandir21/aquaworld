@@ -1,7 +1,5 @@
 package graphics.GUI.propertiesArea.objectTypes;
 
-import graphics.AquaWorld;
-import graphics.GUI.propertiesArea.ObjectScrollProperties;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -25,9 +23,9 @@ public class PropertiesAdapter extends KeyAdapter
 		int key = e.getKeyCode();
 		if ( key == KeyEvent.VK_ENTER )
 		{
-			ObjectScrollProperties objPro = (ObjectScrollProperties) AquaWorld.propertiesPanel
-					.getComponent(0);
-			objPro.getObjectPropertiePanel().saveAction();
+			// ObjectScrollProperties objPro = (ObjectScrollProperties) AquaWorld.propertiesPanel
+			// .getComponent(0);
+			// objPro.getObjectPropertiePanel().saveAction();
 		}
 	}
 }
