@@ -69,7 +69,6 @@ public abstract class AbstractView extends JPanel implements ActionListener
 
 	/**
 	 * TODO - Description NEEDED!
-	 * 
 	 */
 	public AbstractView()
 	{
@@ -188,7 +187,8 @@ public abstract class AbstractView extends JPanel implements ActionListener
 
 
 	/**
-	 * Resets both given fields if they are editable. It also resets the backgrounds.
+	 * Resets both given fields if they are editable. It also resets the
+	 * backgrounds.
 	 */
 	private void resetRangeFields(AquaField low, AquaField high)
 	{
@@ -238,7 +238,6 @@ public abstract class AbstractView extends JPanel implements ActionListener
 
 	/**
 	 * TODO - Description
-	 * 
 	 */
 	private boolean checkSingleField(AquaField field, Class inputType)
 	{
@@ -302,7 +301,6 @@ public abstract class AbstractView extends JPanel implements ActionListener
 
 	/**
 	 * TODO - Description
-	 * 
 	 */
 	private int getFieldInt(AquaField field)
 	{
@@ -337,8 +335,8 @@ public abstract class AbstractView extends JPanel implements ActionListener
 
 
 	/**
-	 * TODO - Description
-	 * 
+	 * This function attempts to determine if the given field contains a valid
+	 * double. Will return -1.0 if anything is wrong.
 	 */
 	public double getFieldDouble(AquaField field)
 	{
@@ -373,8 +371,9 @@ public abstract class AbstractView extends JPanel implements ActionListener
 
 
 	/**
-	 * TODO - Description
-	 * 
+	 * This function determines if the given fields contain values that match
+	 * the given input type(Class). The function will also determine if the
+	 * given values in the fields create a valid range.
 	 */
 	private boolean checkRangeFields(AquaField low, AquaField high,
 			Class inputType)
@@ -695,7 +694,6 @@ public abstract class AbstractView extends JPanel implements ActionListener
 
 	/**
 	 * TODO - Description
-	 * 
 	 */
 	public int insertObjectParameters()
 	{
@@ -714,8 +712,9 @@ public abstract class AbstractView extends JPanel implements ActionListener
 		double[] othersSize = new double[2];
 
 		/**
-		 * Getting the data from the fields. When the program gets here the fields have
-		 * been checked and verified. -1 will be returned for invalid numbers and fields.
+		 * Getting the data from the fields. When the program gets here the
+		 * fields have been checked and verified. -1 will be returned for
+		 * invalid numbers and fields.
 		 */
 		sal[0] = getFieldDouble(salinityLowField);
 		sal[1] = getFieldDouble(salinityHighField);
@@ -733,8 +732,8 @@ public abstract class AbstractView extends JPanel implements ActionListener
 
 
 		/**
-		 * Creating the INSERT string with null as the ID so the field is auto incremented by the SQL server.
-		 * That ID is then returned.
+		 * Creating the INSERT string with null as the ID so the field is auto
+		 * incremented by the SQL server. That ID is then returned.
 		 */
 		String parameters = "INSERT INTO ObjectParameters " + "VALUES (" + null
 				+ ", " + "" + sal[0] + // Salinity Low
@@ -807,7 +806,8 @@ public abstract class AbstractView extends JPanel implements ActionListener
 
 
 	/**
-	 * Checks the two given numbers to see whether any of them is below 0(zero) and that low is lower then high.
+	 * Checks the two given numbers to see whether any of them is below 0(zero)
+	 * and that low is lower then high.
 	 */
 	private boolean checkRangeAboveZero(double low, double high)
 	{

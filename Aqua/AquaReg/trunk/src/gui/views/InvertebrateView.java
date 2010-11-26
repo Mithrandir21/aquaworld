@@ -32,7 +32,8 @@ public class InvertebrateView extends AbstractView implements ActionListener
 
 	/*
 	 * (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e)
@@ -101,8 +102,8 @@ public class InvertebrateView extends AbstractView implements ActionListener
 			 */
 			parID = insertObjectParameters();
 			/**
-			 * Inserts an empty InvertebrateExclusion object.
-			 * The ID of the INSERT row is returned.
+			 * Inserts an empty InvertebrateExclusion object. The ID of the
+			 * INSERT row is returned.
 			 */
 			invExID = SQLfunctions
 					.databaseAddNewEmptyInvertebrateExclusionsList(connection);
@@ -110,8 +111,8 @@ public class InvertebrateView extends AbstractView implements ActionListener
 
 
 			/**
-			 * Verifies that both objects are inserted.
-			 * If one has failed the other will be also removed.
+			 * Verifies that both objects are inserted. If one has failed the
+			 * other will be also removed.
 			 */
 			if ( parID == -1 || invExID == -1 )
 			{
@@ -129,8 +130,8 @@ public class InvertebrateView extends AbstractView implements ActionListener
 				}
 			}
 			/**
-			 * Both a ObjectParameter object and a FishExclusion object has
-			 * been added and the ID's of both have been returned.
+			 * Both a ObjectParameter object and a FishExclusion object has been
+			 * added and the ID's of both have been returned.
 			 */
 			else
 			{
@@ -174,7 +175,11 @@ public class InvertebrateView extends AbstractView implements ActionListener
 
 
 					// GROUP ADDITION
-					groupName = groupField.getSelectedItem().toString();
+					// If there is a group written og selected
+					if ( groupField.getSelectedItem() != null )
+					{
+						groupName = groupField.getSelectedItem().toString();
+					}
 
 					if ( groupName != "" )
 					{
@@ -196,7 +201,8 @@ public class InvertebrateView extends AbstractView implements ActionListener
 							if ( SQLfunctions.databaseAddGroup(con, groupName,
 									desc, -1) )
 							{
-								// Attempts to add the ID of the newly created object to the group
+								// Attempts to add the ID of the newly created
+								// object to the group
 								SQLfunctions.databaseAddObjectIDToGroup(con,
 										groupName, FishObject.class, objectID);
 								addedToGroup = true;
@@ -205,7 +211,8 @@ public class InvertebrateView extends AbstractView implements ActionListener
 						// Else if the group exists
 						else
 						{
-							// Attempts to add the ID of the newly created object to the group
+							// Attempts to add the ID of the newly created
+							// object to the group
 							SQLfunctions.databaseAddObjectIDToGroup(con,
 									groupName, FishObject.class, objectID);
 							addedToGroup = true;

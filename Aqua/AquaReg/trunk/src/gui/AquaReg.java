@@ -48,7 +48,10 @@ public class AquaReg extends JFrame
 		int height = ((int) scrnsize.getHeight()) / 4;
 
 
-		// verifyConnection();7
+		if ( !verifyConnection() )
+		{
+			System.exit(1);
+		}
 
 
 		this.setJMenuBar(new RegMenu());
@@ -69,7 +72,7 @@ public class AquaReg extends JFrame
 
 
 
-	public void verifyConnection()
+	public boolean verifyConnection()
 	{
 		Connection connection = null;
 		// load the sqlite-JDBC driver using the current class loader
@@ -79,9 +82,15 @@ public class AquaReg extends JFrame
 			Class.forName("com.mysql.jdbc.Driver");
 
 
-			String url = "jdbc:mysql://db4free.net:3306/aquaworld";
-			String user = "mithrandir21";
-			String pass = "sauron21";
+			// String url = "jdbc:mysql://db4free.net:3306/aquaworld";
+			// String user = "mithrandir21";
+			// String pass = "sauron21";
+			// // create a database connection
+			// connection = DriverManager.getConnection(url, user, pass);
+
+			String url = "jdbc:mysql://localhost/aquaworld";
+			String user = "aquaworld";
+			String pass = "";
 			// create a database connection
 			connection = DriverManager.getConnection(url, user, pass);
 
@@ -91,12 +100,14 @@ public class AquaReg extends JFrame
 		{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			return false;
 		}
 		catch ( SQLException e )
 		{
 			// if the error message is "out of memory",
 			// it probably means no database file is found
 			System.err.println(e.getMessage());
+			return false;
 		}
 		finally
 		{
@@ -109,8 +120,12 @@ public class AquaReg extends JFrame
 			{
 				// connection close failed.
 				System.err.println(e);
+				return false;
 			}
 		}
+
+		// If No Error is caught true is returned.
+		return true;
 	}
 
 
@@ -124,13 +139,14 @@ public class AquaReg extends JFrame
 			Class.forName("com.mysql.jdbc.Driver");
 
 
-			// String url = "jdbc:mysql://db4free.net:3306/aquaworld";
-			// String user = "mithrandir21";
-			// String pass = "sauron21";
-			// // create a database connection
-			// connection = DriverManager.getConnection(url, user, pass);
+			String url = "jdbc:mysql://localhost/aquaworld";
+			String user = "aquaworld";
+			String pass = "";
+			// create a database connection
+			connection = DriverManager.getConnection(url, user, pass);
 
-			connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
+			// connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
+
 			return connection;
 		}
 		catch ( ClassNotFoundException e1 )

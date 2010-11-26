@@ -16,7 +16,6 @@ import coreObjects.ObjectParameters;
  * TODO - Description NEEDED!
  * 
  * @author Bahram Malaekeh
- * 
  */
 public class EditingView extends AbstractView
 {
@@ -102,7 +101,8 @@ public class EditingView extends AbstractView
 			descriptionArea.setText("");
 		}
 
-		// AquaAutoCompleteComboBox groupField = new AquaAutoCompleteComboBox(false);
+		// AquaAutoCompleteComboBox groupField = new
+		// AquaAutoCompleteComboBox(false);
 
 		this.revalidate();
 		this.repaint();
@@ -112,7 +112,6 @@ public class EditingView extends AbstractView
 
 	/**
 	 * TODO - Description
-	 * 
 	 */
 	private void populateField(AquaField field, String text)
 	{
@@ -131,7 +130,6 @@ public class EditingView extends AbstractView
 
 	/**
 	 * TODO - Description
-	 * 
 	 */
 	private void populateField(AquaField field, int number)
 	{
@@ -149,7 +147,6 @@ public class EditingView extends AbstractView
 
 	/**
 	 * TODO - Description
-	 * 
 	 */
 	private void populateField(AquaField field, double number)
 	{
@@ -165,13 +162,13 @@ public class EditingView extends AbstractView
 
 	/*
 	 * (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		// TODO Auto-generated method stub
-
 	}
 
 }

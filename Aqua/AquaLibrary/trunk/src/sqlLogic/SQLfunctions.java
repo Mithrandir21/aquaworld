@@ -48,10 +48,10 @@ public class SQLfunctions
 
 
 	/**
-	 * This function attempts to run the given string as a statement on the given database.
-	 * 
-	 * If either the the given connection is null or the string is "" false will be returned.
-	 * It also returns false if there is a {@link SQLException}.
+	 * This function attempts to run the given string as a statement on the
+	 * given database. If either the the given connection is null or the string
+	 * is "" false will be returned. It also returns false if there is a
+	 * {@link SQLException}.
 	 */
 	public static boolean databaseStatementExecution(Connection con,
 			String statementString)
@@ -84,7 +84,8 @@ public class SQLfunctions
 
 
 	/**
-	 * Attempts to remove the the row in the ObjectParameters table with the given ID.
+	 * Attempts to remove the the row in the ObjectParameters table with the
+	 * given ID.
 	 */
 	public static boolean databaseRemoveObjectParametersID(Connection con,
 			int ID)
@@ -95,7 +96,8 @@ public class SQLfunctions
 
 
 	/**
-	 * Attempts to remove the the row in the FishExclusionList table with the given ID.
+	 * Attempts to remove the the row in the FishExclusionList table with the
+	 * given ID.
 	 */
 	public static boolean databaseRemoveFishExclusionID(Connection con, int ID)
 	{
@@ -106,7 +108,8 @@ public class SQLfunctions
 
 
 	/**
-	 * Attempts to remove the the row in the FishExclusionList table with the given ID.
+	 * Attempts to remove the the row in the FishExclusionList table with the
+	 * given ID.
 	 */
 	public static boolean databaseRemoveInvertebrateExclusionID(Connection con,
 			int ID)
@@ -118,11 +121,10 @@ public class SQLfunctions
 
 
 	/**
-	 * This function removes a row with the given Unique ID(int)
-	 * from the table with the given name.
-	 * 
-	 * If either the connection is null, ID is below 1 or the table string is "", the function returns false.
-	 * It also returns false if there is a {@link SQLException}.
+	 * This function removes a row with the given Unique ID(int) from the table
+	 * with the given name. If either the connection is null, ID is below 1 or
+	 * the table string is "", the function returns false. It also returns false
+	 * if there is a {@link SQLException}.
 	 */
 	public static boolean databaseRemoveFromTableWithID(Connection con,
 			String table, String columnName, int ID)
@@ -158,11 +160,10 @@ public class SQLfunctions
 
 
 	/**
-	 * This function attempts to create a new ObjectGroup in the given
-	 * database with the given name and description.
-	 * 
-	 * If either the given connection, group name or description is empty false will be returned.
-	 * It also returns false if there is a {@link SQLException}.
+	 * This function attempts to create a new ObjectGroup in the given database
+	 * with the given name and description. If either the given connection,
+	 * group name or description is empty false will be returned. It also
+	 * returns false if there is a {@link SQLException}.
 	 */
 	public static boolean databaseAddGroup(Connection con, String groupName,
 			String groupDescription, int ID)
@@ -175,13 +176,16 @@ public class SQLfunctions
 				String parameters = "";
 				if ( ID > 0 )
 				{
-					// If a group does not exist with the same name as the given name
+					// If a group does not exist with the same name as the given
+					// name
 					if ( databaseGroupDoesNotExists(con, ID) )
 					{
 						parameters = "INSERT INTO " + objectGroupTable
-								+ " VALUES (" + ID + ", '" // The ID of the group
+								+ " VALUES (" + ID + ", '" // The ID of the
+															// group
 								+ groupName // The name of the group
-								+ "', '" + groupDescription // The description of the group
+								+ "', '" + groupDescription // The description
+															// of the group
 								+ "', " + null // FishObjectsString
 								+ ", " + null // CoralObjectsString
 								+ ", " + null // InvertebrateObjectsString
@@ -191,8 +195,12 @@ public class SQLfunctions
 				else
 				{
 					parameters = "INSERT INTO " + objectGroupTable
-							+ " VALUES (" + null + ", '" + groupName // The name of the group
-							+ "', '" + groupDescription // The description of the group
+							+ " VALUES (" + null + ", '" + groupName // The name
+																		// of
+																		// the
+																		// group
+							+ "', '" + groupDescription // The description of
+														// the group
 							+ "', " + null // FishObjectsString
 							+ ", " + null // CoralObjectsString
 							+ ", " + null // InvertebrateObjectsString
@@ -224,9 +232,8 @@ public class SQLfunctions
 
 
 	/**
-	 * This function attempts to get description(String) of the group with the given name.
-	 * 
-	 * Returns null if no group is found.
+	 * This function attempts to get description(String) of the group with the
+	 * given name. Returns null if no group is found.
 	 * 
 	 * @throws ObjectIDnotFoundInDatabaseException
 	 */
@@ -269,7 +276,8 @@ public class SQLfunctions
 
 
 	/**
-	 * This function attempts to get all the group names in the object group table.
+	 * This function attempts to get all the group names in the object group
+	 * table.
 	 */
 	public static String[] databaseGetGroupNames(Connection con)
 	{
@@ -312,11 +320,11 @@ public class SQLfunctions
 
 
 	/**
-	 * this function attempts to add the ID(int) of the given {@link AbstractObject} to the ObjectGroup in the database with the
-	 * same name as the given group name.
-	 * 
-	 * If either the given connection, group name or description is empty false will be returned.
-	 * It also returns false if there is a {@link SQLException}.
+	 * this function attempts to add the ID(int) of the given
+	 * {@link AbstractObject} to the ObjectGroup in the database with the same
+	 * name as the given group name. If either the given connection, group name
+	 * or description is empty false will be returned. It also returns false if
+	 * there is a {@link SQLException}.
 	 */
 	public static boolean databaseAddObjectToGroup(Connection con,
 			String groupName, AbstractObject obj)
@@ -365,7 +373,8 @@ public class SQLfunctions
 						// Gets all the ID's in the field as a string
 						oldIDsString = rs.getString(groupType);
 
-						// Given string will be split by the argument delimiter provided
+						// Given string will be split by the argument delimiter
+						// provided
 						oldIDs = DataManipulation.stringToArray(oldIDsString,
 								delimiter);
 
@@ -404,11 +413,12 @@ public class SQLfunctions
 
 
 	/**
-	 * This function attempts to add the given ID(int) to the ObjectGroup in the database with the
-	 * same name as the given group name. The group type to add the ID to is determined by the given class.
-	 * 
-	 * If either the given connection, group name object class is empty false will be returned. Also if the ID is lower then 1.
-	 * It also returns false if there is a {@link SQLException}.
+	 * This function attempts to add the given ID(int) to the ObjectGroup in the
+	 * database with the same name as the given group name. The group type to
+	 * add the ID to is determined by the given class. If either the given
+	 * connection, group name object class is empty false will be returned. Also
+	 * if the ID is lower then 1. It also returns false if there is a
+	 * {@link SQLException}.
 	 */
 	public static boolean databaseAddObjectIDToGroup(Connection con,
 			String groupName, Class objClass, int objID)
@@ -457,7 +467,8 @@ public class SQLfunctions
 						// Gets all the ID's in the field as a string
 						oldIDsString = rs.getString(groupType);
 
-						// Given string will be split by the argument delimiter provided
+						// Given string will be split by the argument delimiter
+						// provided
 						oldIDs = DataManipulation.stringToArray(oldIDsString,
 								delimiter);
 
@@ -497,7 +508,6 @@ public class SQLfunctions
 
 	/**
 	 * TODO - Description
-	 * 
 	 */
 	public static int[] databaseGetGroupObjectIDs(Connection con,
 			String groupName, Class objectType)
@@ -547,7 +557,8 @@ public class SQLfunctions
 							// Gets all the ID's in the field as a string
 							IDsString = rs.getString(groupType);
 
-							// Given string will be split by the argument delimiter provided
+							// Given string will be split by the argument
+							// delimiter provided
 							IDs = DataManipulation.stringToArray(IDsString,
 									delimiter);
 						}
@@ -576,7 +587,6 @@ public class SQLfunctions
 
 	/**
 	 * TODO - Description
-	 * 
 	 */
 	public static int[] databaseGetGroupObjectIDs(Connection con,
 			String groupName)
@@ -613,14 +623,16 @@ public class SQLfunctions
 						// Gets all the ID's in the field as a string
 						fishIDsString = rs.getString("GroupFishObjects");
 
-						// Given string will be split by the argument delimiter provided
+						// Given string will be split by the argument delimiter
+						// provided
 						fishIDs = DataManipulation.stringToArray(fishIDsString,
 								delimiter);
 
 						// Gets all the ID's in the field as a string
 						coralIDsString = rs.getString("GroupCoralObjects");
 
-						// Given string will be split by the argument delimiter provided
+						// Given string will be split by the argument delimiter
+						// provided
 						coralIDs = DataManipulation.stringToArray(
 								coralIDsString, delimiter);
 
@@ -628,7 +640,8 @@ public class SQLfunctions
 						invertebrateIDsString = rs
 								.getString("GroupInvertebrateObjects");
 
-						// Given string will be split by the argument delimiter provided
+						// Given string will be split by the argument delimiter
+						// provided
 						invertebrateIDs = DataManipulation.stringToArray(
 								invertebrateIDsString, delimiter);
 					}
@@ -697,7 +710,6 @@ public class SQLfunctions
 
 	/**
 	 * TODO - Description
-	 * 
 	 */
 	public static int databaseGetNumberOfObjectsInGroup(Connection con,
 			String groupName)
@@ -734,14 +746,16 @@ public class SQLfunctions
 						// Gets all the ID's in the field as a string
 						fishIDsString = rs.getString("GroupFishObjects");
 
-						// Given string will be split by the argument delimiter provided
+						// Given string will be split by the argument delimiter
+						// provided
 						fishIDs = DataManipulation.stringToArray(fishIDsString,
 								delimiter);
 
 						// Gets all the ID's in the field as a string
 						coralIDsString = rs.getString("GroupCoralObjects");
 
-						// Given string will be split by the argument delimiter provided
+						// Given string will be split by the argument delimiter
+						// provided
 						coralIDs = DataManipulation.stringToArray(
 								coralIDsString, delimiter);
 
@@ -749,7 +763,8 @@ public class SQLfunctions
 						invertebrateIDsString = rs
 								.getString("GroupInvertebrateObjects");
 
-						// Given string will be split by the argument delimiter provided
+						// Given string will be split by the argument delimiter
+						// provided
 						invertebrateIDs = DataManipulation.stringToArray(
 								invertebrateIDsString, delimiter);
 					}
@@ -794,7 +809,6 @@ public class SQLfunctions
 
 	/**
 	 * TODO - Description
-	 * 
 	 */
 	public static AbstractObject[] databaseGetObjectsFromGroup(Connection con,
 			String groupName, Class objectType)
@@ -806,7 +820,8 @@ public class SQLfunctions
 			{
 				ResultSet rs;
 
-				// Gets the IDs of the objects contained in the group, depending on the objectType
+				// Gets the IDs of the objects contained in the group, depending
+				// on the objectType
 				int[] IDs = databaseGetGroupObjectIDs(con, groupName,
 						objectType);
 
@@ -891,7 +906,6 @@ public class SQLfunctions
 
 	/**
 	 * TODO - Description
-	 * 
 	 */
 	public static AbstractObject[] databaseGetObjectsFromGroup(Connection con,
 			String groupName)
@@ -903,7 +917,8 @@ public class SQLfunctions
 			{
 				ResultSet rs;
 
-				// Gets the IDs of the objects contained in the group, depending on the objectType
+				// Gets the IDs of the objects contained in the group, depending
+				// on the objectType
 				int[] IDs = databaseGetGroupObjectIDs(con, groupName);
 
 				if ( IDs != null && IDs.length > 0 )
@@ -987,10 +1002,9 @@ public class SQLfunctions
 
 
 	/**
-	 * TODO - Description
-	 * 
-	 * If either the given connection, group name object class is empty null will be returned.
-	 * It also returns null if there is a {@link SQLException}.
+	 * TODO - Description If either the given connection, group name object
+	 * class is empty null will be returned. It also returns null if there is a
+	 * {@link SQLException}.
 	 */
 	public static AbstractObject[] databaseGetObjectsFromTable(Connection con,
 			Class objectType)
@@ -1068,10 +1082,9 @@ public class SQLfunctions
 
 
 	/**
-	 * TODO - Description
-	 * 
-	 * If either the given connection, group name object class is empty null will be returned.
-	 * It also returns null if there is a {@link SQLException}.
+	 * TODO - Description If either the given connection, group name object
+	 * class is empty null will be returned. It also returns null if there is a
+	 * {@link SQLException}.
 	 */
 	public static String[] databaseGetObjectNamesFromTable(Connection con,
 			Class objectType)
@@ -1164,14 +1177,131 @@ public class SQLfunctions
 
 
 
+	/**
+	 * TODO - Description If either the given connection, group name object
+	 * class is empty null will be returned. It also returns null if there is a
+	 * {@link SQLException}.
+	 */
+	public static String[][] databaseGetObjectIDsandNamesFromTable(
+			Connection con, Class objectType)
+	{
+		if ( con != null && objectType != null )
+		{
+			ResultSet rs;
+
+			String objectTable = "";
+			String columnName = "";
+
+			if ( objectType.equals(CoralObject.class) )
+			{
+				objectTable = coralObjectTable;
+				columnName = "CoralObjectID";
+			}
+			else if ( objectType.equals(InvertebratesObject.class) )
+			{
+				objectTable = invertebrateObjectTable;
+				columnName = "InvertebrateObjectID";
+			}
+			else if ( objectType.equals(FishObject.class) )
+			{
+				objectTable = fishObjectTable;
+				columnName = "FishObjectID";
+			}
+
+
+			if ( objectTable != "" && columnName != "" )
+			{
+				try
+				{
+					ArrayList<String> objectIDS = new ArrayList<String>();
+					ArrayList<String> objectNames = new ArrayList<String>();
+
+					// Statement stmt = con.createStatement(
+					// ResultSet.TYPE_SCROLL_INSENSITIVE,
+					// ResultSet.CONCUR_READ_ONLY);
+					Statement stmt = con.createStatement();
+
+					String query = "SELECT * " + "FROM " + objectTable;
+
+					rs = stmt.executeQuery(query);
+
+					while ( rs.next() )
+					{
+						if ( objectType.equals(CoralObject.class)
+								|| objectType.equals(InvertebratesObject.class)
+								|| objectType.equals(FishObject.class) )
+						{
+							// Gets the object ID(since the ID, aka Primary Key,
+							// is located in the first index).
+							int ID = rs.getInt(1);
+
+							// Gets the object genus and species
+							String genusString = rs.getString("Genus");
+							String speciesString = rs.getString("Species");
+
+
+							// Adds the ID
+							objectIDS.add("" + ID);
+
+							// Adds a possibly shortened version of the genus
+							// and name
+							objectNames.add(DataRetrival.getToStringObject(
+									genusString, speciesString));
+						}
+					}
+
+					// Creates arrays of the object IDs and genus/names
+					String[] objIDarray = objectIDS.toArray(new String[0]);
+					String[] objNameArray = objectNames.toArray(new String[0]);
+
+					/**
+					 * Only if the number of IDs gotten is the same the number
+					 * of objects gotten will a new mulit-dim String array be
+					 * created.
+					 */
+					if ( objIDarray.length == objNameArray.length )
+					{
+						// Creates the new multi-dim array
+						String[][] data = new String[objIDarray.length][2];
+
+						// Adds the id and name
+						for ( int i = 0; i < objIDarray.length; i++ )
+						{
+							// Sets the ID
+							data[i][0] = objIDarray[i];
+
+							// Sets the obj name
+							data[i][1] = objNameArray[i];
+						}
+
+
+						return data;
+					}
+				}
+				catch ( SQLException e )
+				{
+					// if the error message is "out of memory",
+					// it probably means no database file is found
+					System.err.println(e.getMessage());
+				}
+				catch ( Exception e )
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return null;
+	}
+
 
 
 
 	/**
-	 * This function deletes all the tables inside the given connection.,
-	 * 
-	 * If the given connection is empty false will be returned.
-	 * It also returns false if there is a {@link SQLException}.
+	 * This function deletes all the tables inside the given connection., If the
+	 * given connection is empty false will be returned. It also returns false
+	 * if there is a {@link SQLException}.
 	 */
 	public static boolean databaseTablesDrop(Connection con)
 	{
@@ -1216,11 +1346,11 @@ public class SQLfunctions
 
 
 	/**
-	 * This function add the {@link ObjectParameters} contained inside the given {@link AbstractObject} into the ObjectParameters
-	 * table in the database.
-	 * 
-	 * If the given connection or given {@link AbstractObject} is empty false will be returned.
-	 * It also returns false if there is a {@link SQLException}.
+	 * This function add the {@link ObjectParameters} contained inside the given
+	 * {@link AbstractObject} into the ObjectParameters table in the database.
+	 * If the given connection or given {@link AbstractObject} is empty false
+	 * will be returned. It also returns false if there is a
+	 * {@link SQLException}.
 	 */
 	public static boolean databaseAddObjectParameters(Connection con,
 			AbstractObject obj)
@@ -1282,11 +1412,11 @@ public class SQLfunctions
 
 
 	/**
-	 * This function adds the {@link FishExclusions} object inside the given {@link FishObject} object to the FishExclusionList
-	 * table in the given database.
-	 * 
-	 * If the given connection or given {@link FishObject} is empty false will be returned.
-	 * It also returns false if there is a {@link SQLException}.
+	 * This function adds the {@link FishExclusions} object inside the given
+	 * {@link FishObject} object to the FishExclusionList table in the given
+	 * database. If the given connection or given {@link FishObject} is empty
+	 * false will be returned. It also returns false if there is a
+	 * {@link SQLException}.
 	 */
 	public static boolean databaseAddFishExclusionsList(Connection con,
 			FishObject obj)
@@ -1299,20 +1429,36 @@ public class SQLfunctions
 			String fishExclusiona = "INSERT INTO " + fishExclusionListTable
 					+ " VALUES (" + ex.getFishExclusionID() + ", " + ""
 					+ ((ex.isAllAlone()) ? 1 : 0) + // Alone
-					", " + ((ex.isAloneWithSpecies()) ? 1 : 0) + // Alone With Species
-					", " + ((ex.isOnlyOneInSpecies()) ? 1 : 0) + // Only one in Species
+					", " + ((ex.isAloneWithSpecies()) ? 1 : 0) + // Alone With
+																	// Species
+					", " + ((ex.isOnlyOneInSpecies()) ? 1 : 0) + // Only one in
+																	// Species
 					", " + ((ex.isOnlyOneMale()) ? 1 : 0) + // Only one male
 					", " + ((ex.isOnlyOneFemale()) ? 1 : 0) + // Only one female
-					", " + ex.getOnlyOneMalePerLiter() + // Only one male per liter
-					", " + ex.getOnlyOneFemalePerLiter() + // Only one female per liter
-					", " + ex.getOnlyOneFishPerLiter() + // Only one fish per liter
-					", " + ex.getMinumimFemalesPerMale() + // Min number of female per male
-					", " + ex.getMinumimMalesPerFemale() + // Min number of male per female
+					", " + ex.getOnlyOneMalePerLiter() + // Only one male per
+															// liter
+					", " + ex.getOnlyOneFemalePerLiter() + // Only one female
+															// per liter
+					", " + ex.getOnlyOneFishPerLiter() + // Only one fish per
+															// liter
+					", " + ex.getMinumimFemalesPerMale() + // Min number of
+															// female per male
+					", " + ex.getMinumimMalesPerFemale() + // Min number of male
+															// per female
 					", " + ex.getMinimumSchoolSize() + // Min school size
 					", '" + ex.getOnlyCompatibleWith() + // Only compatible with
-					"', '" + ex.getNotCompatibleWith() + // Not compatible with fish
-					"', '" + ex.getNotCompatibleWithTheseMales() + // Not compatible with these males
-					"', '" + ex.getNotCompatibleWithTheseFemales() + // Not compatible with these females
+					"', '" + ex.getNotCompatibleWith() + // Not compatible with
+															// fish
+					"', '" + ex.getNotCompatibleWithTheseMales() + // Not
+																	// compatible
+																	// with
+																	// these
+																	// males
+					"', '" + ex.getNotCompatibleWithTheseFemales() + // Not
+																		// compatible
+																		// with
+																		// these
+																		// females
 					"', '" + ex.getReefSafeString() + // Reef safe
 					"');";
 
@@ -1345,11 +1491,10 @@ public class SQLfunctions
 
 
 	/**
-	 * This function adds a new empty row into the FishExclusionList table in the database.
-	 * This function should mainly be used when wanting to create a new FishExclusion for a fish.
-	 * 
-	 * If the given connection is empty -1 will be returned.
-	 * It also returns -1 if there is a {@link SQLException}.
+	 * This function adds a new empty row into the FishExclusionList table in
+	 * the database. This function should mainly be used when wanting to create
+	 * a new FishExclusion for a fish. If the given connection is empty -1 will
+	 * be returned. It also returns -1 if there is a {@link SQLException}.
 	 */
 	public static int databaseAddNewEmptyFishExclusionsList(Connection con)
 	{
@@ -1358,7 +1503,8 @@ public class SQLfunctions
 		if ( con != null )
 		{
 			String fishExclusiona = "INSERT INTO " + fishExclusionListTable
-					+ " VALUES (" + null + // No Id is set. The ID will be returned.
+					+ " VALUES (" + null + // No Id is set. The ID will be
+											// returned.
 					", " + 0 + // Alone
 					", " + 0 + // Alone With Species
 					", " + 0 + // Only one in Species
@@ -1374,7 +1520,8 @@ public class SQLfunctions
 					"', '" + null + // Not compatible with fish
 					"', '" + null + // Not compatible with these males
 					"', '" + null + // Not compatible with these females
-					"', '" + CoralTypes.LargePolipedCoral.toString() + // Reef safe
+					"', '" + CoralTypes.LargePolipedCoral.toString() + // Reef
+																		// safe
 					"');";
 
 
@@ -1410,11 +1557,11 @@ public class SQLfunctions
 
 
 	/**
-	 * This function adds a new empty row into the InvertebrateExclusionList table in the database.
-	 * This function should mainly be used when wanting to create a new {@link InvertebrateExclusions} for a fish.
-	 * 
-	 * If the given connection is empty -1 will be returned.
-	 * It also returns -1 if there is a {@link SQLException}.
+	 * This function adds a new empty row into the InvertebrateExclusionList
+	 * table in the database. This function should mainly be used when wanting
+	 * to create a new {@link InvertebrateExclusions} for a fish. If the given
+	 * connection is empty -1 will be returned. It also returns -1 if there is a
+	 * {@link SQLException}.
 	 */
 	public static int databaseAddNewEmptyInvertebrateExclusionsList(
 			Connection con)
@@ -1424,7 +1571,15 @@ public class SQLfunctions
 		if ( con != null )
 		{
 			String fishExclusiona = "INSERT INTO "
-					+ invertebrateExclusionListTable + " VALUES (" + null + // No Id is set. The ID will be returned.
+					+ invertebrateExclusionListTable + " VALUES (" + null + // No
+																			// Id
+																			// is
+																			// set.
+																			// The
+																			// ID
+																			// will
+																			// be
+																			// returned.
 					", " + 0 + // Only one in Species
 					", " + 0 + // Only one fish per liter
 					", '" + null + // Only compatible with
@@ -1466,11 +1621,11 @@ public class SQLfunctions
 
 
 	/**
-	 * This function adds a new empty row into the InvertebrateExclusionList table in the database.
-	 * This function should mainly be used when wanting to create a new InvertebrateExclusion for a invertebrates.
-	 * 
-	 * If the given connection or given {@link InvertebratesObject} is empty false will be returned.
-	 * It also returns false if there is a {@link SQLException}.
+	 * This function adds a new empty row into the InvertebrateExclusionList
+	 * table in the database. This function should mainly be used when wanting
+	 * to create a new InvertebrateExclusion for a invertebrates. If the given
+	 * connection or given {@link InvertebratesObject} is empty false will be
+	 * returned. It also returns false if there is a {@link SQLException}.
 	 */
 	public static boolean databaseAddInvertebrateExclusionsList(Connection con,
 			InvertebratesObject obj)
@@ -1482,10 +1637,14 @@ public class SQLfunctions
 			String fishExclusiona = "INSERT INTO "
 					+ invertebrateExclusionListTable + " VALUES ("
 					+ ex.getInvertebrateExclusionID() + ", "
-					+ ((ex.isOnlyOneInSpecies()) ? 1 : 0) + // Only one in Species
-					", " + ex.getOnlyOneInvertebratePerLiter() + // Only one fish per liter
+					+ ((ex.isOnlyOneInSpecies()) ? 1 : 0) + // Only one in
+															// Species
+					", " + ex.getOnlyOneInvertebratePerLiter() + // Only one
+																	// fish per
+																	// liter
 					", '" + ex.getOnlyCompatibleWith() + // Only compatible with
-					"', '" + ex.getNotCompatibleWith() + // Not compatible with fish
+					"', '" + ex.getNotCompatibleWith() + // Not compatible with
+															// fish
 					"');";
 
 
@@ -1515,12 +1674,12 @@ public class SQLfunctions
 
 
 	/**
-	 * This function adds the given {@link FishObject} to the FishObject table in the database.
-	 * The function also add the {@link FishExclusions} and {@link ObjectParameters} inside the given {@link FishObject} to the
-	 * database.
-	 * 
-	 * If the given connection or given {@link FishObject} is empty false will be returned.
-	 * It also returns false if there is a {@link SQLException}.
+	 * This function adds the given {@link FishObject} to the FishObject table
+	 * in the database. The function also add the {@link FishExclusions} and
+	 * {@link ObjectParameters} inside the given {@link FishObject} to the
+	 * database. If the given connection or given {@link FishObject} is empty
+	 * false will be returned. It also returns false if there is a
+	 * {@link SQLException}.
 	 */
 	public static boolean databaseAddFishObjectAndParametersAndExclusions(
 			Connection con, FishObject obj)
@@ -1570,11 +1729,10 @@ public class SQLfunctions
 
 
 	/**
-	 * This function adds the given {@link CoralObject} to the CoralObject table in the database.
-	 * The function also add the {@link ObjectParameters} inside the given {@link CoralObject} to the
-	 * database.
-	 * 
-	 * If the given connection or given {@link CoralObject} is empty false will be returned.
+	 * This function adds the given {@link CoralObject} to the CoralObject table
+	 * in the database. The function also add the {@link ObjectParameters}
+	 * inside the given {@link CoralObject} to the database. If the given
+	 * connection or given {@link CoralObject} is empty false will be returned.
 	 * It also returns false if there is a {@link SQLException}.
 	 */
 	public static boolean databaseAddCoralObjectAndCoralParameters(
@@ -1622,13 +1780,12 @@ public class SQLfunctions
 
 
 	/**
-	 * This function adds the given {@link InvertebratesObject} to the InvertebratesObject table in the database.
-	 * The function also add the {@link InvertebrateExclusions} and {@link ObjectParameters} inside the given
-	 * {@link InvertebratesObject} to the
-	 * database.
-	 * 
-	 * If the given connection or given {@link InvertebratesObject} is empty false will be returned.
-	 * It also returns false if there is a {@link SQLException}.
+	 * This function adds the given {@link InvertebratesObject} to the
+	 * InvertebratesObject table in the database. The function also add the
+	 * {@link InvertebrateExclusions} and {@link ObjectParameters} inside the
+	 * given {@link InvertebratesObject} to the database. If the given
+	 * connection or given {@link InvertebratesObject} is empty false will be
+	 * returned. It also returns false if there is a {@link SQLException}.
 	 */
 	public static boolean databaseAddInvertebrateObjectAndParametersAndExclusions(
 			Connection con, InvertebratesObject obj)
@@ -1680,12 +1837,11 @@ public class SQLfunctions
 
 
 	/**
-	 * This function attempts to retrieve a {@link CoralObject} from with the given ID from the database.
-	 * 
-	 * If no row is found in the database a {@link ObjectIDnotFoundInDatabaseException} exception is thrown.
-	 * 
-	 * If the given connection or given coralID is smaller then 1 null will be returned.
-	 * It also returns false if there is a {@link SQLException}.
+	 * This function attempts to retrieve a {@link CoralObject} from with the
+	 * given ID from the database. If no row is found in the database a
+	 * {@link ObjectIDnotFoundInDatabaseException} exception is thrown. If the
+	 * given connection or given coralID is smaller then 1 null will be
+	 * returned. It also returns false if there is a {@link SQLException}.
 	 * 
 	 * @throws ObjectIDnotFoundInDatabaseException
 	 */
@@ -1732,11 +1888,10 @@ public class SQLfunctions
 
 
 	/**
-	 * This function attempts to retrieve a {@link InvertebratesObject} from with the given ID from the database.
-	 * 
-	 * If no row is found in the database a {@link ObjectIDnotFoundInDatabaseException} exception is thrown.
-	 * 
-	 * If the given connection or given invID is smaller then 1 null will be returned.
+	 * This function attempts to retrieve a {@link InvertebratesObject} from
+	 * with the given ID from the database. If no row is found in the database a
+	 * {@link ObjectIDnotFoundInDatabaseException} exception is thrown. If the
+	 * given connection or given invID is smaller then 1 null will be returned.
 	 * It also returns false if there is a {@link SQLException}.
 	 */
 	public static InvertebratesObject databaseGetInvertebrateObject(
@@ -1784,11 +1939,10 @@ public class SQLfunctions
 
 
 	/**
-	 * This function attempts to retrieve a {@link InvertebratesObject} from with the given ID from the database.
-	 * 
-	 * If no row is found in the database a {@link ObjectIDnotFoundInDatabaseException} exception is thrown.
-	 * 
-	 * If the given connection or given invID is smaller then 1 null will be returned.
+	 * This function attempts to retrieve a {@link InvertebratesObject} from
+	 * with the given ID from the database. If no row is found in the database a
+	 * {@link ObjectIDnotFoundInDatabaseException} exception is thrown. If the
+	 * given connection or given invID is smaller then 1 null will be returned.
 	 * It also returns false if there is a {@link SQLException}.
 	 * 
 	 * @throws ObjectIDnotFoundInDatabaseException
@@ -1841,11 +1995,10 @@ public class SQLfunctions
 
 
 	/**
-	 * This function attempts to retrieve a {@link InvertebratesObject} from with the given ID from the database.
-	 * 
-	 * If no row is found in the database a {@link ObjectIDnotFoundInDatabaseException} exception is thrown.
-	 * 
-	 * If the given connection or given invID is smaller then 1 null will be returned.
+	 * This function attempts to retrieve a {@link InvertebratesObject} from
+	 * with the given ID from the database. If no row is found in the database a
+	 * {@link ObjectIDnotFoundInDatabaseException} exception is thrown. If the
+	 * given connection or given invID is smaller then 1 null will be returned.
 	 * It also returns false if there is a {@link SQLException}.
 	 * 
 	 * @throws ObjectIDnotFoundInDatabaseException
@@ -1924,7 +2077,6 @@ public class SQLfunctions
 
 	/**
 	 * TODO - Description
-	 * 
 	 */
 	private static AbstractObject getObjectFromResultSet(Connection con,
 			ResultSet rs, Class objectType) throws MoreTheOneResultObject,
@@ -1935,8 +2087,8 @@ public class SQLfunctions
 		if ( objectType.equals(CoralObject.class) )
 		{
 			// Gets the objects parameters
-			ObjectParameters objParameter = databaseGetParameter(con, rs
-					.getInt("ObjectParametersID"));
+			ObjectParameters objParameter = databaseGetParameter(con,
+					rs.getInt("ObjectParametersID"));
 
 			// If the parameters object is not null
 			if ( objParameter != null )
@@ -1963,8 +2115,8 @@ public class SQLfunctions
 		else if ( objectType.equals(InvertebratesObject.class) )
 		{
 			// Gets the objects parameters
-			ObjectParameters objParameter = databaseGetParameter(con, rs
-					.getInt("ObjectParametersID"));
+			ObjectParameters objParameter = databaseGetParameter(con,
+					rs.getInt("ObjectParametersID"));
 
 			// Gets the objects exclusions
 			InvertebrateExclusions invEx = databaseGetInvertebrateExclusions(
@@ -1974,9 +2126,9 @@ public class SQLfunctions
 			if ( objParameter != null && invEx != null )
 			{
 				// Created a new object
-				InvertebratesObject obj = new InvertebratesObject(rs
-						.getInt("InvertebrateObjectID"), rs
-						.getString("Species"), rs.getString("Description"),
+				InvertebratesObject obj = new InvertebratesObject(
+						rs.getInt("InvertebrateObjectID"),
+						rs.getString("Species"), rs.getString("Description"),
 						InvertebratesTypes.valueOf(rs
 								.getString("InvertebratesType")), objParameter,
 						invEx);
@@ -2000,19 +2152,19 @@ public class SQLfunctions
 		else if ( objectType.equals(FishObject.class) )
 		{
 			// Gets the objects parameters
-			ObjectParameters objParameter = databaseGetParameter(con, rs
-					.getInt("ObjectParametersID"));
+			ObjectParameters objParameter = databaseGetParameter(con,
+					rs.getInt("ObjectParametersID"));
 
 			// Gets the objects exclusions
-			FishExclusions fishEx = databaseGetFishExclusions(con, rs
-					.getInt("FishExclusionID"));
+			FishExclusions fishEx = databaseGetFishExclusions(con,
+					rs.getInt("FishExclusionID"));
 
 			// If the parameters object and exclusions are not null
 			if ( objParameter != null && fishEx != null )
 			{
 				// Created a new object
-				FishObject obj = new FishObject(rs.getInt("FishObjectID"), rs
-						.getString("Species"), rs.getString("Description"),
+				FishObject obj = new FishObject(rs.getInt("FishObjectID"),
+						rs.getString("Species"), rs.getString("Description"),
 						FishGender.UNISEX, rs.getDouble("Size"), objParameter,
 						fishEx);
 
@@ -2037,10 +2189,10 @@ public class SQLfunctions
 
 
 	/**
-	 * This function attempts to retrieve a {@link ObjectParameters} with the given ID from the database.
-	 * 
-	 * If the given connection or given parID is smaller then 1 null will be returned.
-	 * It also returns false if there is a {@link SQLException}.
+	 * This function attempts to retrieve a {@link ObjectParameters} with the
+	 * given ID from the database. If the given connection or given parID is
+	 * smaller then 1 null will be returned. It also returns false if there is a
+	 * {@link SQLException}.
 	 * 
 	 * @throws ObjectIDnotFoundInDatabaseException
 	 */
@@ -2086,8 +2238,8 @@ public class SQLfunctions
 					double[] othersS = { rs.getDouble("OthersSizeLow"),
 							rs.getDouble("OthersSizeHigh") };
 
-					objParameter = new ObjectParameters(rs
-							.getInt("ObjectParametersID"), sal, ph, gh, temp);
+					objParameter = new ObjectParameters(
+							rs.getInt("ObjectParametersID"), sal, ph, gh, temp);
 					objParameter.setMagnesium(magnesium);
 					objParameter.setCalcium(calcium);
 					objParameter.setSpaceNeeded(space);
@@ -2110,10 +2262,10 @@ public class SQLfunctions
 
 
 	/**
-	 * This function attempts to get a {@link FishExclusions} with the given ID from the database.
-	 * 
-	 * If the given connection or given exID is smaller then 1 null will be returned.
-	 * It also returns false if there is a {@link SQLException}.
+	 * This function attempts to get a {@link FishExclusions} with the given ID
+	 * from the database. If the given connection or given exID is smaller then
+	 * 1 null will be returned. It also returns false if there is a
+	 * {@link SQLException}.
 	 * 
 	 * @throws ObjectIDnotFoundInDatabaseException
 	 */
@@ -2187,10 +2339,8 @@ public class SQLfunctions
 					ex.setMinimumSchoolSize(MinimumSchoolSize);
 					ex.setOnlyCompatibleWith(OnlyCompatibleWith);
 					ex.setNotCompatibleWith(NotCompatibleWith);
-					ex
-							.setNotCompatibleWithTheseMales(NotCompatibleWithTheseMales);
-					ex
-							.setNotCompatibleWithTheseFemales(NotCompatibleWithTheseFemales);
+					ex.setNotCompatibleWithTheseMales(NotCompatibleWithTheseMales);
+					ex.setNotCompatibleWithTheseFemales(NotCompatibleWithTheseFemales);
 					ex.setReefSafeString(NotReefSafe);
 				}// end while loop
 
@@ -2212,10 +2362,10 @@ public class SQLfunctions
 
 
 	/**
-	 * This function attempts to get a {@link InvertebrateExclusions} with the given ID from the database.
-	 * 
-	 * If the given connection or given exID is smaller then 1 null will be returned.
-	 * It also returns false if there is a {@link SQLException}.
+	 * This function attempts to get a {@link InvertebrateExclusions} with the
+	 * given ID from the database. If the given connection or given exID is
+	 * smaller then 1 null will be returned. It also returns false if there is a
+	 * {@link SQLException}.
 	 * 
 	 * @throws ObjectIDnotFoundInDatabaseException
 	 */
@@ -2259,8 +2409,7 @@ public class SQLfunctions
 
 					ex = new InvertebrateExclusions(exID);
 					ex.setOnlyOneInSpecies(OnlyOneInFamily);
-					ex
-							.setOnlyOneInvertebratePerLiter(OnlyOneInvertebratePerLiter);
+					ex.setOnlyOneInvertebratePerLiter(OnlyOneInvertebratePerLiter);
 					ex.setOnlyCompatibleWith(OnlyCompatibleWith);
 					ex.setNotCompatibleWith(NotCompatibleWith);
 				}// end while loop
