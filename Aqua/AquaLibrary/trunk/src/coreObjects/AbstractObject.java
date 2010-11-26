@@ -21,7 +21,7 @@ public abstract class AbstractObject
 	/**
 	 * The popular name of the fish.
 	 */
-	private String popName;
+	private String populareName;
 
 
 	/**
@@ -46,6 +46,16 @@ public abstract class AbstractObject
 	 * The water parameters regarding the object.
 	 */
 	private ObjectParameters parameters;
+
+
+
+	/**
+	 * This private, empty constructor is placed here for Hibernate.
+	 */
+	private AbstractObject()
+	{
+
+	}
 
 
 
@@ -85,7 +95,7 @@ public abstract class AbstractObject
 	 */
 	public String getPopulareName()
 	{
-		return popName;
+		return populareName;
 	}
 
 
@@ -139,6 +149,15 @@ public abstract class AbstractObject
 
 
 
+	// GETTERS
+	/**
+	 * This function is meant to be used by Hibernate for ID setting.
+	 */
+	private void setObjectID(int id)
+	{
+		objectID = id;
+	}
+
 
 	/**
 	 * TODO - Description NEEDED!
@@ -148,7 +167,7 @@ public abstract class AbstractObject
 	 */
 	public void setPopulareName(String popname)
 	{
-		this.popName = popname;
+		this.populareName = popname;
 	}
 
 
@@ -208,6 +227,7 @@ public abstract class AbstractObject
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString()
