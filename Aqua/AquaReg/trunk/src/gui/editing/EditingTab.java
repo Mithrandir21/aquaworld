@@ -32,6 +32,12 @@ public class EditingTab extends JPanel
 
 	public static JList groupsInvertebrateList = new JList();
 
+	private String[][] fishData;
+
+	private String[][] coralData;
+
+	private String[][] invertebrateData;
+
 
 	public EditingTab()
 	{
@@ -57,17 +63,29 @@ public class EditingTab extends JPanel
 		// Gets the connection to the database
 		Connection con = AquaReg.getConnectionToDB();
 
-		// Gets all the names of the objects in the fish database
-		String[] fishNames = SQLfunctions.databaseGetObjectNamesFromTable(con,
+
+		// Get the data for the objects
+		fishData = SQLfunctions.databaseGetObjectIDsandNamesFromTable(con,
 				FishObject.class);
 
-		// Gets all the names of the objects in the coral database
-		String[] coralNames = SQLfunctions.databaseGetObjectNamesFromTable(con,
+		coralData = SQLfunctions.databaseGetObjectIDsandNamesFromTable(con,
 				CoralObject.class);
 
+		invertebrateData = SQLfunctions.databaseGetObjectIDsandNamesFromTable(
+				con, InvertebratesObject.class);
+
+
+
+		// Gets all the names of the objects in the fish database
+		String[] fishNames = getNameStrings(fishData);
+
+		// Gets all the names of the objects in the coral database
+		String[] coralNames = getNameStrings(coralData);
+
 		// Gets all the names of the objects in the invertebrate database
-		String[] invertebrateNames = SQLfunctions
-				.databaseGetObjectNamesFromTable(con, InvertebratesObject.class);
+		String[] invertebrateNames = getNameStrings(invertebrateData);
+
+
 		AquaReg.closeConnection(con);
 
 		// Sets all the names in the JList
@@ -151,7 +169,9 @@ public class EditingTab extends JPanel
 	{
 		/*
 		 * (non-Javadoc)
-		 * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
+		 * @see
+		 * javax.swing.event.ListSelectionListener#valueChanged(javax.swing.
+		 * event.ListSelectionEvent)
 		 */
 		@Override
 		public void valueChanged(ListSelectionEvent e)
@@ -164,43 +184,71 @@ public class EditingTab extends JPanel
 
 			JList list = (JList) e.getSource();
 
-			// Gets the name that is displayed, or null if nothing is selected
-			String selectedGroupName = (String) list.getSelectedValue();
+			// Now the type of selected object will be determined
+			Class objClass = null;
+			String[][] data = null;
 
-			if ( selectedGroupName != null )
+
+			if ( list == groupsFishList )
 			{
-				Connection con = AquaReg.getConnectionToDB();
-				try
+				objClass = FishObject.class;
+				data = fishData;
+			}
+			else if ( list == groupsCoralList )
+			{
+				objClass = CoralObject.class;
+				data = coralData;
+			}
+			else if ( list == groupsInvertebrateList )
+			{
+				objClass = InvertebratesObject.class;
+				data = invertebrateData;
+			}
+
+
+			// The object class must be set
+			if ( objClass != null )
+			{
+				// Gets the name that is displayed, or null if nothing is
+				// selected
+				String selectedGroupName = (String) list.getSelectedValue();
+
+				// Here the ID of the selected Object is found
+
+				if ( selectedGroupName != null )
 				{
+					Connection con = AquaReg.getConnectionToDB();
 
-
-					if ( e.getSource().equals(groupsFishList) )
+					try
 					{
-						AbstractObject obj = SQLfunctions.databaseGetObject(
-								con, 1, FishObject.class);
+						if ( e.getSource().equals(groupsFishList) )
+						{
+							AbstractObject obj = SQLfunctions
+									.databaseGetObject(con, 1, objClass);
 
-						EditingFrame.editingObjectView.populateFields(obj);
+							EditingFrame.editingObjectView.populateFields(obj);
 
-						EditingFrame.editingObject = obj;
+							EditingFrame.editingObject = obj;
+						}
+						else if ( e.getSource().equals(groupsCoralList) )
+						{
+							System.out.println("coral");
+						}
+						else if ( e.getSource().equals(groupsInvertebrateList) )
+						{
+							System.out.println("invertebrate");
+						}
 					}
-					else if ( e.getSource().equals(groupsCoralList) )
+					catch ( MoreTheOneResultObject e1 )
 					{
-						System.out.println("coral");
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
-					else if ( e.getSource().equals(groupsInvertebrateList) )
+					catch ( ObjectIDnotFoundInDatabaseException e1 )
 					{
-						System.out.println("invertebrate");
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
-				}
-				catch ( MoreTheOneResultObject e1 )
-				{
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				catch ( ObjectIDnotFoundInDatabaseException e1 )
-				{
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
 				}
 			}
 		}
@@ -208,5 +256,31 @@ public class EditingTab extends JPanel
 
 
 
+	/**
+	 * This function takes a mulit-dim array and returns an array of the second
+	 * index.
+	 */
+	public static String[] getNameStrings(String[][] data)
+	{
+		if ( data != null && data[0].length > 1 )
+		{
+			String[] array = new String[data.length];
 
+			for ( int i = 0; i < data.length; i++ )
+			{
+				if ( data[i] != null )
+				{
+					if ( data[i][0] != null && data[i][1] != null )
+					{
+						array[i] = data[i][1];
+					}
+				}
+			}
+
+			return array;
+		}
+
+
+		return null;
+	}
 }

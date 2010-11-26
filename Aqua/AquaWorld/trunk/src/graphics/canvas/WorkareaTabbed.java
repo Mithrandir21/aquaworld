@@ -117,9 +117,9 @@ public class WorkareaTabbed extends JTabbedPane implements ActionListener
 	public void createNewCanvasTab(Tank tank)
 	{
 		WorkareaCanvas canvas = new WorkareaCanvas(tank);
-		
+
 		WorkareaSceneScroll canvasScroll = new WorkareaSceneScroll(canvas);
-		
+
 		this.createNewCanvasTab(canvasScroll, -1);
 
 		this.setSelectedComponent(canvasScroll);
@@ -297,7 +297,8 @@ public class WorkareaTabbed extends JTabbedPane implements ActionListener
 
 	/**
 	 * This function removes the Tab with the given name from this JTabbedPane.
-	 * It can also check, if the given boolean is set to true, check the {@link WorkareaCanvas} which is inside the tab. If the
+	 * It can also check, if the given boolean is set to true, check the
+	 * {@link WorkareaCanvas} which is inside the tab. If the
 	 * {@link WorkareaCanvas} has been altered and not saved, it will ask the
 	 * user if they wish to save the {@link WorkareaCanvas}.
 	 * 
@@ -336,7 +337,8 @@ public class WorkareaTabbed extends JTabbedPane implements ActionListener
 
 	/**
 	 * This function removes the Tab with the given name from this JTabbedPane.
-	 * It can also check, if the given boolean is set to true, check the {@link WorkareaCanvas} which is inside the tab. If the
+	 * It can also check, if the given boolean is set to true, check the
+	 * {@link WorkareaCanvas} which is inside the tab. If the
 	 * {@link WorkareaCanvas} has been altered and not saved, it will ask the
 	 * user if they wish to save the {@link WorkareaCanvas}.
 	 * 
@@ -429,7 +431,8 @@ public class WorkareaTabbed extends JTabbedPane implements ActionListener
 	 * Javadoc-TODO - Description
 	 * 
 	 * @param canvasName
-	 * @return Returns true if there exists a tab with the given name and false there does not.
+	 * @return Returns true if there exists a tab with the given name and false
+	 *         there does not.
 	 */
 	public boolean existsTabWithGivenName(String canvasName)
 	{
@@ -461,7 +464,8 @@ public class WorkareaTabbed extends JTabbedPane implements ActionListener
 
 
 	/**
-	 * Sets the {@link WorkareaCanvas} with the given name, if it exists, as the {@link WorkareaCanvas} visible tab.
+	 * Sets the {@link WorkareaCanvas} with the given name, if it exists, as the
+	 * {@link WorkareaCanvas} visible tab.
 	 */
 	public void bringCanvasToFront(String canvasName)
 	{

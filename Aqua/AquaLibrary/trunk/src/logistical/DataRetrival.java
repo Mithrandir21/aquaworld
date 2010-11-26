@@ -72,7 +72,6 @@ public class DataRetrival
 
 	/**
 	 * TODO - Description
-	 * 
 	 */
 	public static String getValidTextString(String text)
 	{
@@ -250,7 +249,6 @@ public class DataRetrival
 
 	/**
 	 * TODO - Description
-	 * 
 	 */
 	public static String getToStringObject(String genus, String species)
 	{
