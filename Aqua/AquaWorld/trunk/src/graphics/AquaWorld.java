@@ -848,6 +848,8 @@ public class AquaWorld extends JFrame
 
 	public static void createAndPopulateDB()
 	{
+		long start = System.nanoTime();    
+		
 		CirculationPump pump = new CirculationPump("PumpTest", "PumpTestDesc",
 				2000);
 
@@ -1162,6 +1164,8 @@ public class AquaWorld extends JFrame
 		}
 
 		System.out.println("Ending");
+		long elapsedTime = System.nanoTime() - start;
+		System.out.println(elapsedTime);
 		System.exit(0);
 	}
 }

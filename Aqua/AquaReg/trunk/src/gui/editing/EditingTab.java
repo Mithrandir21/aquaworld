@@ -138,8 +138,6 @@ public class EditingTab extends JPanel
 
 
 
-
-
 		tabbed.addTab("Fish", groupsFishList);
 		tabbed.addTab("Coral", groupsCoralList);
 		tabbed.addTab("Invertebrate", groupsInvertebrateList);
@@ -182,6 +180,9 @@ public class EditingTab extends JPanel
 				return;
 			}
 
+			// Resets all the fields when something is selected.
+			EditingFrame.editingObjectView.resetAction();
+
 			JList list = (JList) e.getSource();
 
 			// Now the type of selected object will be determined
@@ -207,37 +208,28 @@ public class EditingTab extends JPanel
 
 
 			// The object class must be set
-			if ( objClass != null )
+			if ( objClass != null && data != null )
 			{
 				// Gets the name that is displayed, or null if nothing is
 				// selected
 				String selectedGroupName = (String) list.getSelectedValue();
 
-				// Here the ID of the selected Object is found
-
 				if ( selectedGroupName != null )
 				{
+					// Here the ID of the selected Object is found
+					int index = getNameID(data, selectedGroupName);
+
 					Connection con = AquaReg.getConnectionToDB();
 
 					try
 					{
-						if ( e.getSource().equals(groupsFishList) )
-						{
-							AbstractObject obj = SQLfunctions
-									.databaseGetObject(con, 1, objClass);
+						// Gets the Object for the DB(exceptions thrown).
+						AbstractObject obj = SQLfunctions.databaseGetObject(
+								con, index, objClass);
 
-							EditingFrame.editingObjectView.populateFields(obj);
+						EditingFrame.editingObjectView.populateFields(obj);
 
-							EditingFrame.editingObject = obj;
-						}
-						else if ( e.getSource().equals(groupsCoralList) )
-						{
-							System.out.println("coral");
-						}
-						else if ( e.getSource().equals(groupsInvertebrateList) )
-						{
-							System.out.println("invertebrate");
-						}
+						EditingFrame.editingObject = obj;
 					}
 					catch ( MoreTheOneResultObject e1 )
 					{
@@ -252,6 +244,39 @@ public class EditingTab extends JPanel
 				}
 			}
 		}
+	}
+
+
+
+	/**
+	 * This function returns the index in the given array where the first given
+	 * name can be found. Returns -1 if the name is not found or the array or
+	 * name is null. If will also return -1 if the place where IDs are contained
+	 * contains something other then an Integer.
+	 */
+	public static int getNameID(String[][] data, String name)
+	{
+		if ( data != null && name != null )
+		{
+			for ( int i = 0; i < data.length; i++ )
+			{
+				// If the index is not null and it equals the given names.
+				if ( data[i] != null && data[i][1].equals(name) )
+				{
+					try
+					{
+						return Integer.parseInt(data[i][0]);
+					}
+					catch ( NumberFormatException e )
+					{
+						return -1;
+					}
+				}
+			}
+		}
+
+
+		return -1;
 	}
 
 

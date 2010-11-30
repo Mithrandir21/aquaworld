@@ -1345,6 +1345,30 @@ public class SQLfunctions
 	}
 
 
+	// /**
+	// * TODO - Description
+	// */
+	// public static boolean databaseAddObjectParameters(Connection con,
+	// double[] sal, double[] ph, double[] gh, double[] kh, double[] temp,
+	// double[] magnesium, double[] calcium, double spaceNeeded,
+	// double[] othersSize)
+	// {
+	// return false;
+	// }
+	//
+	// /**
+	// * This function attempts to put the given values in
+	// */
+	// public static boolean databaseAddObjectParameters(Connection con,
+	// int objParID, double[] sal, double[] ph, double[] gh, double[] kh,
+	// double[] temp, double[] magnesium, double[] calcium,
+	// double spaceNeeded, double[] othersSize)
+	// {
+	// return false;
+	// }
+
+
+
 	/**
 	 * This function add the {@link ObjectParameters} contained inside the given
 	 * {@link AbstractObject} into the ObjectParameters table in the database.
@@ -2060,11 +2084,6 @@ public class SQLfunctions
 					// if the error message is "out of memory",
 					// it probably means no database file is found
 					System.err.println(e.getMessage());
-				}
-				catch ( Exception e )
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
 			}
 		}

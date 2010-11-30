@@ -68,7 +68,7 @@ public class EditingPanel extends JPanel implements ActionListener
 		d.gridx = 0; // aligned with button 2
 		this.add(GraficalFunctions.getLowHighPanel("Salinity", this, true), d);
 
-	d.gridx = 1;
+		d.gridx = 1;
 		this.add(GraficalFunctions.getLowHighPanel("PH", this, true), d);
 		// this.add(panel1, c);
 
