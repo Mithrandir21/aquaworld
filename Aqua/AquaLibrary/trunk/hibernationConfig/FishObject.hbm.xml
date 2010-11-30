@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping package="coreObjects.Fish">
+
+  <class name="FishObject">
+  		<id name="objectID" column="FishObjectID" type="int">
+            <generator class="native"/>
+        </id>
+        <property name="description" type="string"/>
+        <property name="genusName" type="string"/>
+        <property name="populareName" type="string"/>
+        <property name="size" type="double"/>
+        <property name="speciesName" type="string" column="Species"/>
+        
+  </class>
+
+</hibernate-mapping>
