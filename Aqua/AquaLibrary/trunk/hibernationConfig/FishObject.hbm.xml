@@ -14,7 +14,8 @@
         <property name="populareName" type="string"/>
         <property name="size" type="double"/>
         <property name="speciesName" type="string" column="Species"/>
-        
+        <many-to-one name="FishExclusions" class="FishExclusions" column="FishEclusionID" not-null="true" cascade="all" unique="true" />
+        <many-to-one name="ObjectParameters" class="ObjectParameters" column="ObjectParametersID" not-null="true" cascade="all" unique="true" />
   </class>
 
 </hibernate-mapping>

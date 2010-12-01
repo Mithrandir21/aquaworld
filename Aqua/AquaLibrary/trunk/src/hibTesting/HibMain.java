@@ -61,14 +61,16 @@ public class HibMain
 		parameter.setCalcium(calcium);
 		FishExclusions fishEx = new FishExclusions(2);
 
-		FishObject fish = new FishObject(3, "Gullfiskius", "...Gullfish",
+		FishObject fish = new FishObject(80, "Gullfiskius", "...Gullfish",
 				FishGender.UNISEX, 7.5, parameter, fishEx);
 		fish.setGenusName("GullFiskGenus");
 		fish.setPopulareName("PopFishName");
 
 
 
+		System.out.println(fish.getObjectID());
 		session.save(fish);
+		System.out.println(fish.getObjectID());
 
 		session.getTransaction().commit();
 
