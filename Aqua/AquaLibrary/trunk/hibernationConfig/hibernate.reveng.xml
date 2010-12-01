@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
+
+<hibernate-reverse-engineering>
+  <table-filter match-catalog="aquaworld" match-name="coralcampaign"/>
+  <table-filter match-catalog="aquaworld" match-name="coralobject"/>
+  <table-filter match-catalog="aquaworld" match-name="fishcampaign"/>
+  <table-filter match-catalog="aquaworld" match-name="fishexclusionlist"/>
+  <table-filter match-catalog="aquaworld" match-name="fishobject"/>
+  <table-filter match-catalog="aquaworld" match-name="invertebratecampaign"/>
+  <table-filter match-catalog="aquaworld" match-name="invertebrateexclusionlist"/>
+  <table-filter match-catalog="aquaworld" match-name="invertebrateobject"/>
+  <table-filter match-catalog="aquaworld" match-name="objectgroup"/>
+  <table-filter match-catalog="aquaworld" match-name="objectparameters"/>
+</hibernate-reverse-engineering>
