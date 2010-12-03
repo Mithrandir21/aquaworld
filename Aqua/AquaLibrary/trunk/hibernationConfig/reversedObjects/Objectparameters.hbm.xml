@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 02.des.2010 09:47:40 by Hibernate Tools 3.2.4.GA -->
+<hibernate-mapping>
+    <class name="Objectparameters" table="objectparameters" catalog="aquaworld">
+        <id name="objectParametersId" type="java.lang.Integer">
+            <column name="ObjectParametersID" />
+            <generator class="identity" />
+        </id>
+        <property name="salinityLow" type="double">
+            <column name="SalinityLow" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="salinityHigh" type="double">
+            <column name="SalinityHigh" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="phlow" type="double">
+            <column name="PHLow" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="phhigh" type="double">
+            <column name="PHHigh" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="ghlow" type="double">
+            <column name="GHLow" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="ghhigh" type="double">
+            <column name="GHHigh" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="temperatureLow" type="double">
+            <column name="TemperatureLow" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="temperatureHigh" type="double">
+            <column name="TemperatureHigh" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="khlow" type="java.lang.Double">
+            <column name="KHLow" precision="22" scale="0" />
+        </property>
+        <property name="khhigh" type="java.lang.Double">
+            <column name="KHHigh" precision="22" scale="0" />
+        </property>
+        <property name="magnesiumLow" type="java.lang.Double">
+            <column name="MagnesiumLow" precision="22" scale="0" />
+        </property>
+        <property name="magnesiumHigh" type="java.lang.Double">
+            <column name="MagnesiumHigh" precision="22" scale="0" />
+        </property>
+        <property name="calciumLow" type="java.lang.Double">
+            <column name="CalciumLow" precision="22" scale="0" />
+        </property>
+        <property name="calciumHigh" type="java.lang.Double">
+            <column name="CalciumHigh" precision="22" scale="0" />
+        </property>
+        <property name="spaceNeeded" type="java.lang.Double">
+            <column name="SpaceNeeded" precision="22" scale="0" />
+        </property>
+        <property name="othersSizeLow" type="java.lang.Double">
+            <column name="OthersSizeLow" precision="22" scale="0" />
+        </property>
+        <property name="othersSizeHigh" type="java.lang.Double">
+            <column name="OthersSizeHigh" precision="22" scale="0" />
+        </property>
+        <set name="invertebrateobjects" inverse="true" lazy="true" table="invertebrateobject" fetch="select">
+            <key>
+                <column name="ObjectParametersID" not-null="true" />
+            </key>
+            <one-to-many class="Invertebrateobject" />
+        </set>
+        <set name="coralobjects" inverse="true" lazy="true" table="coralobject" fetch="select">
+            <key>
+                <column name="ObjectParametersID" not-null="true" />
+            </key>
+            <one-to-many class="Coralobject" />
+        </set>
+        <set name="fishobjects" inverse="true" lazy="true" table="fishobject" fetch="select">
+            <key>
+                <column name="ObjectParametersID" not-null="true" />
+            </key>
+            <one-to-many class="Fishobject" />
+        </set>
+    </class>
+</hibernate-mapping>

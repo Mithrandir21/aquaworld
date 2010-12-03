@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 02.des.2010 09:47:40 by Hibernate Tools 3.2.4.GA -->
+<hibernate-mapping>
+    <class name="Objectgroup" table="objectgroup" catalog="aquaworld">
+        <id name="objectGroupId" type="java.lang.Integer">
+            <column name="ObjectGroupID" />
+            <generator class="identity" />
+        </id>
+        <property name="groupName" type="string">
+            <column name="GroupName" length="65535" not-null="true" />
+        </property>
+        <property name="description" type="string">
+            <column name="Description" length="65535" not-null="true" />
+        </property>
+        <property name="groupFishObjects" type="string">
+            <column name="GroupFishObjects" length="65535" />
+        </property>
+        <property name="groupCoralObjects" type="string">
+            <column name="GroupCoralObjects" length="65535" />
+        </property>
+        <property name="groupInvertebrateObjects" type="string">
+            <column name="GroupInvertebrateObjects" length="65535" />
+        </property>
+    </class>
+</hibernate-mapping>

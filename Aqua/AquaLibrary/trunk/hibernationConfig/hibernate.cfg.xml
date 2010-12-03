@@ -28,7 +28,16 @@
         <property name="hbm2ddl.auto">update</property>
         
         
-        <mapping resource="FishObject.hbm.xml"/>
+        <!-- <mapping resource="reversedObjects/Coralcampaign.hbm.xml"/> -->
+        <mapping resource="reversedObjects/Coralobject.hbm.xml"/>
+        <!-- <mapping resource="reversedObjects/Fishcampaign.hbm.xml"/> -->
+        <mapping resource="reversedObjects/Fishexclusionlist.hbm.xml"/>
+        <mapping resource="reversedObjects/Fishobject.hbm.xml"/>
+        <!-- <mapping resource="reversedObjects/Invertebratecampaign.hbm.xml"/> -->
+        <mapping resource="reversedObjects/Invertebrateexclusionlist.hbm.xml"/>
+        <mapping resource="reversedObjects/Invertebrateobject.hbm.xml"/>
+        <mapping resource="reversedObjects/Objectgroup.hbm.xml"/>
+        <mapping resource="reversedObjects/Objectparameters.hbm.xml"/>
         
     </session-factory>
 </hibernate-configuration>

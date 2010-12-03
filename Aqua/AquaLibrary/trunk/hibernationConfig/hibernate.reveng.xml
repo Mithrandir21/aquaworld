@@ -2,14 +2,16 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
 
 <hibernate-reverse-engineering>
-  <table-filter match-catalog="aquaworld" match-name="coralcampaign"/>
-  <table-filter match-catalog="aquaworld" match-name="coralobject"/>
-  <table-filter match-catalog="aquaworld" match-name="fishcampaign"/>
-  <table-filter match-catalog="aquaworld" match-name="fishexclusionlist"/>
-  <table-filter match-catalog="aquaworld" match-name="fishobject"/>
-  <table-filter match-catalog="aquaworld" match-name="invertebratecampaign"/>
-  <table-filter match-catalog="aquaworld" match-name="invertebrateexclusionlist"/>
-  <table-filter match-catalog="aquaworld" match-name="invertebrateobject"/>
-  <table-filter match-catalog="aquaworld" match-name="objectgroup"/>
-  <table-filter match-catalog="aquaworld" match-name="objectparameters"/>
+
+	<table-filter match-name=".*" />
+	<table catalog="aquaworld" name="invertebratecampaign"></table>
+	<table catalog="aquaworld" name="fishobject"></table>
+	<table catalog="aquaworld" name="objectparameters"></table>
+	<table catalog="aquaworld" name="objectgroup"></table>
+	<table catalog="aquaworld" name="invertebrateobject"></table>
+	<table catalog="aquaworld" name="fishexclusionlist"></table>
+	<table catalog="aquaworld" name="coralcampaign"></table>
+	<table catalog="aquaworld" name="coralobject"></table>
+	<table catalog="aquaworld" name="invertebrateexclusionlist"></table>
+	<table catalog="aquaworld" name="fishcampaign"></table>
 </hibernate-reverse-engineering>
