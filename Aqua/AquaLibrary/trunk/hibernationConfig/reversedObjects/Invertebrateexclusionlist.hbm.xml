@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 02.des.2010 09:47:40 by Hibernate Tools 3.2.4.GA -->
+<hibernate-mapping>
+    <class name="Invertebrateexclusionlist" table="invertebrateexclusionlist" catalog="aquaworld">
+        <id name="invertebrateExclusionId" type="java.lang.Integer">
+            <column name="InvertebrateExclusionID" />
+            <generator class="identity" />
+        </id>
+        <property name="onlyOneInFamily" type="boolean">
+            <column name="OnlyOneInFamily" not-null="true" />
+        </property>
+        <property name="onlyOneInvertebratePerLiter" type="java.lang.Integer">
+            <column name="OnlyOneInvertebratePerLiter" />
+        </property>
+        <property name="onlyCompatibleWith" type="string">
+            <column name="OnlyCompatibleWith" length="65535" />
+        </property>
+        <property name="notCompatibleWith" type="string">
+            <column name="NotCompatibleWith" length="65535" />
+        </property>
+        <set name="invertebrateobjects" inverse="true" lazy="true" table="invertebrateobject" fetch="select">
+            <key>
+                <column name="InvertebrateExclusionID" not-null="true" />
+            </key>
+            <one-to-many class="Invertebrateobject" />
+        </set>
+    </class>
+</hibernate-mapping>

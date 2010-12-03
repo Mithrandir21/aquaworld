@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 02.des.2010 09:47:40 by Hibernate Tools 3.2.4.GA -->
+<hibernate-mapping>
+    <class name="Coralobject" table="coralobject" catalog="aquaworld">
+        <id name="coralObjectId" type="java.lang.Integer">
+            <column name="CoralObjectID" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="objectparameters" class="Objectparameters" fetch="select">
+            <column name="ObjectParametersID" not-null="true" />
+        </many-to-one>
+        <property name="popularName" type="string">
+            <column name="PopularName" length="65535" />
+        </property>
+        <property name="species" type="string">
+            <column name="Species" length="65535" not-null="true" />
+        </property>
+        <property name="genus" type="string">
+            <column name="Genus" length="65535" />
+        </property>
+        <property name="description" type="string">
+            <column name="Description" length="65535" />
+        </property>
+        <property name="coralType" type="string">
+            <column name="CoralType" length="65535" not-null="true" />
+        </property>
+        <!-- <set name="coralcampaigns" inverse="true" lazy="true" table="coralcampaign" fetch="select">
+            <key>
+                <column name="CoralObjectID" not-null="true" />
+            </key>
+            <one-to-many class="Coralcampaign" />
+        </set> -->
+    </class>
+</hibernate-mapping>

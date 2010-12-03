@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 02.des.2010 09:47:40 by Hibernate Tools 3.2.4.GA -->
+<hibernate-mapping>
+    <class name="Fishexclusionlist" table="fishexclusionlist" catalog="aquaworld">
+        <id name="fishExclusionId" type="java.lang.Integer">
+            <column name="FishExclusionID" />
+            <generator class="identity" />
+        </id>
+        <property name="alone" type="boolean">
+            <column name="Alone" not-null="true" />
+        </property>
+        <property name="aloneWithFamily" type="boolean">
+            <column name="AloneWithFamily" not-null="true" />
+        </property>
+        <property name="onlyOneInFamily" type="boolean">
+            <column name="OnlyOneInFamily" not-null="true" />
+        </property>
+        <property name="onlyOneMale" type="boolean">
+            <column name="OnlyOneMale" not-null="true" />
+        </property>
+        <property name="onlyOneFemale" type="boolean">
+            <column name="OnlyOneFemale" not-null="true" />
+        </property>
+        <property name="onlyOneMalePerLiter" type="java.lang.Integer">
+            <column name="OnlyOneMalePerLiter" />
+        </property>
+        <property name="onlyOneFemalePerLiter" type="java.lang.Integer">
+            <column name="OnlyOneFemalePerLiter" />
+        </property>
+        <property name="onlyOneFishPerLiter" type="java.lang.Integer">
+            <column name="OnlyOneFishPerLiter" />
+        </property>
+        <property name="minimumNumberOfFemalesPerMale" type="java.lang.Integer">
+            <column name="MinimumNumberOfFemalesPerMale" />
+        </property>
+        <property name="minimumNumberOfMalesPerFemale" type="java.lang.Integer">
+            <column name="MinimumNumberOfMalesPerFemale" />
+        </property>
+        <property name="minimumSchoolSize" type="java.lang.Integer">
+            <column name="MinimumSchoolSize" />
+        </property>
+        <property name="onlyCompatibleWith" type="string">
+            <column name="OnlyCompatibleWith" length="65535" />
+        </property>
+        <property name="notCompatibleWith" type="string">
+            <column name="NotCompatibleWith" length="65535" />
+        </property>
+        <property name="notCompatibleWithTheseMales" type="string">
+            <column name="NotCompatibleWithTheseMales" length="65535" />
+        </property>
+        <property name="notCompatibleWithTheseFemales" type="string">
+            <column name="NotCompatibleWithTheseFemales" length="65535" />
+        </property>
+        <property name="notReefSafe" type="string">
+            <column name="NotReefSafe" length="65535" />
+        </property>
+        <set name="fishobjects" inverse="true" lazy="true" table="fishobject" fetch="select">
+            <key>
+                <column name="FishExclusionID" not-null="true" />
+            </key>
+            <one-to-many class="Fishobject" />
+        </set>
+    </class>
+</hibernate-mapping>
