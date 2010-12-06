@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import sqlLogic.SQLfunctions;
+import coreObjects.AbstractObject;
 
 
 public abstract class AbstractView extends JPanel implements ActionListener
@@ -803,6 +804,113 @@ public abstract class AbstractView extends JPanel implements ActionListener
 
 		return parametersID;
 	}
+
+
+	/**
+	 * TODO - Description
+	 */
+	public boolean updateObjectParameters(AbstractObject obj)
+	{
+		// The ID that will be returned of the entry that is to be created
+		int parametersID = obj.getParameters().getObjectParametersID();
+
+		// The initial fields
+		double[] sal = new double[2];
+		double[] ph = new double[2];
+		double[] gh = new double[2];
+		double[] kh = new double[2];
+		double[] temp = new double[2];
+		double[] magnesium = { 300, 4500 };
+		double[] calcium = { 1300, 1500 };
+		double spaceNeeded = -1.0;
+		double[] othersSize = new double[2];
+
+		/**
+		 * Getting the data from the fields. When the program gets here the
+		 * fields have been checked and verified. -1 will be returned for
+		 * invalid numbers and fields.
+		 */
+		sal[0] = getFieldDouble(salinityLowField);
+		sal[1] = getFieldDouble(salinityHighField);
+		ph[0] = getFieldDouble(phLowField);
+		ph[1] = getFieldDouble(phHighField);
+		gh[0] = getFieldDouble(ghLowField);
+		gh[1] = getFieldDouble(ghHighField);
+		kh[0] = getFieldDouble(khLowField);
+		kh[1] = getFieldDouble(khHighField);
+		temp[0] = getFieldDouble(tempLowField);
+		temp[1] = getFieldDouble(tempHighField);
+		othersSize[0] = getFieldDouble(othersSizeLowField);
+		othersSize[1] = getFieldDouble(othersSizeHighField);
+		spaceNeeded = getFieldInt(spaceNeededField);
+
+
+		/**
+		 * Creating the UPDATE string
+		 */
+		String parameters = "UPDATE ObjectParameters " + "SET "
+				+ "SalinityLow="
+				+ sal[0] + // Salinity Low
+				", SalinityHigh=" + sal[1] + // Salinity High
+				", PHLow=" + ph[0] + // PH Low
+				", PHHigh=" + ph[1] + // PH High
+				", GHLow=" + gh[0] + // GH Low
+				", GHHigh=" + gh[1] + // GH High
+				", TemperatureLow=" + temp[0] + // Temperature Low
+				", TemperatureHigh=" + temp[1] + // Temperature High
+				", KHLow=" + kh[0] + // KH Low
+				", KHHigh=" + kh[1] + // KH High
+				", MagnesiumLow=" + magnesium[0] + // Magnesium Low
+				", MagnesiumHigh=" + magnesium[1] + // Magnesium High
+				", CalciumLow=" + calcium[0] + // Calcium Low
+				", CalciumHigh=" + calcium[1] + // Calcium High
+				", SpaceNeeded=" + spaceNeeded + // Space Needed
+				", OthersSizeLow=" + othersSize[0] + // Others Size Low
+				", OthersSizeHigh=" + othersSize[1] + // Others Size High
+				" WHERE ObjectParametersID=" + parametersID;
+
+
+		Connection connection = null;
+		try
+		{
+			connection = AquaReg.getConnectionToDB();
+
+			// If the returned connection is not null
+			if ( connection != null )
+			{
+				Statement statement = connection.createStatement();
+				statement.setQueryTimeout(30); // set timeout to 30 sec.
+
+				statement.executeUpdate("BEGIN;");
+				statement.executeUpdate(parameters);
+				statement.executeUpdate("COMMIT;");
+			}
+		}
+		catch ( SQLException e )
+		{
+			// if the error message is "out of memory",
+			// it probably means no database file is found
+			System.err.println(e.getMessage());
+			return false;
+		}
+		finally
+		{
+			try
+			{
+				if ( connection != null )
+					connection.close();
+			}
+			catch ( SQLException e )
+			{
+				// connection close failed.
+				System.err.println(e);
+			}
+		}
+
+
+		return true;
+	}
+
 
 
 	/**

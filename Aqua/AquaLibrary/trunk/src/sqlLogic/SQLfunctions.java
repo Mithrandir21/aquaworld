@@ -47,6 +47,12 @@ public class SQLfunctions
 	public static String fishObjectTable = "FishObject";
 
 
+	public static String fishObjectIDname = "FishObjectID";
+
+	public static String coralObjectIDname = "CoralObjectID";
+
+	public static String invertebrateObjectIDname = "InvertebrateObjectID ";
+
 	/**
 	 * This function attempts to run the given string as a statement on the
 	 * given database. If either the the given connection is null or the string
@@ -2378,6 +2384,17 @@ public class SQLfunctions
 	}
 
 
+
+	// /**
+	// * This function attempts to find and return the ID of the
+	// * {@link AbstractObject} with the given objectID. It will automatically
+	// * determine what table to look in depending on what kind of
+	// * {@link AbstractObject} it is passed.
+	// */
+	// public static int databaseGetFishExclusionsID(Connection con)
+	// {
+	//
+	// }
 
 
 	/**

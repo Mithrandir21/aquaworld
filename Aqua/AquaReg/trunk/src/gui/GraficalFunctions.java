@@ -543,10 +543,8 @@ public class GraficalFunctions
 		// description.setFocusable(false);
 		// description.setEditable(true);
 
-		scroll
-				.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scroll
-				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 
 		scroll.setViewportView(description);
@@ -577,10 +575,8 @@ public class GraficalFunctions
 		// description.setFocusable(false);
 		// description.setEditable(true);
 
-		scroll
-				.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scroll
-				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 
 		scroll.setViewportView(description);
@@ -594,6 +590,55 @@ public class GraficalFunctions
 
 
 		return desc;
+	}
+
+
+
+	public static JPanel getButtons(String button0, String button1,
+			String button2, ActionListener lis)
+	{
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		// buttonPanel.setLayout(new BoxLayout(buttonPanel,
+		// BoxLayout.PAGE_AXIS));
+		Dimension panelSize = new Dimension(115, 60);
+		buttonPanel.setPreferredSize(panelSize);
+		buttonPanel.setMinimumSize(panelSize);
+		buttonPanel.setMaximumSize(panelSize);
+
+
+		JButton exclusions = new JButton(button0);
+		exclusions.setFocusable(false);
+		exclusions.addActionListener(lis);
+		exclusions.setActionCommand(button0);
+		Dimension textSize = new Dimension(100, 20);
+		exclusions.setPreferredSize(textSize);
+		exclusions.setMinimumSize(textSize);
+		exclusions.setMaximumSize(textSize);
+
+
+		JButton reset = new JButton(button1);
+		reset.setFocusable(false);
+		reset.addActionListener(lis);
+		reset.setActionCommand(button1);
+		reset.setPreferredSize(textSize);
+		reset.setMinimumSize(textSize);
+		reset.setMaximumSize(textSize);
+
+
+		JButton save = new JButton(button2);
+		save.addActionListener(lis);
+		save.setActionCommand(button2);
+		save.setPreferredSize(textSize);
+		save.setMinimumSize(textSize);
+		save.setMaximumSize(textSize);
+
+
+		buttonPanel.add(exclusions);
+		buttonPanel.add(reset);
+		buttonPanel.add(save);
+
+		return buttonPanel;
 	}
 
 
@@ -648,12 +693,12 @@ public class GraficalFunctions
 		buttonPanel.setMinimumSize(panelSize);
 		buttonPanel.setMaximumSize(panelSize);
 
+		Dimension textSize = new Dimension(80, 20);
 
 		JButton reset = new JButton("Reset");
 		reset.setFocusable(false);
 		reset.addActionListener(lis);
 		reset.setActionCommand("reset");
-		Dimension textSize = new Dimension(80, 20);
 		reset.setPreferredSize(textSize);
 		reset.setMinimumSize(textSize);
 		reset.setMaximumSize(textSize);
@@ -672,7 +717,6 @@ public class GraficalFunctions
 
 		return buttonPanel;
 	}
-
 
 
 
