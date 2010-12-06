@@ -27,7 +27,6 @@ public class InvertebrateView extends AbstractView implements ActionListener
 	 */
 	public InvertebrateView()
 	{
-
 	}
 
 	/*

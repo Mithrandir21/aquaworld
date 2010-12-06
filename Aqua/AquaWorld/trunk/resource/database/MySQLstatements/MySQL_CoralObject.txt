@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `CoralObject` (
   `CoralObjectID` int(11) NOT NULL AUTO_INCREMENT,
-  `PopularName` text NOT NULL,
+  `PopularName` text,
   `Species` text NOT NULL,
   `Genus` text,
   `Description` text,

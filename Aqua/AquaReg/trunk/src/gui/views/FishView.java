@@ -27,7 +27,6 @@ public class FishView extends AbstractView implements ActionListener
 	 */
 	public FishView()
 	{
-
 	}
 
 	/*

@@ -32,7 +32,6 @@ public class CoralView extends AbstractView implements ActionListener
 	 */
 	public CoralView()
 	{
-
 	}
 
 	/*
