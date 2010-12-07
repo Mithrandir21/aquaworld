@@ -89,13 +89,14 @@ public class ExclusionPanel extends JPanel
 		// d.weighty = 0.3; // request any extra vertical space
 		// d.weightx = 1.0; // request any extra horizontal space
 		d.anchor = GridBagConstraints.EAST; // comp location
-		// d.insets = new Insets(10, 10, 10, 10); // padding
+		d.insets = new Insets(5, 5, 5, 5); // padding
 		// d.gridwidth = 1; // 2 columns wide
 		// d.gridheight = 1; // 2 columns wide
 		d.gridy = 0; // third row
 		d.gridx = 0; // third row
 
 
+		JButton cancel = new JButton("Cancel");
 		JButton save = new JButton("Save");
 		JButton reset = new JButton("Reset");
 
@@ -104,6 +105,10 @@ public class ExclusionPanel extends JPanel
 
 		d.gridx = 1;
 		panel.add(save, d);
+
+
+		d.gridx = 2;
+		panel.add(cancel, d);
 
 
 		return panel;

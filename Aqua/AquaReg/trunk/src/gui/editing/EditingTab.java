@@ -14,6 +14,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -24,13 +26,13 @@ import coreObjects.Fish.FishObject;
 import coreObjects.Invertebrates.InvertebratesObject;
 
 
-public class EditingTab extends JPanel
+public class EditingTab extends JPanel implements ChangeListener
 {
-	public static JList groupsFishList = new JList();
+	public JList groupsFishList = new JList();
 
-	public static JList groupsCoralList = new JList();
+	public JList groupsCoralList = new JList();
 
-	public static JList groupsInvertebrateList = new JList();
+	public JList groupsInvertebrateList = new JList();
 
 	private String[][] fishData;
 
@@ -38,9 +40,15 @@ public class EditingTab extends JPanel
 
 	private String[][] invertebrateData;
 
+	private JTabbedPane tabbed = new JTabbedPane();
+
+	private boolean clearingSelections;
 
 	public EditingTab()
 	{
+		// Resets all the fields when something is selected.
+		EditingFrame.editingObjectView.resetAction();
+
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints d = new GridBagConstraints();
 
@@ -58,7 +66,6 @@ public class EditingTab extends JPanel
 
 
 
-		JTabbedPane tabbed = new JTabbedPane();
 
 		// Gets the connection to the database
 		Connection con = AquaReg.getConnectionToDB();
@@ -143,7 +150,7 @@ public class EditingTab extends JPanel
 		tabbed.addTab("Invertebrate", groupsInvertebrateList);
 
 		this.add(tabbed, d);
-
+		tabbed.addChangeListener(this);
 
 
 		d.fill = GridBagConstraints.NONE;
@@ -175,7 +182,7 @@ public class EditingTab extends JPanel
 		public void valueChanged(ListSelectionEvent e)
 		{
 			// If pointer moving
-			if ( e.getValueIsAdjusting() )
+			if ( e.getValueIsAdjusting() || clearingSelections )
 			{
 				return;
 			}
@@ -256,7 +263,7 @@ public class EditingTab extends JPanel
 	 */
 	public static int getNameID(String[][] data, String name)
 	{
-		if ( data != null && name != null )
+		if ( data != null && data.length > 0 && name != null )
 		{
 			for ( int i = 0; i < data.length; i++ )
 			{
@@ -287,7 +294,7 @@ public class EditingTab extends JPanel
 	 */
 	public static String[] getNameStrings(String[][] data)
 	{
-		if ( data != null && data[0].length > 1 )
+		if ( data != null && data.length > 0 && data[0].length > 1 )
 		{
 			String[] array = new String[data.length];
 
@@ -307,5 +314,112 @@ public class EditingTab extends JPanel
 
 
 		return null;
+	}
+
+
+
+	@Override
+	public void stateChanged(ChangeEvent e)
+	{
+		int index = tabbed.getSelectedIndex();
+
+		if ( index > -1 )
+		{
+			// Gets the name of the tab
+			String tabSelected = tabbed.getTitleAt(tabbed.getSelectedIndex());
+
+			// Setting for not reseting the editing view
+			clearingSelections = true;
+
+			if ( tabSelected.equals("Fish") )
+			{
+				// groupsFishList.clearSelection();
+				groupsCoralList.clearSelection();
+				groupsInvertebrateList.clearSelection();
+			}
+			else if ( tabSelected.equals("Coral") )
+			{
+				// groupsCoralList.clearSelection();
+				groupsFishList.clearSelection();
+				groupsInvertebrateList.clearSelection();
+			}
+			else if ( tabSelected.equals("Invertebrate") )
+			{
+				// groupsInvertebrateList.clearSelection();
+				groupsFishList.clearSelection();
+				groupsCoralList.clearSelection();
+			}
+
+			// Reseting the setting for editing view reseting
+			clearingSelections = false;
+		}
+	}
+
+
+
+	public void refreshJLists()
+	{ // Gets the connection to the database
+		Connection con = AquaReg.getConnectionToDB();
+
+
+		// Get the data for the objects
+		fishData = SQLfunctions.databaseGetObjectIDsandNamesFromTable(con,
+				FishObject.class);
+
+		coralData = SQLfunctions.databaseGetObjectIDsandNamesFromTable(con,
+				CoralObject.class);
+
+		invertebrateData = SQLfunctions.databaseGetObjectIDsandNamesFromTable(
+				con, InvertebratesObject.class);
+
+
+
+		// Gets all the names of the objects in the fish database
+		String[] fishNames = getNameStrings(fishData);
+
+		// Gets all the names of the objects in the coral database
+		String[] coralNames = getNameStrings(coralData);
+
+		// Gets all the names of the objects in the invertebrate database
+		String[] invertebrateNames = getNameStrings(invertebrateData);
+
+
+		AquaReg.closeConnection(con);
+
+		// Sets all the names in the JList
+		if ( fishNames != null && fishNames.length != 0 )
+		{
+			groupsFishList.removeAll();
+			groupsFishList.setListData(fishNames);
+		}
+		else
+		{
+			groupsFishList.removeAll();
+			groupsFishList.setListData(new Object[0]);
+		}
+
+		// Sets all the names in the JList
+		if ( coralNames != null && coralNames.length != 0 )
+		{
+			groupsCoralList.removeAll();
+			groupsCoralList.setListData(coralNames);
+		}
+		else
+		{
+			groupsCoralList.removeAll();
+			groupsCoralList.setListData(new Object[0]);
+		}
+
+		// Sets all the names in the JList
+		if ( invertebrateNames != null && invertebrateNames.length != 0 )
+		{
+			groupsInvertebrateList.removeAll();
+			groupsInvertebrateList.setListData(invertebrateNames);
+		}
+		else
+		{
+			groupsInvertebrateList.removeAll();
+			groupsInvertebrateList.setListData(new Object[0]);
+		}
 	}
 }

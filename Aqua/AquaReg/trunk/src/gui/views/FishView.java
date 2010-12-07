@@ -25,8 +25,9 @@ public class FishView extends AbstractView implements ActionListener
 	/**
 	 * Empty constructor.
 	 */
-	public FishView()
+	public FishView(boolean incDelButton, boolean incExcButton)
 	{
+		super(incDelButton, incExcButton);
 	}
 
 	/*

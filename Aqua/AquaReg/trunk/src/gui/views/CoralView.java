@@ -30,8 +30,10 @@ public class CoralView extends AbstractView implements ActionListener
 	/**
 	 * Empty constructor.
 	 */
-	public CoralView()
+	public CoralView(boolean incDelButton, boolean incExcButton)
 	{
+		super(incDelButton, incExcButton);
+		sizeField.setNecessary(false);
 	}
 
 	/*

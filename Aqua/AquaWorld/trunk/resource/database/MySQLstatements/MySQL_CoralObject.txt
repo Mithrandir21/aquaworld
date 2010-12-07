@@ -7,5 +7,5 @@ CREATE TABLE IF NOT EXISTS `CoralObject` (
   `CoralType` text NOT NULL,
   `ObjectParametersID` int(11) NOT NULL,
   PRIMARY KEY (`CoralObjectID`),
-  CONSTRAINT `CoralParameters` FOREIGN KEY `CoralParameters`(`ObjectParametersID`) REFERENCES `ObjectParameters` (`ObjectParametersID`)
+  CONSTRAINT `CoralParameters` FOREIGN KEY `CoralParameters`(`ObjectParametersID`) REFERENCES `ObjectParameters` (`ObjectParametersID`) ON DELETE CASCADE
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;

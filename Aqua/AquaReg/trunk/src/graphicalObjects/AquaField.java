@@ -41,6 +41,21 @@ public class AquaField extends JTextField
 
 
 
+	public void setNecessary(boolean necessary)
+	{
+		necessaryField = necessary;
+		if ( necessary )
+		{
+			this.setBackground(Color.cyan);
+		}
+		else
+		{
+			this.setBackground(Color.WHITE);
+		}
+	}
+
+
+
 	/**
 	 * This function sets the auto complete function to the this field.
 	 */

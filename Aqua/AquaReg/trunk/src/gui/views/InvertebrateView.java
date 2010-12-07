@@ -25,8 +25,10 @@ public class InvertebrateView extends AbstractView implements ActionListener
 	/**
 	 * Empty constructor.
 	 */
-	public InvertebrateView()
+	public InvertebrateView(boolean incDelButton, boolean incExcButton)
 	{
+		super(incDelButton, incExcButton);
+		sizeField.setNecessary(false);
 	}
 
 	/*

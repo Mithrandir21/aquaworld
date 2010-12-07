@@ -6,6 +6,8 @@ import gui.views.EditingView;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -24,12 +26,20 @@ public class EditingFrame extends JFrame
 	/**
 	 * 
 	 */
-	public static EditingView editingObjectView = new EditingView();
+	public static EditingTab list;
+
+
+	/**
+	 * 
+	 */
+	public static EditingView editingObjectView;
 
 
 	public EditingFrame()
 	{
 		super("Editing");
+
+		editingObjectView = new EditingView(true, true);
 
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints d = new GridBagConstraints();
@@ -47,7 +57,7 @@ public class EditingFrame extends JFrame
 		d.gridx = 0;
 
 
-		EditingTab list = new EditingTab();
+		list = new EditingTab();
 		list.setBorder(BorderFactory.createEtchedBorder());
 		this.add(list, d);
 
@@ -76,5 +86,16 @@ public class EditingFrame extends JFrame
 		this.setPreferredSize(new Dimension(1000, 400));
 		this.setVisible(true);
 		this.pack();
+
+
+		this.addWindowListener(new WindowAdapter()
+		{
+			@Override
+			public void windowClosing(WindowEvent ev)
+			{
+				list = null;
+				editingObjectView = null;
+			}
+		});
 	}
 }

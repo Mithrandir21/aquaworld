@@ -20,10 +20,10 @@ public class TabbedPanel extends JTabbedPane
 	 */
 	public TabbedPanel()
 	{
-		this.addTab("Fish", new FishView());
+		this.addTab("Fish", new FishView(false, false));
 
-		this.addTab("Coral", new CoralView());
+		this.addTab("Coral", new CoralView(false, false));
 
-		this.addTab("Invertebrate", new InvertebrateView());
+		this.addTab("Invertebrate", new InvertebrateView(false, false));
 	}
 }
