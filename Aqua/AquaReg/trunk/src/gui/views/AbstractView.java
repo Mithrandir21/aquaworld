@@ -8,6 +8,7 @@ import gui.GraficalFunctions;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionListener;
@@ -18,6 +19,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
@@ -67,12 +69,19 @@ public abstract class AbstractView extends JPanel implements ActionListener
 
 	JTextArea descriptionArea = new JTextArea();
 
+	boolean incDeleteButton = false;
+
+	boolean incExclusionButton = false;
+
 
 	/**
 	 * TODO - Description NEEDED!
 	 */
-	public AbstractView()
+	public AbstractView(boolean incDelButton, boolean incExcButton)
 	{
+		incDeleteButton = incDelButton;
+		incExclusionButton = incExcButton;
+
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints d = new GridBagConstraints();
 
@@ -161,7 +170,7 @@ public abstract class AbstractView extends JPanel implements ActionListener
 		d.gridy = 2;
 		d.gridx = 5;
 		d.gridwidth = 1;
-		this.add(GraficalFunctions.getButtons(this), d);
+		this.add(getButtons(this), d);
 
 	}
 
@@ -234,6 +243,8 @@ public abstract class AbstractView extends JPanel implements ActionListener
 		resetRangeFields(khLowField, khHighField);
 		resetRangeFields(tempLowField, tempHighField);
 		resetRangeFields(othersSizeLowField, othersSizeHighField);
+
+		descriptionArea.setText("");
 	}
 
 
@@ -520,7 +531,7 @@ public abstract class AbstractView extends JPanel implements ActionListener
 		// If the fields are not empty
 		if ( !(sizeField.getText().equals("")) )
 		{
-			sizeDataVerified = checkSingleField(sizeField, Integer.class);
+			sizeDataVerified = checkSingleField(sizeField, Double.class);
 		}
 		else
 		{
@@ -942,4 +953,84 @@ public abstract class AbstractView extends JPanel implements ActionListener
 		return false;
 	}
 
+
+	private JPanel getButtons(ActionListener lis)
+	{
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		// buttonPanel.setLayout(new BoxLayout(buttonPanel,
+		// BoxLayout.PAGE_AXIS));
+
+		int heigth = 60;
+		if ( incDeleteButton )
+		{
+			heigth = heigth + 30;
+		}
+		if ( incExclusionButton )
+		{
+			heigth = heigth + 30;
+		}
+
+		Dimension panelSize = new Dimension(115, heigth);
+		buttonPanel.setPreferredSize(panelSize);
+		buttonPanel.setMinimumSize(panelSize);
+		buttonPanel.setMaximumSize(panelSize);
+
+		Dimension textSize = new Dimension(100, 20);
+
+		JButton deleteButton = new JButton("Delete");
+		if ( incDeleteButton )
+		{
+			deleteButton.setFocusable(false);
+			deleteButton.addActionListener(lis);
+			deleteButton.setActionCommand("delete");
+			deleteButton.setPreferredSize(textSize);
+			deleteButton.setMinimumSize(textSize);
+			deleteButton.setMaximumSize(textSize);
+		}
+
+		JButton exclusionButton = new JButton("Exclusions");
+		if ( incExclusionButton )
+		{
+			exclusionButton.setFocusable(false);
+			exclusionButton.addActionListener(lis);
+			exclusionButton.setActionCommand("exclusions");
+			exclusionButton.setPreferredSize(textSize);
+			exclusionButton.setMinimumSize(textSize);
+			exclusionButton.setMaximumSize(textSize);
+		}
+
+
+		JButton reset = new JButton("Reset");
+		reset.setFocusable(false);
+		reset.addActionListener(lis);
+		reset.setActionCommand("reset");
+		reset.setPreferredSize(textSize);
+		reset.setMinimumSize(textSize);
+		reset.setMaximumSize(textSize);
+
+
+		JButton save = new JButton("Save");
+		save.addActionListener(lis);
+		save.setActionCommand("save");
+		save.setPreferredSize(textSize);
+		save.setMinimumSize(textSize);
+		save.setMaximumSize(textSize);
+
+
+		if ( incDeleteButton )
+		{
+			buttonPanel.add(deleteButton);
+		}
+
+		if ( incExclusionButton )
+		{
+			buttonPanel.add(exclusionButton);
+		}
+
+		buttonPanel.add(reset);
+		buttonPanel.add(save);
+
+		return buttonPanel;
+	}
 }

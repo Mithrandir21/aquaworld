@@ -6,6 +6,8 @@ package gui.views;
 
 import graphicalObjects.AquaField;
 import gui.AquaReg;
+import gui.editing.EditingFrame;
+import gui.exclusions.ExclusionFrame;
 
 import java.awt.event.ActionEvent;
 import java.sql.Connection;
@@ -39,8 +41,9 @@ public class EditingView extends AbstractView implements DocumentListener
 	/**
 	 * Empty constructor
 	 */
-	public EditingView()
+	public EditingView(boolean incDelButton, boolean incExcButton)
 	{
+		super(incDelButton, incExcButton);
 	}
 
 
@@ -61,8 +64,18 @@ public class EditingView extends AbstractView implements DocumentListener
 			// Gets the popular name
 			populateField(popNameField, obj.getPopulareName());
 
-			// Gets the size
-			populateField(sizeField, "");
+			if ( obj instanceof FishObject )
+			{
+				FishObject fishObj = (FishObject) obj;
+				sizeField.setNecessary(true);
+				// Gets the size
+				populateField(sizeField, fishObj.getSize());
+			}
+			else
+			{
+				sizeField.setNecessary(false);
+				populateField(sizeField, "");
+			}
 
 			// Gets the space needed
 			populateField(spaceNeededField, par.getSpaceNeeded());
@@ -133,7 +146,6 @@ public class EditingView extends AbstractView implements DocumentListener
 	}
 
 
-
 	/**
 	 * TODO - Description
 	 */
@@ -202,6 +214,17 @@ public class EditingView extends AbstractView implements DocumentListener
 		}
 	}
 
+
+	/**
+	 * Returns a boolean on whether the settings for the object has been
+	 * changed.
+	 */
+	public boolean getSettingsChanged()
+	{
+		return changed;
+	}
+
+
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -210,25 +233,70 @@ public class EditingView extends AbstractView implements DocumentListener
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		// If the selected object is not null and the text has been changed.
-		if ( object != null && changed )
-		{
-			int answer = JOptionPane.showConfirmDialog(this,
-					"Are you sure you wish to alter this object?", "Confirm",
-					JOptionPane.YES_NO_OPTION);
+		String action = e.getActionCommand();
 
-			// If the user answers yes
-			if ( answer == JOptionPane.YES_OPTION )
+		if ( action.equals("delete") )
+		{
+			if ( object != null )
 			{
-				boolean valid = saveAction();
-				if ( valid )
+				int answer = JOptionPane.showConfirmDialog(this,
+						"Are you sure you wish to DELETE this object?",
+						"Confirm", JOptionPane.YES_NO_OPTION);
+
+				// If the user answers yes
+				if ( answer == JOptionPane.YES_OPTION )
 				{
-					saveObject();
+					Connection con = AquaReg.getConnectionToDB();
+
+					SQLfunctions.databaseRemoveAbstractObject(con, object);
+					EditingFrame.list.refreshJLists();
+				}
+			}
+		}
+		else if ( action.equals("exclusions") )
+		{
+			if ( object != null )
+			{
+				new ExclusionFrame();
+			}
+		}
+		else if ( action.equals("reset") )
+		{
+			if ( object != null && changed )
+			{
+				int answer = JOptionPane.showConfirmDialog(this,
+						"Are you sure you wish to RESET this object?",
+						"Confirm", JOptionPane.YES_NO_OPTION);
+
+				// If the user answers yes
+				if ( answer == JOptionPane.YES_OPTION )
+				{
+					EditingFrame.list.refreshJLists();
+				}
+			}
+		}
+		else if ( action.equals("save") )
+		{
+			// If the selected object is not null and the text has been changed.
+			if ( object != null && changed )
+			{
+				int answer = JOptionPane.showConfirmDialog(this,
+						"Are you sure you wish to ALTER this object?",
+						"Confirm", JOptionPane.YES_NO_OPTION);
+
+				// If the user answers yes
+				if ( answer == JOptionPane.YES_OPTION )
+				{
+					boolean valid = saveAction();
+					if ( valid )
+					{
+						saveObject();
+						EditingFrame.list.refreshJLists();
+					}
 				}
 			}
 		}
 	}
-
 
 
 
@@ -313,8 +381,11 @@ public class EditingView extends AbstractView implements DocumentListener
 
 					SQLfunctions.databaseStatementExecution(connection,
 							objectUpdateString);
+
+
 				}
 
+				// TODO - Group Update Edit View
 				// // The update string for the group that the object belongs
 				// to.
 				// String groupUpdateString = "";

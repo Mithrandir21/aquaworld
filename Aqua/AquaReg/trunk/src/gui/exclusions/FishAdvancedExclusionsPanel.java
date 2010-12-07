@@ -1,17 +1,20 @@
 package gui.exclusions;
 
 
+import graphicalObjects.AquaPanel;
 import graphics.RoundedBorder;
 
 import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -23,7 +26,8 @@ import javax.swing.border.Border;
  * 
  * @author Bahram Malaekeh
  */
-public class FishAdvancedExclusionsPanel extends JPanel
+public class FishAdvancedExclusionsPanel extends JPanel implements
+		MouseListener, ActionListener
 {
 
 	/**
@@ -61,6 +65,10 @@ public class FishAdvancedExclusionsPanel extends JPanel
 
 
 
+	/**
+	 * TODO - Description
+	 * 
+	 */
 	private JPanel getAllGroupsPanel(ActionListener lis)
 	{
 		JPanel panel = new JPanel(new GridBagLayout());
@@ -96,6 +104,10 @@ public class FishAdvancedExclusionsPanel extends JPanel
 	}
 
 
+	/**
+	 * TODO - Description
+	 * 
+	 */
 	private JPanel getGroupPanel(ActionListener lis)
 	{
 		JPanel panel = new JPanel(new GridBagLayout());
@@ -120,7 +132,7 @@ public class FishAdvancedExclusionsPanel extends JPanel
 
 		JCheckBox groupBox = new JCheckBox("Johans Group");
 		groupBox.setBackground(Color.WHITE);
-		groupBox.addActionListener(lis);
+		groupBox.addMouseListener(this);
 		panel.add(groupBox, d);
 
 
@@ -138,7 +150,7 @@ public class FishAdvancedExclusionsPanel extends JPanel
 		d.gridx = -1; // third row
 
 
-		int panels = 33;
+		int panels = 12;
 		// Border border = BorderFactory.createBevelBorder(BevelBorder.RAISED,
 		// Color.WHITE, Color.BLACK);
 		Border border = new RoundedBorder(10, 2.0f, new Color(0, 191, 255));
@@ -158,145 +170,129 @@ public class FishAdvancedExclusionsPanel extends JPanel
 			}
 
 
-			if ( i % 6 == 0 )
-			{
-				border = new RoundedBorder(10, 7.0f, new Color(30, 144, 255));
-			}
-			else
-			{
-				border = new RoundedBorder(10, 2.0f, new Color(0, 191, 255));
-			}
-
-
 			panel.add(getObjectPanel(border, lis), d);
 		}
 
 
+		panel.addMouseListener(this);
+
+
 		return panel;
 	}
 
 
 
-
-
+	/**
+	 * TODO - Description
+	 * 
+	 */
 	private JPanel getObjectPanel(Border border, ActionListener lis)
 	{
-		JPanel panel = new JPanel(new GridBagLayout());
-		GridBagConstraints d = new GridBagConstraints();
+		AquaPanel panel = new AquaPanel(this, this);
 		panel.setBorder(border);
-		Dimension dim = new Dimension(150, 140);
-		panel.setSize(dim);
-		panel.setMinimumSize(dim);
-		panel.setMaximumSize(dim);
-		panel.setPreferredSize(dim);
-		panel.setOpaque(false);
-
-
-		d.fill = GridBagConstraints.HORIZONTAL;
-		// d.ipady = 0; // reset to default
-		// d.ipadx = 0; // reset to default
-		// d.weighty = 0.1; // request any extra vertical space
-		d.weightx = 1.0; // request any extra vertical space
-		d.anchor = GridBagConstraints.NORTHWEST; // bottom of space
-		d.insets = new Insets(3, 3, 3, 3); // top padding
-		d.gridwidth = 5; // 2 columns wide
-		// d.gridheight = 1; // 2 columns wide
-		d.gridy = 0; // third row
-		d.gridx = 0; // third row
-
-
-
-		JCheckBox selectObjectCheck = new JCheckBox("Select Fish");
-		selectObjectCheck.addActionListener(lis);
-		panel.add(selectObjectCheck, d);
-
-
-
-		d.fill = GridBagConstraints.HORIZONTAL;
-		// d.ipady = 0; // reset to default
-		// d.ipadx = 0; // reset to default
-		// d.weighty = 1.0; // request any extra vertical space
-		d.weightx = 1.0; // request any extra vertical space
-		d.anchor = GridBagConstraints.NORTHWEST; // bottom of space
-		d.insets = new Insets(0, 6, 0, 0); // top padding
-		d.gridwidth = 1; // 2 columns wide
-		// d.gridheight = 1; // 2 columns wide
-		d.gridy = 1; // third row
-		d.gridx = 0; // third row
-
-
-		JLabel Genuslabel = new JLabel("Genus: ");
-		JLabel Genus = new JLabel("Tetraodon");
-
-		panel.add(Genuslabel, d);
-
-		d.insets = new Insets(0, 0, 0, 0); // top padding
-		d.gridx = 1;
-		panel.add(Genus, d);
-
-
-		JLabel PHlabel = new JLabel("PH: ");
-		JLabel PH = new JLabel("5.7 - 8.9");
-
-
-		d.insets = new Insets(0, 6, 0, 0); // top padding
-		d.gridy = 2;
-		d.gridx = 0;
-		panel.add(PHlabel, d);
-
-		d.insets = new Insets(0, 0, 0, 0); // top padding
-		d.gridx = 1;
-		panel.add(PH, d);
-
-
-
-		JLabel GHlabel = new JLabel("GH: ");
-		JLabel GH = new JLabel("6.5 - 7.3");
-
-
-		d.insets = new Insets(0, 6, 0, 0); // top padding
-		d.gridy = 3;
-		d.gridx = 0;
-		panel.add(GHlabel, d);
-
-		d.insets = new Insets(0, 0, 0, 0); // top padding
-		d.gridx = 1;
-		panel.add(GH, d);
-
-
-
-		JLabel Templabel = new JLabel("Temp: ");
-		JLabel Temp = new JLabel("25 - 27");
-
-
-
-
-		d.insets = new Insets(0, 6, 0, 0); // top padding
-		d.gridy = 4;
-		d.gridx = 0;
-		panel.add(Templabel, d);
-
-		d.insets = new Insets(0, 0, 0, 0); // top padding
-		d.gridx = 1;
-		panel.add(Temp, d);
-
-
-
-
-		JPanel p = new JPanel();
-		// p.setBorder(BorderFactory.createEtchedBorder());
-
-		d.fill = GridBagConstraints.BOTH;
-		d.insets = new Insets(6, 6, 6, 6); // top padding
-		d.weighty = 1.0; // request any extra vertical space
-		d.weightx = 1.0; // request any extra vertical space
-		d.gridwidth = 2; // 2 columns wide
-		d.gridy = 5;
-		d.gridx = 0;
-		panel.add(p, d);
-
-
 
 		return panel;
 	}
+
+
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+	 */
+	@Override
+	public void mouseClicked(MouseEvent e)
+	{
+		togglePanel((Component) e.getSource());
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
+	@Override
+	public void mousePressed(MouseEvent e)
+	{
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	 */
+	@Override
+	public void mouseReleased(MouseEvent e)
+	{
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+	 */
+	@Override
+	public void mouseEntered(MouseEvent e)
+	{
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+	 */
+	@Override
+	public void mouseExited(MouseEvent e)
+	{
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		togglePanel((Component) e.getSource());
+	}
+
+
+	/**
+	 * TODO - Description
+	 * 
+	 */
+	private void togglePanel(Component comp)
+	{
+		if ( comp instanceof AquaPanel )
+		{
+			AquaPanel panel = (AquaPanel) comp;
+			panel.toggle();
+		}
+		else if ( comp instanceof JCheckBox )
+		{
+			if ( comp.getParent() instanceof AquaPanel )
+			{
+				JCheckBox box = (JCheckBox) comp;
+
+				boolean selected = box.isSelected();
+
+				AquaPanel panel = (AquaPanel) comp.getParent();
+
+				if ( selected )
+				{
+					panel.setBorder(new RoundedBorder(10, 7.0f, new Color(30,
+							144, 255)));
+				}
+				else
+				{
+					panel.setBorder(new RoundedBorder(10, 2.0f, new Color(0,
+							191, 255)));
+				}
+			}
+			else
+			{
+				JCheckBox box = (JCheckBox) comp;
+			}
+		}
+	}
+
 }

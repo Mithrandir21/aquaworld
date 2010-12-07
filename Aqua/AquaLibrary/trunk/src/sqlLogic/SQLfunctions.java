@@ -166,6 +166,208 @@ public class SQLfunctions
 
 
 	/**
+	 * This function attempts to remove the given {@link AbstractObject} from
+	 * the database in the given {@link Connection}. This function will also
+	 * remove the exclusionslist and {@link ObjectParameters} connected to the
+	 * {@link AbstractObject} in the database.
+	 */
+	public static boolean databaseRemoveAbstractObject(Connection con,
+			AbstractObject obj)
+	{
+		if ( con != null && obj != null )
+		{
+			long excID = -1;
+			long parID = -1;
+			boolean foundExc = false;
+			boolean foundPar = false;
+			boolean foundObj = false;
+
+			/**
+			 * First we will determine if the object, and its parameters and
+			 * exclusion list, exists in the database.
+			 */
+			if ( obj instanceof FishObject )
+			{
+				FishObject fishObj = (FishObject) obj;
+
+				// If the fishobject contains an exclusions list
+				if ( fishObj.getFishExclusions() == null )
+				{
+					return false;
+				}
+
+				excID = fishObj.getFishExclusions().getFishExclusionID();
+
+				// Determines if the exclusions list was found with the ID
+				foundExc = databaseFishExclusionsExists(con, excID);
+			}
+			else if ( obj instanceof CoralObject )
+			{
+				/**
+				 * Since there exists no exclusion list for coral it is true.
+				 */
+				foundExc = true;
+			}
+			else if ( obj instanceof InvertebratesObject )
+			{
+				InvertebratesObject invertebrateObject = (InvertebratesObject) obj;
+
+				// If the invertebrateObject contains an exclusions list
+				if ( invertebrateObject.getExclusions() == null )
+				{
+					return false;
+				}
+
+				excID = invertebrateObject.getExclusions()
+						.getInvertebrateExclusionID();
+
+				// Determines if the exclusions list was found with the ID
+				foundExc = databaseInvertebrateExclusionsExists(con, excID);
+			}
+
+			if ( foundExc == false )
+			{
+				return false;
+			}
+
+
+			/**
+			 * If foundExc is true, the exclusion list has been found a
+			 * confirmed. Now we will attempt to determine the ObjectParameters.
+			 */
+
+			// If the object contains a object parameters object
+			if ( obj.getParameters() == null )
+			{
+				return false;
+			}
+
+			parID = obj.getParameters().getObjectParametersID();
+
+			// Determines if the exclusions list was found with the ID
+			foundPar = databaseParameterExists(con, parID);
+
+
+			if ( foundPar == false )
+			{
+				return false;
+			}
+
+
+			/**
+			 * If the function gets to this point, it means that the
+			 * AbstractObject contains a ObjectParameters and an ExclusionsList
+			 * that is valid and is found in the database. Now we must determine
+			 * if the AbstractObject itself exists in the database.
+			 */
+			foundObj = databaseAbstractObjectExists(con, obj);
+
+			if ( foundObj == false )
+			{
+				return false;
+			}
+
+
+			String objTable = "";
+			String objIDcolumn = "";
+
+			String excTable = "";
+			String excIDcolumn = "";
+
+
+			if ( obj instanceof FishObject )
+			{
+				objTable = fishObjectTable;
+				objIDcolumn = "FishObjectID";
+
+				excTable = fishExclusionListTable;
+				excIDcolumn = "FishExclusionID";
+			}
+			else if ( obj instanceof CoralObject )
+			{
+				objTable = coralObjectTable;
+				objIDcolumn = "CoralObjectID";
+			}
+			else if ( obj instanceof InvertebratesObject )
+			{
+				objTable = invertebrateObjectTable;
+				objIDcolumn = "InvertebrateObjectID";
+
+				excTable = invertebrateExclusionListTable;
+				excIDcolumn = "InvertebrateExclusionID";
+			}
+
+
+			/**
+			 * At this point all parts of an AbstractObject has been validated.
+			 * Now the actual removal can happen.
+			 * 
+			 * For an Object to be correctly removed it has to:
+			 * 1. Remove the objects ExclusionsList
+			 * 2. Remove the objects ObjectParameters
+			 * 3. Remove the object from any of the other objects ExclusionsList
+			 * 4. Remove the object from any Group it belongs to.
+			 * 5. Remove the object from the objects table
+			 */
+			String removeExcString = "";
+			if ( obj instanceof FishObject
+					|| obj instanceof InvertebratesObject )
+			{
+				if ( !(excTable.equals("") || excIDcolumn.equals("")) )
+				{
+					// 1. Remove the objects ExclusionsList
+					removeExcString = "DELETE FROM " + excTable + " WHERE "
+							+ excIDcolumn + "=" + excID;
+				}
+			}
+
+			// 2. Remove the objects ObjectParameters
+			String removeParString = "DELETE FROM " + objectParametersTable
+					+ " WHERE ObjectParametersID=" + parID;
+
+
+			// TODO - 3. Remove the object from any of the other objects
+			// ExclusionsList
+
+			// TODO - 4. Remove the object from any Group it belongs to.
+
+
+			// 5. Remove the object from the objects table
+			String removeObjectString = "DELETE FROM " + objTable + " WHERE "
+					+ objIDcolumn + "=" + parID;
+
+			try
+			{
+				Statement statement = con.createStatement();
+				statement.setQueryTimeout(30); // set timeout to 30 sec.
+
+				statement.executeUpdate("BEGIN;");
+				if ( !removeExcString.equals("") )
+				{
+					statement.executeUpdate(removeExcString);
+				}
+				statement.executeUpdate(removeParString);
+				statement.executeUpdate(removeObjectString);
+				statement.executeUpdate("COMMIT;");
+
+				return true;
+			}
+			catch ( SQLException e )
+			{
+				// if the error message is "out of memory",
+				// it probably means no database file is found
+				System.err.println(e.getMessage());
+			}
+		}
+		else
+		{
+			return false;
+		}
+
+		return false;
+	}
+
+	/**
 	 * This function attempts to create a new ObjectGroup in the given database
 	 * with the given name and description. If either the given connection,
 	 * group name or description is empty false will be returned. It also
@@ -2255,6 +2457,8 @@ public class SQLfunctions
 							rs.getDouble("GHHigh") };
 					double[] temp = { rs.getDouble("TemperatureLow"),
 							rs.getDouble("TemperatureHigh") };
+					double[] kh = { rs.getDouble("KHLow"),
+							rs.getDouble("KHHigh") };
 					double[] magnesium = { rs.getDouble("MagnesiumLow"),
 							rs.getDouble("MagnesiumHigh") };
 					double[] calcium = { rs.getDouble("CalciumLow"),
@@ -2265,6 +2469,7 @@ public class SQLfunctions
 
 					objParameter = new ObjectParameters(
 							rs.getInt("ObjectParametersID"), sal, ph, gh, temp);
+					objParameter.setKh(kh);
 					objParameter.setMagnesium(magnesium);
 					objParameter.setCalcium(calcium);
 					objParameter.setSpaceNeeded(space);
@@ -2286,10 +2491,96 @@ public class SQLfunctions
 	}
 
 
+
+	/**
+	 * This function attempts to retrieve a {@link ObjectParameters} with the
+	 * given ID from the database. If the given connection or given parID is
+	 * smaller then 1 null will be returned. It also returns false if there is a
+	 * {@link SQLException}.
+	 * 
+	 * @throws ObjectIDnotFoundInDatabaseException
+	 */
+	public static boolean databaseParameterExists(Connection con, long parID)
+	{
+		if ( con != null && parID > 0 )
+		{
+			try
+			{
+				// Statement stmt = con.createStatement(
+				// ResultSet.TYPE_SCROLL_INSENSITIVE,
+				// ResultSet.CONCUR_READ_ONLY);
+				Statement stmt = con.createStatement();
+
+				String query = "SELECT * " + "FROM " + objectParametersTable
+						+ " WHERE ObjectParametersID=" + parID + "";
+
+				ResultSet rs;
+				rs = stmt.executeQuery(query);
+
+				// Confirms only one row
+				return onlyOneResultSetRow(rs);
+			}
+			catch ( SQLException e )
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println("Could not find " + objectParametersTable
+						+ " with ID:" + parID);
+			}
+		}
+
+
+		return false;
+	}
+
+
+
 	/**
 	 * This function attempts to get a {@link FishExclusions} with the given ID
 	 * from the database. If the given connection or given exID is smaller then
 	 * 1 null will be returned. It also returns false if there is a
+	 * {@link SQLException}.
+	 * 
+	 * @throws ObjectIDnotFoundInDatabaseException
+	 */
+	public static boolean databaseFishExclusionsExists(Connection con, long exID)
+	{
+		if ( con != null && exID > 0 )
+		{
+			try
+			{
+				// Statement stmt = con.createStatement(
+				// ResultSet.TYPE_SCROLL_INSENSITIVE,
+				// ResultSet.CONCUR_READ_ONLY);
+				Statement stmt = con.createStatement();
+
+				String query = "SELECT * " + "FROM " + fishExclusionListTable
+						+ " WHERE FishExclusionID=" + exID + "";
+
+				ResultSet rs;
+				rs = stmt.executeQuery(query);
+
+				// Confirms only one row
+				return onlyOneResultSetRow(rs);
+			}
+			catch ( SQLException e )
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println("Could not find " + fishExclusionListTable
+						+ " with ID:" + exID);
+			}
+		}
+
+
+		return false;
+	}
+
+
+	/**
+	 * This function attempts to find a {@link FishExclusions} with the given ID
+	 * in the database. If the given connection or given exID is smaller then 1
+	 * null will be returned. It also returns false if there is a
 	 * {@link SQLException}.
 	 * 
 	 * @throws ObjectIDnotFoundInDatabaseException
@@ -2405,9 +2696,53 @@ public class SQLfunctions
 	 * 
 	 * @throws ObjectIDnotFoundInDatabaseException
 	 */
+	public static boolean databaseInvertebrateExclusionsExists(Connection con,
+			long exID)
+	{
+		if ( con != null && exID > 0 )
+		{
+			try
+			{
+				// Statement stmt = con.createStatement(
+				// ResultSet.TYPE_SCROLL_INSENSITIVE,
+				// ResultSet.CONCUR_READ_ONLY);
+				Statement stmt = con.createStatement();
+
+				String query = "SELECT * " + "FROM "
+						+ invertebrateExclusionListTable
+						+ " WHERE InvertebrateExclusionID=" + exID + "";
+
+				ResultSet rs;
+				rs = stmt.executeQuery(query);
+
+				// Confirms only one row
+				return onlyOneResultSetRow(rs);
+			}
+			catch ( SQLException e )
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println("Could not find "
+						+ invertebrateExclusionListTable + " with ID:" + exID);
+			}
+		}
+
+
+		return false;
+	}
+
+
+
+	/**
+	 * This function attempts to get a {@link InvertebrateExclusions} with the
+	 * given ID from the database. If the given connection or given exID is
+	 * smaller then 1 null will be returned. It also returns false if there is a
+	 * {@link SQLException}.
+	 * 
+	 * @throws ObjectIDnotFoundInDatabaseException
+	 */
 	public static InvertebrateExclusions databaseGetInvertebrateExclusions(
-			Connection con, int exID) throws MoreTheOneResultObject,
-			ObjectIDnotFoundInDatabaseException
+			Connection con, int exID) throws MoreTheOneResultObject
 	{
 		InvertebrateExclusions ex = null;
 
@@ -2498,6 +2833,36 @@ public class SQLfunctions
 
 			rs.close();
 		}
+	}
+
+
+	/**
+	 * This function attempts to
+	 * 
+	 * @throws MoreTheOneResultObject
+	 * @throws SQLException
+	 */
+	public static boolean onlyOneResultSetRow(ResultSet rs) throws SQLException
+	{
+		if ( rs != null )
+		{
+			boolean foundOne = false;
+			while ( rs.next() )
+			{
+				if ( foundOne )
+				{
+					return false;
+				}
+
+				foundOne = true;
+			}
+
+			rs.close();
+
+			return true;
+		}
+
+		return false;
 	}
 
 
@@ -2659,5 +3024,61 @@ public class SQLfunctions
 
 
 		return true;
+	}
+
+
+
+	public static boolean databaseAbstractObjectExists(Connection con,
+			AbstractObject object)
+	{
+		if ( con != null && object != null )
+		{
+			String table = "";
+			String IDcolumn = "";
+
+			if ( object instanceof FishObject )
+			{
+				table = fishObjectTable;
+				IDcolumn = "FishObjectID";
+			}
+			else if ( object instanceof CoralObject )
+			{
+				table = coralObjectTable;
+				IDcolumn = "CoralObjectID";
+			}
+			else if ( object instanceof InvertebratesObject )
+			{
+				table = invertebrateObjectTable;
+				IDcolumn = "InvertebrateObjectID";
+			}
+
+			if ( table != "" )
+			{
+				try
+				{
+					// Statement stmt = con.createStatement(
+					// ResultSet.TYPE_SCROLL_INSENSITIVE,
+					// ResultSet.CONCUR_READ_ONLY);
+					Statement stmt = con.createStatement();
+
+					String query = "SELECT * " + "FROM " + table + " WHERE "
+							+ IDcolumn + "=" + object.getObjectID();
+
+					ResultSet rs;
+					rs = stmt.executeQuery(query);
+
+					// Confirms only one row
+					return onlyOneResultSetRow(rs);
+				}
+				catch ( Exception e )
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+
+		return false;
 	}
 }

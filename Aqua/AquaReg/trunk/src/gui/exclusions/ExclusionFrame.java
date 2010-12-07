@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 
 public class ExclusionFrame extends JFrame
@@ -13,6 +14,7 @@ public class ExclusionFrame extends JFrame
 	public ExclusionFrame()
 	{
 		super("Exclusions");
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints d = new GridBagConstraints();
@@ -36,9 +38,14 @@ public class ExclusionFrame extends JFrame
 
 
 		// this.setResizable(false);
-		this.setPreferredSize(new Dimension(700, 500));
-		this.setMinimumSize(new Dimension(700, 500));
+		this.setPreferredSize(new Dimension(1100, 800));
+		this.setMinimumSize(new Dimension(1100, 800));
 		this.setVisible(true);
 		this.pack();
+	}
+
+	public static void main(String[] args)
+	{
+		new ExclusionFrame();
 	}
 }
