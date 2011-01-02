@@ -27,7 +27,7 @@ public class FishView extends AbstractView implements ActionListener
 	 */
 	public FishView(boolean incDelButton, boolean incExcButton)
 	{
-		super(incDelButton, incExcButton);
+		super(incDelButton, incExcButton, FishObject.class);
 	}
 
 	/*
@@ -78,36 +78,72 @@ public class FishView extends AbstractView implements ActionListener
 	{
 		int objectID = -1;
 		String groupName = "";
-		String popName = "";
 		String speciesName = "";
 		String genusName = "";
 		String description = "";
+		String popName = "";
 		double size = -1.0;
-		int parID = -1;
-		int fishExID = -1;
+		int parIDyoung = -1;
+		int parIDadult = -1;
+		int fishExIDyoung = -1;
+		int fishExIDadult = -1;
+		int popNamedID = -1;
 
 		// Gets the connection to the Database.
 		Connection connection = AquaReg.getConnectionToDB();
 
 		if ( connection != null )
 		{
-			popName = popNameField.getText(); // Gets the popular name
+			if ( !popNameField.getText().equals("") )
+			{
+				popName = popNameField.getText();
+			}
 			speciesName = speciesField.getText(); // Gets the species name
 			genusName = genusField.getText(); // Gets the genus name
 			description = descriptionArea.getText(); // Gets the description
 			size = getFieldDouble(sizeField); // Gets the size(-1.0 if invalid)
+
 			/**
-			 * Inserts an ObjectParameter object with the verified data from the
+			 * Creates a new row in the database and returns the ID of the row.
+			 */
+			if ( !popName.equals("") )
+			{
+				popNamedID = SQLfunctions.databaseAddNewPopNamesReturnID(
+						connection, popName);
+			}
+			else
+			{
+				popNamedID = SQLfunctions
+						.databaseAddNewPopNamesReturnID(connection);
+			}
+
+			/**
+			 * Inserts an ObjectParameter young object with the verified data from the
 			 * fields. The ID of the INSERT row is returned.
 			 */
-			parID = insertObjectParameters();
+			parIDyoung = insertObjectParameters();
+
+
+			/**
+			 * Inserts an ObjectParameter adult object with the verified data from the
+			 * fields. The ID of the INSERT row is returned.
+			 */
+			parIDadult = insertObjectParameters();
 
 
 			/**
 			 * Inserts an empty FishExclusion object. The ID of the INSERT row
 			 * is returned.
 			 */
-			fishExID = SQLfunctions
+			fishExIDyoung = SQLfunctions
+					.databaseAddNewEmptyFishExclusionsList(connection);
+
+
+			/**
+			 * Inserts an empty FishExclusion object. The ID of the INSERT row
+			 * is returned.
+			 */
+			fishExIDadult = SQLfunctions
 					.databaseAddNewEmptyFishExclusionsList(connection);
 
 
@@ -115,19 +151,47 @@ public class FishView extends AbstractView implements ActionListener
 			 * Verifies that both objects are inserted. If one has failed the
 			 * other will be also removed.
 			 */
-			if ( parID == -1 || fishExID == -1 || parID == 0 || fishExID == 0 )
+			if ( popNamedID == -1 || parIDyoung == -1 || parIDadult == -1
+					|| fishExIDyoung == -1 || fishExIDadult == -1
+					|| popNamedID == 0 || parIDyoung == 0 || parIDadult == 0
+					|| fishExIDyoung == 0 || fishExIDadult == 0 )
 			{
-				// If the ObjectParameter has been added.
-				if ( parID != -1 )
+				/**
+				 * If the functions have created a row in the different tables, the 
+				 * IDs will be something other then -1.
+				 */
+
+				// If the PopNames row was created.
+				if ( popNamedID != -1 )
 				{
-					SQLfunctions.databaseRemoveObjectParametersID(connection,
-							parID);
+					SQLfunctions.databaseRemovePopNamesID(connection,
+							popNamedID);
 				}
 
-				if ( fishExID != -1 )
+				// If the ObjectParameter has been added.
+				if ( parIDyoung != -1 )
+				{
+					SQLfunctions.databaseRemoveObjectParametersID(connection,
+							parIDyoung);
+				}
+
+				// If the ObjectParameter has been added.
+				if ( parIDadult != -1 )
+				{
+					SQLfunctions.databaseRemoveObjectParametersID(connection,
+							parIDadult);
+				}
+
+				if ( fishExIDyoung != -1 )
 				{
 					SQLfunctions.databaseRemoveFishExclusionID(connection,
-							fishExID);
+							fishExIDyoung);
+				}
+
+				if ( fishExIDadult != -1 )
+				{
+					SQLfunctions.databaseRemoveFishExclusionID(connection,
+							fishExIDadult);
 				}
 			}
 			/**
@@ -137,15 +201,19 @@ public class FishView extends AbstractView implements ActionListener
 			else
 			{
 				String fishObjectString = "INSERT INTO "
-						+ SQLfunctions.fishObjectTable + " VALUES (" + null // obj.getFishID()
-						+ ", '" + popName + // Common name
-						"', '" + speciesName + // Species Name
+						+ SQLfunctions.fishObjectTable + " VALUES (" + null + // obj.getFishID()
+						", '" + speciesName + // Species Name
 						"', '" + genusName + // Genus Name
 						"', '" + description + // Description
-						"', '" + size + // Size
-						"', '" + parID + // FishParametersID
-						"', '" + fishExID + // FishExclusionID
-						"');";
+						"', " + size + // Size
+						", " + parIDyoung + // FishParametersID
+						", " + parIDadult + // FishParametersID
+						", " + fishExIDyoung + // FishExclusionID
+						", " + fishExIDadult + // FishExclusionID
+						", " + popNamedID + // PopNamesID
+						");";
+
+				System.out.println(fishObjectString);
 
 				boolean objectCreated = false;
 				boolean addedToGroup = false;
@@ -240,6 +308,39 @@ public class FishView extends AbstractView implements ActionListener
 				}
 				catch ( SQLException e )
 				{
+					/**
+					 * If the functions have created a row in the different tables, the 
+					 * IDs will be something other then -1.
+					 */
+
+					// If the PopNames row was created.
+					if ( popNamedID != -1 )
+					{
+						SQLfunctions.databaseRemovePopNamesID(connection,
+								popNamedID);
+					}
+
+					// If the ObjectParameter has been added.
+					if ( parIDyoung != -1 )
+					{
+						SQLfunctions.databaseRemoveObjectParametersID(
+								connection, parIDyoung);
+					}
+
+					// If the ObjectParameter has been added.
+					if ( parIDadult != -1 )
+					{
+						SQLfunctions.databaseRemoveObjectParametersID(
+								connection, parIDadult);
+					}
+
+					if ( fishExIDyoung != -1 )
+					{
+						SQLfunctions.databaseRemoveFishExclusionID(connection,
+								fishExIDyoung);
+					}
+
+
 					// if the error message is "out of memory",
 					// it probably means no database file is found
 					System.err.println(e.getMessage());

@@ -1,7 +1,9 @@
 package gui.groups.bottom;
 
 
+import gui.AquaReg;
 import gui.editing.AquaJList;
+import gui.editing.JPopupEditingList;
 import gui.groups.GroupsFrame;
 
 import java.awt.Dimension;
@@ -11,12 +13,19 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.Connection;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
 
+import logistical.DataRetrival;
+import sqlLogic.SQLfunctions;
 import coreObjects.AbstractObject;
 
 
@@ -29,6 +38,8 @@ public class GroupBottomPanel extends JPanel implements ActionListener
 	private JPanel listPanel;
 
 	private static boolean searchingMode = false;
+
+	private String groupName;
 
 
 
@@ -87,10 +98,8 @@ public class GroupBottomPanel extends JPanel implements ActionListener
 
 
 		JScrollPane scroll = new JScrollPane();
-		scroll
-				.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scroll
-				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 
 
@@ -113,6 +122,7 @@ public class GroupBottomPanel extends JPanel implements ActionListener
 
 		JPanel listPanel = new JPanel();
 		GroupsFrame.groupObjectsList = new AquaJList(data);
+		addMouseLis(GroupsFrame.groupObjectsList);
 		// list.setCellRenderer(new CustomAquaObjectListRenderer());
 		listPanel.setLayout(new GridLayout());
 
@@ -204,4 +214,211 @@ public class GroupBottomPanel extends JPanel implements ActionListener
 			}
 		}
 	}
+
+
+	// /**
+	// * This function attempts to find and return the {@link AbstractObject}
+	// represented by the
+	// */
+	// private AbstractObject getListObject(String groupName, int index)
+	// {
+	// if ( groupName != null && index > -1 )
+	// {
+	// try
+	// {
+	// Connection con = AquaReg.getConnectionToDB();
+	//
+	// // Gets all the objects from the group(Fish, Invertebrate and
+	// // Coral)
+	// AbstractObject[] objects = SQLfunctions
+	// .databaseGetObjectsFromGroup(con, groupName);
+	//
+	// // Gets the data inside each object
+	// String[][] data = DataRetrival.getObjectsData(objects);
+	//
+	// // The object class must be set
+	// if ( GroupsFrame.groupObjectsList != null && data != null )
+	// {
+	// // Gets the name that is displayed, or null if nothing is
+	// // selected
+	// String selectedGroupName = (String) GroupsFrame.groupObjectsList
+	// .getModel().getElementAt(index);
+	//
+	// if ( selectedGroupName != null )
+	// {
+	// // Here the ID of the selected Object is found
+	// int ID = getNameID(data, selectedGroupName);
+	//
+	// // Gets the Object for the DB(exceptions thrown).
+	// AbstractObject obj = SQLfunctions.databaseGetObject(
+	// con, ID, FishObject.class);
+	//
+	// return obj;
+	// }
+	// }
+	//
+	// }
+	// catch ( MoreTheOneResultObject e1 )
+	// {
+	// e1.printStackTrace();
+	// }
+	// catch ( ObjectIDnotFoundInDatabaseException e1 )
+	// {
+	// e1.printStackTrace();
+	// }
+	// }
+	//
+	// return null;
+	// }
+
+
+
+
+	//
+	/**
+	* This function returns the index in the given array where the first
+	given
+	* name can be found. Returns -1 if the name is not found or the array or
+	* name is null. If will also return -1 if the place where IDs are
+	contained
+	* contains something other then an Integer.
+	*/
+	public static int getNameID(String[][] data, String name)
+	{
+		if ( data != null && data.length > 0 && name != null )
+		{
+			for ( int i = 0; i < data.length; i++ )
+			{
+				// If the index is not null and it equals the given names.
+				if ( data[i] != null && data[i][1].equals(name) )
+				{
+					try
+					{
+						return Integer.parseInt(data[i][0]);
+					}
+					catch ( NumberFormatException e )
+					{
+						return -1;
+					}
+				}
+			}
+		}
+
+		return -1;
+	}
+
+
+
+	/**
+	* This function takes a mulit-dim array and returns an array of the
+	second
+	* index.
+	*/
+	public static String[] getNameStrings(String[][] data)
+	{
+		if ( data != null && data.length > 0 && data[0].length > 1 )
+		{
+			String[] array = new String[data.length];
+
+			for ( int i = 0; i < data.length; i++ )
+			{
+				if ( data[i] != null )
+				{
+					if ( data[i][0] != null && data[i][1] != null )
+					{
+						array[i] = data[i][1];
+					}
+				}
+			}
+
+			return array;
+		}
+
+
+		return null;
+	}
+
+
+
+	private void addMouseLis(final JList list)
+	{
+		list.addMouseListener(new MouseAdapter()
+		{
+			public void mousePressed(final MouseEvent e)
+			{
+				if ( e.getButton() == MouseEvent.BUTTON3 )
+				{
+					int index = list.locationToIndex(e.getPoint());
+
+					if ( index > -1 )
+					{
+						// Gets the name that is displayed, or null if nothing
+						// is
+						// selected
+						AbstractObject obj = (AbstractObject) list.getModel()
+								.getElementAt(index);
+
+						if ( obj != null )
+						{
+							list.setSelectedIndex(index);
+
+							JPopupEditingList pop = new JPopupEditingList(obj,
+									e.getPoint());
+							pop.show(list, e.getPoint().x, e.getPoint().y);
+						}
+					}
+				}
+			}
+		});
+	}
+
+
+
+	/**
+	 * Refreshes the JList on {@link AbstractObject} objects in the Groups JList.
+	 */
+	public static void refreshObjList()
+	{
+		if ( GroupsFrame.groupsList != null )
+		{
+			// Gets the name that is displayed, or null if nothing is selected
+			String selectedGroupName = (String) GroupsFrame.groupsList
+					.getSelectedValue();
+
+
+			if ( selectedGroupName != null )
+			{
+				Connection con = AquaReg.getConnectionToDB();
+
+				// Gets all the objects from the group(Fish, Invertebrate and
+				// Coral)
+				AbstractObject[] objects = SQLfunctions
+						.databaseGetObjectsFromGroup(con, selectedGroupName);
+
+				// Gets the data inside each object
+				String[][] data = DataRetrival.getObjectsData(objects);
+
+				DefaultTableModel model = new DefaultTableModel(data,
+						GroupsFrame.columnNames);
+
+				// Sets the data for the table
+				GroupsFrame.groupObjectsTable.setModel(model);
+
+
+				if ( objects != null && objects.length != 0 )
+				{
+					GroupsFrame.groupObjectsList.setListData(objects);
+				}
+				else
+				{
+					GroupsFrame.groupObjectsList.setListData(new Object[0]);
+				}
+
+				AquaReg.closeConnection(con);
+			}
+		}
+	}
+
+
+
 }

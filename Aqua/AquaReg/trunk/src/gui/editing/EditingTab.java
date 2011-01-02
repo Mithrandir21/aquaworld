@@ -7,6 +7,8 @@ import gui.AquaReg;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 
 import javax.swing.JButton;
@@ -132,6 +134,10 @@ public class EditingTab extends JPanel implements ChangeListener
 		groupsInvertebrateList
 				.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
+		this.addMouseLis(groupsFishList);
+		this.addMouseLis(groupsCoralList);
+		this.addMouseLis(groupsInvertebrateList);
+
 
 		groupsFishList
 				.addListSelectionListener(new ObjectListSelectionListener());
@@ -187,11 +193,31 @@ public class EditingTab extends JPanel implements ChangeListener
 				return;
 			}
 
-			// Resets all the fields when something is selected.
-			EditingFrame.editingObjectView.resetAction();
+			// // Resets all the fields when something is selected.
+			// EditingFrame.editingObjectView.resetAction();
 
 			JList list = (JList) e.getSource();
 
+			AbstractObject obj = getListObject(list, list.getSelectedIndex());
+
+			if ( obj != null )
+			{
+				EditingFrame.editingObjectView.populateFields(obj);
+
+				EditingFrame.editingObject = obj;
+
+			}
+		}
+	}
+
+
+	/**
+	 * This function attempts to find and return the {@link AbstractObject} represented by the 
+	 */
+	private AbstractObject getListObject(JList list, int index)
+	{
+		if ( list != null && index > -1 )
+		{
 			// Now the type of selected object will be determined
 			Class objClass = null;
 			String[][] data = null;
@@ -219,12 +245,13 @@ public class EditingTab extends JPanel implements ChangeListener
 			{
 				// Gets the name that is displayed, or null if nothing is
 				// selected
-				String selectedGroupName = (String) list.getSelectedValue();
+				String selectedGroupName = (String) list.getModel()
+						.getElementAt(index);
 
 				if ( selectedGroupName != null )
 				{
 					// Here the ID of the selected Object is found
-					int index = getNameID(data, selectedGroupName);
+					int ID = getNameID(data, selectedGroupName);
 
 					Connection con = AquaReg.getConnectionToDB();
 
@@ -232,25 +259,23 @@ public class EditingTab extends JPanel implements ChangeListener
 					{
 						// Gets the Object for the DB(exceptions thrown).
 						AbstractObject obj = SQLfunctions.databaseGetObject(
-								con, index, objClass);
+								con, ID, objClass);
 
-						EditingFrame.editingObjectView.populateFields(obj);
-
-						EditingFrame.editingObject = obj;
+						return obj;
 					}
 					catch ( MoreTheOneResultObject e1 )
 					{
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					catch ( ObjectIDnotFoundInDatabaseException e1 )
 					{
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				}
 			}
 		}
+
+		return null;
 	}
 
 
@@ -358,7 +383,8 @@ public class EditingTab extends JPanel implements ChangeListener
 
 
 	public void refreshJLists()
-	{ // Gets the connection to the database
+	{
+		// Gets the connection to the database
 		Connection con = AquaReg.getConnectionToDB();
 
 
@@ -421,5 +447,31 @@ public class EditingTab extends JPanel implements ChangeListener
 			groupsInvertebrateList.removeAll();
 			groupsInvertebrateList.setListData(new Object[0]);
 		}
+	}
+
+
+	private void addMouseLis(final JList list)
+	{
+		list.addMouseListener(new MouseAdapter()
+		{
+			public void mousePressed(final MouseEvent e)
+			{
+				if ( e.getButton() == MouseEvent.BUTTON3 )
+				{
+					int index = list.locationToIndex(e.getPoint());
+
+					AbstractObject obj = getListObject(list, index);
+
+					if ( obj != null )
+					{
+						list.setSelectedIndex(index);
+
+						JPopupEditingList pop = new JPopupEditingList(obj, e
+								.getPoint());
+						pop.show(list, e.getPoint().x, e.getPoint().y);
+					}
+				}
+			}
+		});
 	}
 }

@@ -19,6 +19,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -160,6 +161,87 @@ public class GraficalFunctions
 		// c.gridwidth = 1; // 2 columns wide
 		c.gridy = 2; // third row
 		panel.add(field, c);
+
+
+
+		c.fill = GridBagConstraints.BOTH;
+		// c.ipady = 0; // reset to default
+		c.weighty = 1.0; // request any extra vertical space
+		// c.anchor = GridBagConstraints.PAGE_END; // bottom of space
+		// c.insets = new Insets(10, 0, 0, 0); // top padding
+		// c.gridx = 0; // aligned with button 2
+		// c.gridwidth = 2; // 2 columns wide
+		c.gridy = 3; // third row
+
+		JPanel lockPanel = new JPanel(new GridLayout());
+
+		// if ( lockPossible )
+		// {
+		// LockCheckBox lock = new LockCheckBox(field);
+		// lock.setActionCommand(valueName);
+		// lock.addActionListener(lis);
+		// lock.setFocusable(false);
+		// lockPanel.add(lock, c);
+		// }
+
+		panel.add(lockPanel, c);
+
+
+
+		return panel;
+	}
+
+
+
+	/**
+	 * TODO - Description
+	 */
+	public static JPanel getUniquePanel(JComboBox box, String valueName,
+			ActionListener lis, boolean necessaryField, boolean lockPossible)
+	{
+		JPanel panel = new JPanel(new GridBagLayout());
+		Dimension panelSize = new Dimension(115, 65);
+		panel.setPreferredSize(panelSize);
+		panel.setMinimumSize(panelSize);
+		panel.setMaximumSize(panelSize);
+		// panel.setBorder(BorderFactory.createEtchedBorder());
+
+		// JPanel panel1 = new JPanel(new GridBagLayout());
+		// Dimension panelSize1 = new Dimension(200, 400);
+		// panel1.setPreferredSize(panelSize1);
+		// panel1.setMinimumSize(panelSize1);
+		// panel1.setMaximumSize(panelSize1);
+		// panel1.setBorder(BorderFactory.createEtchedBorder());
+
+		GridBagConstraints c = new GridBagConstraints();
+
+
+		JLabel label = new JLabel(valueName);
+		c.fill = GridBagConstraints.BOTH;
+		// c.ipady = 0; // reset to default
+		// c.weightx = 1.0; // request any extra vertical space
+		// c.anchor = GridBagConstraints.CENTER; // bottom of space
+		// c.insets = new Insets(10, 0, 0, 0); // top padding
+		// c.gridx = 0; // aligned with button 2
+		// c.gridwidth = 1; // 2 columns wide
+		c.gridy = 0; // third row
+		panel.add(label, c);
+
+
+		box.setActionCommand(valueName);
+		Dimension textSize = new Dimension(100, 20);
+		box.setPreferredSize(textSize);
+		box.setMinimumSize(textSize);
+		box.setMaximumSize(textSize);
+		c.fill = GridBagConstraints.NONE;
+		// c.ipady = 0; // reset to default
+		// c.weightx = 1.0; // request any extra vertical space
+		// c.anchor = GridBagConstraints.PAGE_END; // bottom of space
+		c.insets = new Insets(7, 0, 0, 0); // top padding
+		// c.gridx = 0; // aligned with button 2
+		// c.gridwidth = 1; // 2 columns wide
+		c.gridy = 2; // third row
+		panel.add(box, c);
 
 
 

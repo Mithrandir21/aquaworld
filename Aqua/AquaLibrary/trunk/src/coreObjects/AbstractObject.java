@@ -54,7 +54,6 @@ public abstract class AbstractObject
 	 */
 	private AbstractObject()
 	{
-
 	}
 
 
@@ -153,7 +152,7 @@ public abstract class AbstractObject
 	/**
 	 * This function is meant to be used by Hibernate for ID setting.
 	 */
-	private void setObjectID(int id)
+	public void setObjectID(int id)
 	{
 		objectID = id;
 	}

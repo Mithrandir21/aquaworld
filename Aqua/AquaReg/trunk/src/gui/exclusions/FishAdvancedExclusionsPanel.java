@@ -1,6 +1,7 @@
 package gui.exclusions;
 
 
+import graphicalObjects.AquaGroupBox;
 import graphicalObjects.AquaPanel;
 import graphics.RoundedBorder;
 
@@ -13,6 +14,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.ListIterator;
 
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -130,7 +133,7 @@ public class FishAdvancedExclusionsPanel extends JPanel implements
 
 
 
-		JCheckBox groupBox = new JCheckBox("Johans Group");
+		AquaGroupBox groupBox = new AquaGroupBox("Johans Group");
 		groupBox.setBackground(Color.WHITE);
 		groupBox.addMouseListener(this);
 		panel.add(groupBox, d);
@@ -170,7 +173,7 @@ public class FishAdvancedExclusionsPanel extends JPanel implements
 			}
 
 
-			panel.add(getObjectPanel(border, lis), d);
+			panel.add(getObjectPanel(groupBox, border, lis), d);
 		}
 
 
@@ -184,12 +187,16 @@ public class FishAdvancedExclusionsPanel extends JPanel implements
 
 	/**
 	 * TODO - Description
+	 * @param groupBox 
 	 * 
 	 */
-	private JPanel getObjectPanel(Border border, ActionListener lis)
+	private JPanel getObjectPanel(AquaGroupBox groupBox, Border border,
+			ActionListener lis)
 	{
 		AquaPanel panel = new AquaPanel(this, this);
 		panel.setBorder(border);
+
+		groupBox.objectPanels.add(panel);
 
 		return panel;
 	}
@@ -267,6 +274,21 @@ public class FishAdvancedExclusionsPanel extends JPanel implements
 			AquaPanel panel = (AquaPanel) comp;
 			panel.toggle();
 		}
+		else if ( comp instanceof AquaGroupBox )
+		{
+			AquaGroupBox box = (AquaGroupBox) comp;
+
+			ArrayList<AquaPanel> panels = box.objectPanels;
+
+			ListIterator<AquaPanel> itr = panels.listIterator();
+
+			while ( itr.hasNext() )
+			{
+				AquaPanel panel = itr.next();
+
+				panel.toggle(box.isSelected());
+			}
+		}
 		else if ( comp instanceof JCheckBox )
 		{
 			if ( comp.getParent() instanceof AquaPanel )
@@ -288,11 +310,6 @@ public class FishAdvancedExclusionsPanel extends JPanel implements
 							191, 255)));
 				}
 			}
-			else
-			{
-				JCheckBox box = (JCheckBox) comp;
-			}
 		}
 	}
-
 }

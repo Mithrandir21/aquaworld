@@ -15,6 +15,7 @@ import org.hibernate.Session;
 import coreObjects.ObjectParameters;
 import coreObjects.Fish.FishExclusions;
 import coreObjects.Fish.FishObject;
+import coreObjects.Fish.FishObject.FishAgeType;
 import coreObjects.Fish.FishObject.FishGender;
 
 
@@ -62,7 +63,7 @@ public class HibMain
 		FishExclusions fishEx = new FishExclusions(2);
 
 		FishObject fish = new FishObject(80, "Gullfiskius", "...Gullfish",
-				FishGender.UNISEX, 7.5, parameter, fishEx);
+				FishGender.UNISEX, 7.5, parameter, fishEx, FishAgeType.YOUNG);
 		fish.setGenusName("GullFiskGenus");
 		fish.setPopulareName("PopFishName");
 

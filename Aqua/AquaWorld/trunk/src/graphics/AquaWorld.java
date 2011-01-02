@@ -1,8 +1,6 @@
 package graphics;
 
 
-import exceptions.MoreTheOneResultObject;
-import exceptions.ObjectIDnotFoundInDatabaseException;
 import graphics.GUI.graphicalFunctions.MakeSystemImageIcons;
 import graphics.GUI.menues.GenericPrimeMenuBar;
 import graphics.GUI.menues.GenericPrimeToolbar;
@@ -70,6 +68,7 @@ import coreObjects.Coral.CoralObject.CoralTypes;
 import coreObjects.Equipment.CirculationPump;
 import coreObjects.Fish.FishExclusions;
 import coreObjects.Fish.FishObject;
+import coreObjects.Fish.FishObject.FishAgeType;
 import coreObjects.Fish.FishObject.FishGender;
 import coreObjects.Invertebrates.InvertebrateExclusions;
 import coreObjects.Invertebrates.InvertebratesObject;
@@ -363,12 +362,6 @@ public class AquaWorld extends JFrame
 		// TabbedSelection sel = new TabbedSelection();
 		SelectionOverview sel = new SelectionOverview();
 		selectionPanel.add(sel);
-
-
-
-
-
-
 
 
 
@@ -848,8 +841,8 @@ public class AquaWorld extends JFrame
 
 	public static void createAndPopulateDB()
 	{
-		long start = System.nanoTime();    
-		
+		long start = System.nanoTime();
+
 		CirculationPump pump = new CirculationPump("PumpTest", "PumpTestDesc",
 				2000);
 
@@ -881,15 +874,17 @@ public class AquaWorld extends JFrame
 		FishExclusions fishEx1 = new FishExclusions(352);
 
 		FishObject fish = new FishObject(00001, "Gullfiskius", "...Gullfish",
-				FishGender.UNISEX, 7.5, parameter, fishEx);
+				FishGender.UNISEX, 7.5, parameter, fishEx, FishAgeType.YOUNG);
 		fish.setGenusName("GullFiskGenus");
+		fish.setPopulareName("GullPopius");
 		WidgetFish widFish = new WidgetFish(currentCanvas.getScene(), fish,
 				null);
 
 
 		FishObject fish1 = new FishObject(8888, "AndreGullfish", "...Gullfish",
-				FishGender.UNISEX, 7.5, parameter11, fishEx1);
+				FishGender.UNISEX, 7.5, parameter11, fishEx1, FishAgeType.YOUNG);
 		fish1.setGenusName("GullFiskGenus");
+		fish1.setPopulareName("GullPop");
 		WidgetFish widFish1 = new WidgetFish(currentCanvas.getScene(), fish1,
 				null);
 
@@ -909,6 +904,7 @@ public class AquaWorld extends JFrame
 
 		CoralObject coral = new CoralObject(00002, "Coralius", "...Coral",
 				CoralTypes.LargePolipedCoral, parameter1);
+		coral.setPopulareName("Coraliusen");
 
 
 		WidgetCoral widCoral = new WidgetCoral(currentCanvas.getScene(), coral,
@@ -934,6 +930,7 @@ public class AquaWorld extends JFrame
 		InvertebratesObject invertebrate = new InvertebratesObject(00007,
 				"Ivenius", "...Invertebrate", InvertebratesTypes.Anemones,
 				parameter2, invEx);
+		invertebrate.setPopulareName("Iveniusen");
 
 		WidgetInvertebrates widInv = new WidgetInvertebrates(
 				currentCanvas.getScene(), invertebrate, null);
@@ -977,6 +974,8 @@ public class AquaWorld extends JFrame
 					"./resource/database/MySQLstatements/MySQL_ObjectGroup.txt");
 			File objectParFile = new File(
 					"./resource/database/MySQLstatements/MySQL_ObjectParameters.txt");
+			File popNamesFile = new File(
+					"./resource/database/MySQLstatements/MySQL_PopNames.txt");
 			File fishObjectFile = new File(
 					"./resource/database/MySQLstatements/MySQL_FishObject.txt");
 			File invertebrateObjectFile = new File(
@@ -1028,6 +1027,10 @@ public class AquaWorld extends JFrame
 			// FishExclusion
 			String fishExString = IOmanagment.getSQLtableString(fishExFile);
 			SQLfunctions.databaseStatementExecution(connection, fishExString);
+
+			// PopNames
+			String popNamesString = IOmanagment.getSQLtableString(popNamesFile);
+			SQLfunctions.databaseStatementExecution(connection, popNamesString);
 
 			// FishGroup
 			String fishGroupString = IOmanagment
@@ -1085,8 +1088,63 @@ public class AquaWorld extends JFrame
 			SQLfunctions.databaseAddFishObjectAndParametersAndExclusions(
 					connection, fish);
 
+			SQLfunctions.databaseAddCoralObjectAndCoralParameters(connection,
+					coral);
+
+			SQLfunctions
+					.databaseAddInvertebrateObjectAndParametersAndExclusions(
+							connection, invertebrate);
+
 			SQLfunctions.databaseAddFishObjectAndParametersAndExclusions(
 					connection, fish1);
+
+
+			// SQLfunctions.databaseAddGroup(connection, "MiscGroup1",
+			// "GroupTesting");
+			//
+			// SQLfunctions.databaseAddGroup(connection, "MiscGroup1",
+			// "GroupTesting");
+			//
+			// SQLfunctions.databaseAddGroup(connection, "Group Bam",
+			// "GroupTesting");
+			//
+			// SQLfunctions.databaseAddGroup(connection, "Group Johan",
+			// "GroupTesting");
+			//
+			//
+			// SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
+			// fish);
+			// SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
+			// fish1);
+			//
+			// SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
+			// coral);
+			//
+			// SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
+			// invertebrate);
+			//
+			//
+			//
+			// CoralObject coralObj = SQLfunctions.databaseGetCoralObject(
+			// connection, 2);
+			//
+			// InvertebratesObject invObj = SQLfunctions
+			// .databaseGetInvertebrateObject(connection, 7);
+			//
+			//
+			// FishObject fishObj =
+			// SQLfunctions.databaseGetFishObject(connection,
+			// 1);
+
+
+			SQLfunctions.databaseRemoveAbstractObject(connection, invertebrate);
+			// SQLfunctions.databaseRemoveAbstractObject(connection, coral);
+			SQLfunctions.databaseRemoveAbstractObject(connection, fish1);
+
+
+
+			SQLfunctions.databaseAddFishObjectAndParametersAndExclusions(
+					connection, fish);
 
 			SQLfunctions.databaseAddCoralObjectAndCoralParameters(connection,
 					coral);
@@ -1095,43 +1153,15 @@ public class AquaWorld extends JFrame
 					.databaseAddInvertebrateObjectAndParametersAndExclusions(
 							connection, invertebrate);
 
-
-			SQLfunctions.databaseAddGroup(connection, "MiscGroup1",
-					"GroupTesting", 1);
-
-			SQLfunctions.databaseAddGroup(connection, "MiscGroup1",
-					"GroupTesting", 1);
-
-			SQLfunctions.databaseAddGroup(connection, "Group Bam",
-					"GroupTesting", 2);
-
-			SQLfunctions.databaseAddGroup(connection, "Group Johan",
-					"GroupTesting", 3);
+			SQLfunctions.databaseAddFishObjectAndParametersAndExclusions(
+					connection, fish1);
 
 
-			SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
-					fish);
-			SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
-					fish1);
-
-			SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
-					coral);
-
-			SQLfunctions.databaseAddObjectToGroup(connection, "MiscGroup1",
-					invertebrate);
-
-			//
-			CoralObject coralObj = SQLfunctions.databaseGetCoralObject(
-					connection, 2);
 
 
-			InvertebratesObject invObj = SQLfunctions
-					.databaseGetInvertebrateObject(connection, 7);
-
-
-			FishObject fishObj = SQLfunctions.databaseGetFishObject(connection,
-					1);
-
+			SQLfunctions.databaseRemoveAbstractObject(connection, invertebrate);
+			// SQLfunctions.databaseRemoveAbstractObject(connection, coral);
+			SQLfunctions.databaseRemoveAbstractObject(connection, fish1);
 		}
 		catch ( SQLException e )
 		{
@@ -1139,16 +1169,16 @@ public class AquaWorld extends JFrame
 			// it probably means no database file is found
 			System.err.println(e.getMessage());
 		}
-		catch ( ObjectIDnotFoundInDatabaseException e )
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch ( MoreTheOneResultObject e )
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// catch ( ObjectIDnotFoundInDatabaseException e )
+		// {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// catch ( MoreTheOneResultObject e )
+		// {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 		finally
 		{
 			try

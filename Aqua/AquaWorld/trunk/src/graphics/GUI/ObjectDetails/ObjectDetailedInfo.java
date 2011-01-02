@@ -66,18 +66,19 @@ public class ObjectDetailedInfo extends JPanel
 
 
 		// Adds the group panel to the collapsible container
-		tpc.add(getParametersPanel(AquaWorld.texts
-				.getString("objectGeneralGroupName"), false, obj));
+		tpc.add(getParametersPanel(
+				AquaWorld.texts.getString("objectWaterGroupName"), false, obj));
 
 
 		// Adds the group panel to the collapsible container
-		tpc.add(getExclusionsPanel(AquaWorld.texts
-				.getString("objectExclusionsGroupName"), true, obj));
+		tpc.add(getExclusionsPanel(
+				AquaWorld.texts.getString("objectExclusionsGroupName"), true,
+				obj));
 
 		// Adds the group panel to the collapsible container
-		tpc.add(getFishCompatibilityExclusionsPanel(AquaWorld.texts
-				.getString("objectCompatibilityGroupName"), true,
-				(FishObject) obj));
+		tpc.add(getFishCompatibilityExclusionsPanel(
+				AquaWorld.texts.getString("objectCompatibilityGroupName"),
+				true, (FishObject) obj));
 
 
 		JScrollPane scrollArea = new JScrollPane(tpc);
@@ -150,14 +151,16 @@ public class ObjectDetailedInfo extends JPanel
 
 		d.gridy = 1;
 		d.gridx = 1;
-		panel.add(getUniquePanel(AquaWorld.texts.getString("temperatur"),
-				data[5]), d);
+		panel.add(
+				getUniquePanel(AquaWorld.texts.getString("temperatur"), data[5]),
+				d);
 
 
 		d.gridy = 1;
 		d.gridx = 2;
-		panel.add(getUniquePanel(AquaWorld.texts.getString("magnesium"),
-				data[6]), d);
+		panel.add(
+				getUniquePanel(AquaWorld.texts.getString("magnesium"), data[6]),
+				d);
 
 
 		d.gridy = 2;
@@ -169,15 +172,17 @@ public class ObjectDetailedInfo extends JPanel
 
 		d.gridy = 2;
 		d.gridx = 1;
-		panel.add(getUniquePanel(AquaWorld.texts.getString("spaceneeded"),
-				data[8]), d);
+		panel.add(
+				getUniquePanel(AquaWorld.texts.getString("spaceneeded"),
+						data[8]), d);
 
 
 		d.weighty = 1.0; // request any extra vertical space
 		d.gridy = 2;
 		d.gridx = 2;
-		panel.add(getUniquePanel(AquaWorld.texts.getString("othersSize"),
-				data[9]), d);
+		panel.add(
+				getUniquePanel(AquaWorld.texts.getString("othersSize"), data[9]),
+				d);
 
 
 
@@ -223,13 +228,15 @@ public class ObjectDetailedInfo extends JPanel
 
 
 		// Adds the group panel to the collapsible container
-		tpc.add(getFishSimpleExclusionsPanel(AquaWorld.texts
-				.getString("objectSimpleGroupName"), false, (FishObject) obj));
+		tpc.add(getFishSimpleExclusionsPanel(
+				AquaWorld.texts.getString("objectSimpleGroupName"), false,
+				(FishObject) obj));
 
 
 		// Adds the group panel to the collapsible container
-		tpc.add(getFishGenusExclusionsPanel(AquaWorld.texts
-				.getString("objectGroupsGroupName"), true, (FishObject) obj));
+		tpc.add(getFishGenusExclusionsPanel(
+				AquaWorld.texts.getString("objectGroupsGroupName"), true,
+				(FishObject) obj));
 
 
 		panel.add(tpc, d);
@@ -275,32 +282,39 @@ public class ObjectDetailedInfo extends JPanel
 
 		d.gridy = 0;
 		d.gridx = 0;
-		panel.add(getUniqueBooleanPanel(AquaWorld.texts
-				.getString("objectIsAloneLable"), ex.isAllAlone()), d);
+		panel.add(
+				getUniqueBooleanPanel(
+						AquaWorld.texts.getString("objectIsAloneLable"),
+						ex.isAllAlone()), d);
 
 		d.gridy = 0;
 		d.gridx = 1;
-		panel.add(getUniqueBooleanPanel(AquaWorld.texts
-				.getString("objectAloneWithFamilyLabel"), ex
-				.isAloneWithSpecies()), d);
+		panel.add(
+				getUniqueBooleanPanel(
+						AquaWorld.texts.getString("objectAloneWithFamilyLabel"),
+						ex.isAloneWithSpecies()), d);
 
 		d.gridy = 0;
 		d.gridx = 2;
-		panel.add(getUniqueBooleanPanel(AquaWorld.texts
-				.getString("objectOnlyOneInFamilyLabel"), ex
-				.isOnlyOneInSpecies()), d);
+		panel.add(
+				getUniqueBooleanPanel(
+						AquaWorld.texts.getString("objectOnlyOneInFamilyLabel"),
+						ex.isOnlyOneInSpecies()), d);
 
 		d.gridy = 1;
 		d.gridx = 0;
-		panel.add(getUniqueBooleanPanel(AquaWorld.texts
-				.getString("objectOnlyOneMaleLabel"), ex.isOnlyOneMale()), d);
+		panel.add(
+				getUniqueBooleanPanel(
+						AquaWorld.texts.getString("objectOnlyOneMaleLabel"),
+						ex.isOnlyOneMale()), d);
 
 		d.weighty = 1.0; // request any extra vertical space
 		d.gridy = 1;
 		d.gridx = 1;
-		panel.add(getUniqueBooleanPanel(AquaWorld.texts
-				.getString("objectOnlyOneFemaleLabel"), ex.isOnlyOneFemale()),
-				d);
+		panel.add(
+				getUniqueBooleanPanel(
+						AquaWorld.texts.getString("objectOnlyOneFemaleLabel"),
+						ex.isOnlyOneFemale()), d);
 
 
 		// Adds the panel with the objects to the group panel
@@ -343,39 +357,39 @@ public class ObjectDetailedInfo extends JPanel
 
 		d.gridy = 0;
 		d.gridx = 0;
-		panel.add(getUniquePanel(AquaWorld.texts
-				.getString("objectOneMalePerLiterLabel"), ex
-				.getOnlyOneMalePerLiter()
-				+ ""), d);
+		panel.add(
+				getUniquePanel(
+						AquaWorld.texts.getString("objectOneMalePerLiterLabel"),
+						ex.getOnlyOneMalePerLiter() + ""), d);
 
 		d.gridy = 0;
 		d.gridx = 1;
-		panel.add(getUniquePanel(AquaWorld.texts
-				.getString("objectOneFemalePerLiterLabel"), ex
-				.getOnlyOneFemalePerLiter()
-				+ ""), d);
+		panel.add(
+				getUniquePanel(AquaWorld.texts
+						.getString("objectOneFemalePerLiterLabel"),
+						ex.getOnlyOneFemalePerLiter() + ""), d);
 
 		d.gridy = 0;
 		d.gridx = 2;
-		panel.add(getUniquePanel(AquaWorld.texts
-				.getString("objectMinMalesPerFemaleLabel"), ex
-				.getMinumimMalesPerFemale()
-				+ ""), d);
+		panel.add(
+				getUniquePanel(AquaWorld.texts
+						.getString("objectMinMalesPerFemaleLabel"),
+						ex.getMinumimMalesPerFemale() + ""), d);
 
 		d.gridy = 1;
 		d.gridx = 0;
-		panel.add(getUniquePanel(AquaWorld.texts
-				.getString("objectMinFemalesPerMaleLabel"), ex
-				.getMinumimFemalesPerMale()
-				+ ""), d);
+		panel.add(
+				getUniquePanel(AquaWorld.texts
+						.getString("objectMinFemalesPerMaleLabel"),
+						ex.getMinumimFemalesPerMale() + ""), d);
 
 		d.weighty = 1.0; // request any extra vertical space
 		d.gridy = 1;
 		d.gridx = 1;
-		panel.add(getUniquePanel(AquaWorld.texts
-				.getString("objectMinSchoolSizeLabel"), ex
-				.getMinimumSchoolSize()
-				+ ""), d);
+		panel.add(
+				getUniquePanel(
+						AquaWorld.texts.getString("objectMinSchoolSizeLabel"),
+						ex.getMinimumSchoolSize() + ""), d);
 
 
 		// Adds the panel with the objects to the group panel
@@ -418,28 +432,38 @@ public class ObjectDetailedInfo extends JPanel
 
 		d.gridy = 0;
 		d.gridx = 0;
-		panel.add(getUniqueBooleanPanel(AquaWorld.texts
-				.getString("objectIsAloneLable"), ex.isAllAlone()), d);
+		panel.add(
+				getUniqueBooleanPanel(
+						AquaWorld.texts.getString("objectIsAloneLable"),
+						ex.isAllAlone()), d);
 
 		d.gridy = 0;
 		d.gridx = 1;
-		panel.add(getUniqueBooleanPanel(AquaWorld.texts
-				.getString("objectAloneWithFamilyLabel"), ex.isAllAlone()), d);
+		panel.add(
+				getUniqueBooleanPanel(
+						AquaWorld.texts.getString("objectAloneWithFamilyLabel"),
+						ex.isAllAlone()), d);
 
 		d.gridy = 0;
 		d.gridx = 2;
-		panel.add(getUniqueBooleanPanel(AquaWorld.texts
-				.getString("objectOnlyOneInFamilyLabel"), ex.isAllAlone()), d);
+		panel.add(
+				getUniqueBooleanPanel(
+						AquaWorld.texts.getString("objectOnlyOneInFamilyLabel"),
+						ex.isAllAlone()), d);
 
 		d.gridy = 1;
 		d.gridx = 0;
-		panel.add(getUniqueBooleanPanel(AquaWorld.texts
-				.getString("objectOnlyOneMaleLabel"), ex.isAllAlone()), d);
+		panel.add(
+				getUniqueBooleanPanel(
+						AquaWorld.texts.getString("objectOnlyOneMaleLabel"),
+						ex.isAllAlone()), d);
 
 		d.gridy = 1;
 		d.gridx = 1;
-		panel.add(getUniqueBooleanPanel(AquaWorld.texts
-				.getString("objectOnlyOneFemaleLabel"), ex.isAllAlone()), d);
+		panel.add(
+				getUniqueBooleanPanel(
+						AquaWorld.texts.getString("objectOnlyOneFemaleLabel"),
+						ex.isAllAlone()), d);
 
 
 		// Adds the panel with the objects to the group panel
@@ -460,8 +484,8 @@ public class ObjectDetailedInfo extends JPanel
 	public static JPanel getUniquePanel(String labelName, String value)
 	{
 		JPanel panel = new JPanel(new GridLayout());
-		panel.setBorder(BorderFactory.createTitledBorder(BorderFactory
-				.createEmptyBorder(), labelName));
+		panel.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEmptyBorder(), labelName));
 
 		JTextField valueLabel = new JTextField(value);
 		valueLabel.setBorder(BorderFactory.createEtchedBorder());

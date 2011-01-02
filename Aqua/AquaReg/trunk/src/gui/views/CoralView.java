@@ -32,8 +32,13 @@ public class CoralView extends AbstractView implements ActionListener
 	 */
 	public CoralView(boolean incDelButton, boolean incExcButton)
 	{
-		super(incDelButton, incExcButton);
+		super(incDelButton, incExcButton, CoralObject.class);
 		sizeField.setNecessary(false);
+		ghLowField.setNecessary(false);
+		ghHighField.setNecessary(false);
+		khLowField.setNecessary(true);
+		khHighField.setNecessary(true);
+
 	}
 
 	/*
@@ -88,54 +93,71 @@ public class CoralView extends AbstractView implements ActionListener
 		String speciesName = "";
 		String genusName = "";
 		String description = "";
-		double size = -1.0;
+		String coralType = "";
 		int parID = -1;
-		// int fishExID = -1;
+		int popNamedID = -1;
 
 		// Gets the connection to the Database.
 		Connection connection = AquaReg.getConnectionToDB();
 
 		if ( connection != null )
 		{
-			popName = popNameField.getText(); // Gets the popular name
+			if ( !popNameField.getText().equals("") )
+			{
+				popName = popNameField.getText();
+			}
 			speciesName = speciesField.getText(); // Gets the species name
 			genusName = genusField.getText(); // Gets the genus name
 			description = descriptionArea.getText(); // Gets the description
-			size = getFieldDouble(sizeField); // Gets the size(-1.0 if invalid)
+			coralType = coralTypeBox.getSelectedItem().toString();
+
+			/**
+			 * Creates a new row in the database and returns the ID of the row.
+			 */
+			if ( !popName.equals("") )
+			{
+				popNamedID = SQLfunctions.databaseAddNewPopNamesReturnID(
+						connection, popName);
+			}
+			else
+			{
+				popNamedID = SQLfunctions
+						.databaseAddNewPopNamesReturnID(connection);
+			}
+
+
 			/**
 			 * Inserts an ObjectParameter object with the verified data from the
 			 * fields. The ID of the INSERT row is returned.
 			 */
 			parID = insertObjectParameters();
 
-			// /**
-			// * Inserts an empty FishExclusion object.
-			// * The ID of the INSERT row is returned.
-			// */
-			// fishExID = SQLfunctions
-			// .databaseAddNewEmptyFishExclusionsList(connection);
-
-
 
 			/**
 			 * Verifies that both objects are inserted. If one has failed the
 			 * other will be also removed.
 			 */
-			// if ( parID == -1 || fishExID == -1 )
-			if ( parID == -1 )
+			if ( popNamedID == -1 || parID == -1 || popNamedID == 0
+					|| parID == 0 )
 			{
+				/**
+				 * If the functions have created a row in the different tables, the 
+				 * IDs will be something other then -1.
+				 */
+
+				// If the PopNames row was created.
+				if ( popNamedID != -1 )
+				{
+					SQLfunctions.databaseRemovePopNamesID(connection,
+							popNamedID);
+				}
+
 				// If the ObjectParameter has been added.
 				if ( parID != -1 )
 				{
 					SQLfunctions.databaseRemoveObjectParametersID(connection,
 							parID);
 				}
-
-				// if ( fishExID != -1 )
-				// {
-				// SQLfunctions.databaseRemoveFishExclusionID(connection,
-				// fishExID);
-				// }
 			}
 			/**
 			 * Both a ObjectParameter object and a FishExclusion object has been
@@ -143,16 +165,16 @@ public class CoralView extends AbstractView implements ActionListener
 			 */
 			else
 			{
-				String fishObjectString = "INSERT INTO "
+				String coralObjectString = "INSERT INTO "
 						+ SQLfunctions.coralObjectTable + " VALUES (" + null
-						+ ", '" + popName + // Common name
-						"', '" + speciesName + // Species Name
+						+ ", '" + speciesName + // Species Name
 						"', '" + genusName + // Genus Name
 						"', '" + description + // Description
-						"', '" + size + // Size
-						"', '" + parID + // ObjectParametersID
-						// "', '" + fishExID + // FishExclusionID
-						"');";
+						"', '" + coralType + // CoralType
+						"', " + parID + // ObjectParametersID
+						", " + popNamedID + // PopNamesID
+						");";
+
 
 				boolean objectCreated = false;
 				boolean addedToGroup = false;
@@ -167,7 +189,7 @@ public class CoralView extends AbstractView implements ActionListener
 						statement.setQueryTimeout(30); // set timeout to 30 sec.
 
 						statement.executeUpdate("BEGIN;");
-						statement.executeUpdate(fishObjectString,
+						statement.executeUpdate(coralObjectString,
 								Statement.RETURN_GENERATED_KEYS);
 						ResultSet rs = statement.getGeneratedKeys();
 						statement.executeUpdate("COMMIT;");
@@ -247,6 +269,25 @@ public class CoralView extends AbstractView implements ActionListener
 				}
 				catch ( SQLException e )
 				{
+					/**
+					 * If the functions have created a row in the different tables, the 
+					 * IDs will be something other then -1.
+					 */
+
+					// If the PopNames row was created.
+					if ( popNamedID != -1 )
+					{
+						SQLfunctions.databaseRemovePopNamesID(connection,
+								popNamedID);
+					}
+
+					// If the ObjectParameter has been added.
+					if ( parID != -1 )
+					{
+						SQLfunctions.databaseRemoveObjectParametersID(
+								connection, parID);
+					}
+
 					// if the error message is "out of memory",
 					// it probably means no database file is found
 					System.err.println(e.getMessage());

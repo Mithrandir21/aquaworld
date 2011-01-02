@@ -20,11 +20,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
 import sqlLogic.SQLfunctions;
 import coreObjects.AbstractObject;
+import coreObjects.Coral.CoralObject;
+import coreObjects.Coral.CoralObject.CoralTypes;
+import coreObjects.Fish.FishObject;
+import coreObjects.Invertebrates.InvertebratesObject;
+import coreObjects.Invertebrates.InvertebratesObject.InvertebratesTypes;
 
 
 public abstract class AbstractView extends JPanel implements ActionListener
@@ -40,6 +46,10 @@ public abstract class AbstractView extends JPanel implements ActionListener
 	AquaField spaceNeededField = new AquaField(false);
 
 	AquaAutoCompleteComboBox groupField = new AquaAutoCompleteComboBox(false);
+
+	JComboBox coralTypeBox = new JComboBox();
+
+	JComboBox invType = new JComboBox();
 
 
 	AquaField salinityLowField = new AquaField(true);
@@ -74,13 +84,17 @@ public abstract class AbstractView extends JPanel implements ActionListener
 	boolean incExclusionButton = false;
 
 
+	// private static Class objClassType = null;
+
+
 	/**
 	 * TODO - Description NEEDED!
 	 */
-	public AbstractView(boolean incDelButton, boolean incExcButton)
+	public AbstractView(boolean incDelButton, boolean incExcButton, Class type)
 	{
 		incDeleteButton = incDelButton;
 		incExclusionButton = incExcButton;
+		// objClassType = type;
 
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints d = new GridBagConstraints();
@@ -97,9 +111,42 @@ public abstract class AbstractView extends JPanel implements ActionListener
 		this.add(GraficalFunctions.getUniquePanel(popNameField,
 				"Populare Name", this, false, false), d);
 
+		// Type
 		d.gridx = 3;
-		this.add(GraficalFunctions.getUniquePanel(sizeField, "Size", this,
-				true, true), d);
+		if ( type.equals(FishObject.class) )
+		{
+			this.add(GraficalFunctions.getUniquePanel(sizeField, "Size", this,
+					true, true), d);
+		}
+		else if ( type.equals(CoralObject.class) )
+		{
+			CoralTypes[] corTypes = CoralTypes.values();
+			String corTypesStrings[] = new String[corTypes.length];
+
+			for ( int i = 0; i < corTypes.length; i++ )
+			{
+				corTypesStrings[i] = corTypes[i].toString();
+			}
+
+			coralTypeBox = new JComboBox(corTypesStrings);
+			// this.add(coralTypeBox, d);
+			this.add(GraficalFunctions.getUniquePanel(coralTypeBox,
+					"Coral Type", this, false, true), d);
+		}
+		else if ( type.equals(InvertebratesObject.class) )
+		{
+			InvertebratesTypes[] invTypes = InvertebratesTypes.values();
+			String invTypesStrings[] = new String[invTypes.length];
+
+			for ( int i = 0; i < invTypes.length; i++ )
+			{
+				invTypesStrings[i] = invTypes[i].toString();
+			}
+
+			invType = new JComboBox(invTypesStrings);
+			this.add(GraficalFunctions.getUniquePanel(invType, "Inv Type",
+					this, false, true), d);
+		}
 
 		d.gridx = 4;
 		this.add(GraficalFunctions.getUniquePanel(spaceNeededField,
@@ -173,7 +220,6 @@ public abstract class AbstractView extends JPanel implements ActionListener
 		this.add(getButtons(this), d);
 
 	}
-
 
 	/**
 	 * Resets the given field if it is editable. It also resets the background.
@@ -627,6 +673,7 @@ public abstract class AbstractView extends JPanel implements ActionListener
 				ghDataVerified = true;
 			}
 		}
+
 
 		// If the fields are not empty
 		if ( !(checkRangeFieldsAreEmpty(khLowField, khHighField)) )

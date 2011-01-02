@@ -13,6 +13,7 @@ import javax.swing.WindowConstants;
 import coreObjects.ObjectParameters;
 import coreObjects.Fish.FishExclusions;
 import coreObjects.Fish.FishObject;
+import coreObjects.Fish.FishObject.FishAgeType;
 import coreObjects.Fish.FishObject.FishGender;
 
 
@@ -52,12 +53,10 @@ public class ObjectDetailsFrame extends JFrame
 
 
 
-		ObjectGeneralInfo panel1 = new ObjectGeneralInfo();
-		panel1.setBorder(BorderFactory.createEtchedBorder());
-		this.add(panel1, d);
 
 
-
+		// CREATING THE OBJECTS
+		// ---------------------------------------------------
 
 		double[] sal = { 1.0, 1.0 };
 		double[] ph = { 5.6, 8.0 };
@@ -76,7 +75,7 @@ public class ObjectDetailsFrame extends JFrame
 		FishExclusions fishEx = new FishExclusions(00001);
 
 		FishObject fish = new FishObject(00001, "Gullfiskius", "...Gullfish",
-				FishGender.UNISEX, 7.5, parameter, fishEx);
+				FishGender.UNISEX, 7.5, parameter, fishEx, FishAgeType.YOUNG);
 		fish.setGenusName("Carassius");
 		//
 		// // ---------------------------------------------------
@@ -97,6 +96,11 @@ public class ObjectDetailsFrame extends JFrame
 		// AbstractObject[] objects = { fish, coral, invertebrate };
 
 
+		ObjectGeneralInfo panel1 = new ObjectGeneralInfo(fish);
+		panel1.setBorder(BorderFactory.createEtchedBorder());
+		this.add(panel1, d);
+
+
 
 
 
@@ -113,7 +117,7 @@ public class ObjectDetailsFrame extends JFrame
 		// this.setResizable(false);
 		this.setLocation(initXLocation, initYLocation);
 		this.setPreferredSize(new Dimension(700, 600));
-		this.setMinimumSize(new Dimension(600, 500));
+		this.setMinimumSize(new Dimension(600, 520));
 		this.setVisible(true);
 		// this.pack();
 	}

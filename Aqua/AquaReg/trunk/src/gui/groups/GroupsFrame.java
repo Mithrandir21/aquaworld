@@ -1,6 +1,7 @@
 package gui.groups;
 
 
+import gui.AquaReg;
 import gui.editing.AquaJList;
 import gui.groups.bottom.GroupBottomPanel;
 import gui.groups.top.GroupTopPanel;
@@ -9,12 +10,18 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.sql.Connection;
 
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 
 import org.jdesktop.swingx.JXTable;
+
+import sqlLogic.SQLfunctions;
+import coreObjects.AbstractObject;
 
 
 /**
@@ -24,13 +31,13 @@ import org.jdesktop.swingx.JXTable;
  */
 public class GroupsFrame extends JFrame
 {
-	public static JList groupsList = new JList();
+	public static JList groupsList;
 
 	public static AquaJList groupObjectsList;
 
-	public static JXTable searchResultsTable = new JXTable();
+	public static JXTable searchResultsTable;
 
-	public static JXTable groupObjectsTable = new JXTable();
+	public static JXTable groupObjectsTable;
 
 
 	/**
@@ -47,6 +54,12 @@ public class GroupsFrame extends JFrame
 	public GroupsFrame()
 	{
 		super("Groups");
+
+		groupsList = new JList();
+
+		searchResultsTable = new JXTable();
+
+		groupObjectsTable = new JXTable();
 
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints d = new GridBagConstraints();
@@ -94,5 +107,45 @@ public class GroupsFrame extends JFrame
 		this.setMinimumSize(new Dimension(1000, 700));
 		this.setVisible(true);
 		this.pack();
+
+
+		this.addWindowListener(new WindowAdapter()
+		{
+			@Override
+			public void windowClosing(WindowEvent ev)
+			{
+				groupsList = null;
+				groupObjectsList = null;
+				searchResultsTable = null;
+				groupObjectsTable = null;
+			}
+		});
+	}
+
+
+
+
+
+	/**
+	 * This function attempts to remove the given {@link AbstractObject} from 
+	 * the database and refresh the editing view.
+	 */
+	public static boolean deleteObject(AbstractObject object)
+	{
+		if ( object != null && groupObjectsList != null
+				&& groupObjectsTable != null )
+		{
+			Connection con = AquaReg.getConnectionToDB();
+
+			// If the object is removed from the database
+			if ( SQLfunctions.databaseRemoveAbstractObject(con, object) )
+			{
+				GroupBottomPanel.refreshObjList();
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
