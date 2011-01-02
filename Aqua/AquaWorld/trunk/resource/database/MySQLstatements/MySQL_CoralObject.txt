@@ -1,11 +1,12 @@
 CREATE TABLE IF NOT EXISTS `CoralObject` (
   `CoralObjectID` int(11) NOT NULL AUTO_INCREMENT,
-  `PopularName` text,
   `Species` text NOT NULL,
   `Genus` text,
   `Description` text,
   `CoralType` text NOT NULL,
   `ObjectParametersID` int(11) NOT NULL,
+  `PopNameID` int(11) NOT NULL,
   PRIMARY KEY (`CoralObjectID`),
+  CONSTRAINT `CoralPopName` FOREIGN KEY `PopName`(`PopNameID`) REFERENCES `PopNames` (`popNameID`) ON DELETE CASCADE,
   CONSTRAINT `CoralParameters` FOREIGN KEY `CoralParameters`(`ObjectParametersID`) REFERENCES `ObjectParameters` (`ObjectParametersID`) ON DELETE CASCADE
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;

@@ -41,32 +41,40 @@ public class FishObject extends AbstractObject
 
 
 	/**
-	 * This is a constructor for the {@link FishObject} class.
-	 * 
-	 * @param ID
-	 *            The ID for the fish.
-	 * @param speciesName
-	 *            The scientific name of the fish.
-	 * @param description
-	 *            The description of the fish.
-	 * @param gender
-	 *            The gender of the fish, {@link FishGender}.
-	 * @param size
-	 *            The size(cm) of the fish.
-	 * @param par
-	 *            The water parameters for the fish.
-	 * @param exclusions
-	 *            The unique exclusions for this fish.
+	 * The {@link Enum} that says what type of age the
+	 * fish is young or adult.
 	 */
+	private FishAgeType fishAge;
+
+
+	/**
+			 * This is a constructor for the {@link FishObject} class.
+			 * 
+			 * @param ID
+			 *            The ID for the fish.
+			 * @param speciesName
+			 *            The scientific name of the fish.
+			 * @param description
+			 *            The description of the fish.
+			 * @param gender
+			 *            The gender of the fish, {@link FishGender}.
+			 * @param size
+			 *            The size(cm) of the fish.
+			 * @param par
+			 *            The water parameters for the fish.
+			 * @param exclusions
+			 *            The unique exclusions for this fish.
+			 */
 	public FishObject(int ID, String speciesName, String description,
 			FishGender gender, double size, ObjectParameters par,
-			FishExclusions exclusions)
+			FishExclusions exclusions, FishAgeType ageType)
 	{
 		super(ID, speciesName, par);
 		this.setDescription(description);
 		this.gender = gender;
 		this.size = size;
 		this.exclusions = exclusions;
+		this.fishAge = ageType;
 	}
 
 
@@ -121,6 +129,18 @@ public class FishObject extends AbstractObject
 
 
 
+	/**
+	 * TODO - Description NEEDED!
+	 * 
+	 * @return the fishAge
+	 */
+	public FishAgeType getFishAgeType()
+	{
+		return fishAge;
+	}
+
+
+
 	// SETTERS
 
 	/**
@@ -148,7 +168,6 @@ public class FishObject extends AbstractObject
 	}
 
 
-
 	/**
 	 * TODO - Description NEEDED!
 	 * 
@@ -169,5 +188,16 @@ public class FishObject extends AbstractObject
 	public enum FishGender
 	{
 		MALE, FEMALE, UNISEX;
+	}
+
+
+	/**
+	 * TODO - Description NEEDED!
+	 * 
+	 * @author Bahram Malaekeh
+	 */
+	public enum FishAgeType
+	{
+		YOUNG, ADULT;
 	}
 }

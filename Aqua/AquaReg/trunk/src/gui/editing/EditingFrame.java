@@ -1,6 +1,7 @@
 package gui.editing;
 
 
+import gui.AquaReg;
 import gui.views.EditingView;
 
 import java.awt.Dimension;
@@ -8,11 +9,14 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Connection;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 
+import sqlLogic.SQLfunctions;
 import coreObjects.AbstractObject;
+import coreObjects.Fish.FishObject;
 
 
 public class EditingFrame extends JFrame
@@ -39,7 +43,7 @@ public class EditingFrame extends JFrame
 	{
 		super("Editing");
 
-		editingObjectView = new EditingView(true, true);
+		editingObjectView = new EditingView(true, true, FishObject.class);
 
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints d = new GridBagConstraints();
@@ -97,5 +101,30 @@ public class EditingFrame extends JFrame
 				editingObjectView = null;
 			}
 		});
+	}
+
+
+
+	/**
+	 * This function attempts to remove the given {@link AbstractObject} from 
+	 * the database and refresh the editing view.
+	 */
+	public static boolean deleteObject(AbstractObject object)
+	{
+		if ( object != null && editingObjectView != null && list != null )
+		{
+			Connection con = AquaReg.getConnectionToDB();
+
+			// If the object is removed from the database
+			if ( SQLfunctions.databaseRemoveAbstractObject(con, object) )
+			{
+				editingObjectView.resetAction();
+				list.refreshJLists();
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

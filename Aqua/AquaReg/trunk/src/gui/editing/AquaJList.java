@@ -1,6 +1,8 @@
 package gui.editing;
 
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import javax.swing.JList;
@@ -30,11 +32,20 @@ public class AquaJList extends JList
 	{
 		objectList = list;
 		this.setListData(list.toArray());
+
+		this.addMouseListener(new MouseAdapter()
+		{
+			public void mousePressed(final MouseEvent e)
+			{
+				if ( e.isPopupTrigger() )
+				{
+					// final int index = result.locationToIndex(e.getPoint());
+					// result.setSelectedIndex(index);
+				}
+				// this.maybeShowPopup(e);
+			}
+		});
 	}
-
-
-
-
 
 	/**
 	 * TODO - Description NEEDED!
@@ -44,6 +55,23 @@ public class AquaJList extends JList
 		if ( list != null )
 		{
 			this.setListData(list);
+
+			this.addMouseListener(new MouseAdapter()
+			{
+				public void mousePressed(final MouseEvent e)
+				{
+					if ( e.isPopupTrigger() )
+					{
+						// final int index =
+						// result.locationToIndex(e.getPoint());
+						// result.setSelectedIndex(index);
+					}
+					// this.maybeShowPopup(e);
+				}
+			});
 		}
 	}
+
+
+
 }

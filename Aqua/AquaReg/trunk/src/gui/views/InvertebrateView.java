@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 
 import sqlLogic.SQLfunctions;
 import coreObjects.Fish.FishObject;
+import coreObjects.Invertebrates.InvertebratesObject;
 
 
 public class InvertebrateView extends AbstractView implements ActionListener
@@ -27,8 +28,12 @@ public class InvertebrateView extends AbstractView implements ActionListener
 	 */
 	public InvertebrateView(boolean incDelButton, boolean incExcButton)
 	{
-		super(incDelButton, incExcButton);
+		super(incDelButton, incExcButton, InvertebratesObject.class);
 		sizeField.setNecessary(false);
+		ghLowField.setNecessary(false);
+		ghHighField.setNecessary(false);
+		khLowField.setNecessary(true);
+		khHighField.setNecessary(true);
 	}
 
 	/*
@@ -83,25 +88,45 @@ public class InvertebrateView extends AbstractView implements ActionListener
 		String speciesName = "";
 		String genusName = "";
 		String description = "";
-		double size = -1.0;
+		String invType = "";
 		int parID = -1;
 		int invExID = -1;
+		int popNamedID = -1;
 
 		// Gets the connection to the Database.
 		Connection connection = AquaReg.getConnectionToDB();
 
 		if ( connection != null )
 		{
-			popName = popNameField.getText(); // Gets the popular name
+			if ( !popNameField.getText().equals("") )
+			{
+				popName = popNameField.getText();
+			}
 			speciesName = speciesField.getText(); // Gets the species name
 			genusName = genusField.getText(); // Gets the genus name
 			description = descriptionArea.getText(); // Gets the description
-			size = getFieldDouble(sizeField); // Gets the size(-1.0 if invalid)
+			invType = this.invType.getSelectedItem().toString();
+
+			/**
+			 * Creates a new row in the database and returns the ID of the row.
+			 */
+			if ( !popName.equals("") )
+			{
+				popNamedID = SQLfunctions.databaseAddNewPopNamesReturnID(
+						connection, popName);
+			}
+			else
+			{
+				popNamedID = SQLfunctions
+						.databaseAddNewPopNamesReturnID(connection);
+			}
+
 			/**
 			 * Inserts an ObjectParameter object with the verified data from the
 			 * fields. The ID of the INSERT row is returned.
 			 */
 			parID = insertObjectParameters();
+
 			/**
 			 * Inserts an empty InvertebrateExclusion object. The ID of the
 			 * INSERT row is returned.
@@ -115,8 +140,21 @@ public class InvertebrateView extends AbstractView implements ActionListener
 			 * Verifies that both objects are inserted. If one has failed the
 			 * other will be also removed.
 			 */
-			if ( parID == -1 || invExID == -1 )
+			if ( popNamedID == -1 || parID == -1 || invExID == -1
+					|| popNamedID == 0 || parID == 0 || invExID == 0 )
 			{
+				/**
+				 * If the functions have created a row in the different tables, the 
+				 * IDs will be something other then -1.
+				 */
+
+				// If the PopNames row was created.
+				if ( popNamedID != -1 )
+				{
+					SQLfunctions.databaseRemovePopNamesID(connection,
+							popNamedID);
+				}
+
 				// If the ObjectParameter has been added.
 				if ( parID != -1 )
 				{
@@ -138,15 +176,15 @@ public class InvertebrateView extends AbstractView implements ActionListener
 			{
 				String fishObjectString = "INSERT INTO "
 						+ SQLfunctions.invertebrateObjectTable + " VALUES ("
-						+ null // obj.getFishID()
-						+ ", '" + popName + // Common name
-						"', '" + speciesName + // Species Name
+						+ null + // obj.getFishID()
+						", '" + speciesName + // Species Name
 						"', '" + genusName + // Genus Name
 						"', '" + description + // Description
-						"', '" + size + // Size
-						"', '" + parID + // ObjectParametersID
-						"', '" + invExID + // IExclusionID
-						"');";
+						"', '" + invType + // InvertebratesType
+						"', " + parID + // ObjectParametersID
+						", " + invExID + // IExclusionID
+						", " + popNamedID + // IExclusionID
+						");";
 
 				boolean objectCreated = false;
 				boolean addedToGroup = false;
@@ -241,6 +279,32 @@ public class InvertebrateView extends AbstractView implements ActionListener
 				}
 				catch ( SQLException e )
 				{
+
+					/**
+					 * If the functions have created a row in the different tables, the 
+					 * IDs will be something other then -1.
+					 */
+
+					// If the PopNames row was created.
+					if ( popNamedID != -1 )
+					{
+						SQLfunctions.databaseRemovePopNamesID(connection,
+								popNamedID);
+					}
+
+					// If the ObjectParameter has been added.
+					if ( parID != -1 )
+					{
+						SQLfunctions.databaseRemoveObjectParametersID(
+								connection, parID);
+					}
+
+					if ( invExID != -1 )
+					{
+						SQLfunctions.databaseRemoveInvertebrateExclusionID(
+								connection, invExID);
+					}
+
 					// if the error message is "out of memory",
 					// it probably means no database file is found
 					System.err.println(e.getMessage());

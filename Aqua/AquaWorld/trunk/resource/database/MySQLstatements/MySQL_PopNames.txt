@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS `PopNames` (
+  `popNameID`  int(11) NOT NULL AUTO_INCREMENT,
+  `popName_NO` text,
+  `popName_DE` text,
+  `popName_EN` text,
+  `popName_IT` text,
+  PRIMARY KEY ( `popNameID` )
+) ENGINE=InnoDB COMMENT='This table will contain the objets populare names.' AUTO_INCREMENT=1 ;

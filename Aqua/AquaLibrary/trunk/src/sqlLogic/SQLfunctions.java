@@ -15,6 +15,7 @@ import coreObjects.Coral.CoralObject;
 import coreObjects.Coral.CoralObject.CoralTypes;
 import coreObjects.Fish.FishExclusions;
 import coreObjects.Fish.FishObject;
+import coreObjects.Fish.FishObject.FishAgeType;
 import coreObjects.Fish.FishObject.FishGender;
 import coreObjects.Invertebrates.InvertebrateExclusions;
 import coreObjects.Invertebrates.InvertebratesObject;
@@ -31,6 +32,8 @@ public class SQLfunctions
 	public static String fishExclusionListTable = "FishExclusionList";
 
 	public static String objectGroupTable = "ObjectGroup";
+
+	public static String popNamesTable = "PopNames";
 
 	public static String invertebrateExclusionListTable = "InvertebrateExclusionList";
 
@@ -52,6 +55,8 @@ public class SQLfunctions
 	public static String coralObjectIDname = "CoralObjectID";
 
 	public static String invertebrateObjectIDname = "InvertebrateObjectID ";
+
+	public static String popNamesIDname = "popNameID";
 
 	/**
 	 * This function attempts to run the given string as a statement on the
@@ -127,6 +132,18 @@ public class SQLfunctions
 
 
 	/**
+	 * Attempts to remove the the row in the PopNames table with the
+	 * given ID.
+	 */
+	public static boolean databaseRemovePopNamesID(Connection con, int ID)
+	{
+		return databaseRemoveFromTableWithID(con, popNamesTable,
+				popNamesIDname, ID);
+	}
+
+
+
+	/**
 	 * This function removes a row with the given Unique ID(int) from the table
 	 * with the given name. If either the connection is null, ID is below 1 or
 	 * the table string is "", the function returns false. It also returns false
@@ -176,10 +193,15 @@ public class SQLfunctions
 	{
 		if ( con != null && obj != null )
 		{
-			long excID = -1;
-			long parID = -1;
-			boolean foundExc = false;
-			boolean foundPar = false;
+			int popID = -1;
+			long excIDyoung = -1;
+			long excIDadult = -1;
+			long parIDyoung = -1;
+			long parIDadult = -1;
+			boolean foundExcYoung = false;
+			boolean foundExcAdult = false;
+			boolean foundParYoung = false;
+			boolean foundParAdult = false;
 			boolean foundObj = false;
 
 			/**
@@ -190,23 +212,67 @@ public class SQLfunctions
 			{
 				FishObject fishObj = (FishObject) obj;
 
-				// If the fishobject contains an exclusions list
-				if ( fishObj.getFishExclusions() == null )
+				// Determines if the exclusions list was found with the ID
+				FishExclusions youngEx = databaseGetFishExclusions(con,
+						fishObj, FishAgeType.YOUNG);
+				FishExclusions adultEx = databaseGetFishExclusions(con,
+						fishObj, FishAgeType.ADULT);
+
+				if ( youngEx != null )
 				{
-					return false;
+					excIDyoung = youngEx.getFishExclusionID();
+					foundExcYoung = true;
 				}
 
-				excID = fishObj.getFishExclusions().getFishExclusionID();
+				if ( adultEx != null )
+				{
+					excIDadult = adultEx.getFishExclusionID();
+					foundExcAdult = true;
+				}
 
-				// Determines if the exclusions list was found with the ID
-				foundExc = databaseFishExclusionsExists(con, excID);
+
+				/**
+				 * If foundExcYoung and foundExcAdult is true, the exclusion 
+				 * list has been found a confirmed.
+				 * Now we will attempt to determine the ObjectParameters.
+				 */
+				ObjectParameters youngPar = databaseGetFishParameters(con,
+						fishObj, FishAgeType.YOUNG);
+				ObjectParameters adultPar = databaseGetFishParameters(con,
+						fishObj, FishAgeType.ADULT);
+
+
+				if ( youngPar != null )
+				{
+					parIDyoung = youngPar.getObjectParametersID();
+					foundParYoung = true;
+				}
+
+				if ( adultPar != null )
+				{
+					parIDadult = adultPar.getObjectParametersID();
+					foundParAdult = true;
+				}
 			}
 			else if ( obj instanceof CoralObject )
 			{
 				/**
 				 * Since there exists no exclusion list for coral it is true.
 				 */
-				foundExc = true;
+				foundExcYoung = true;
+				foundExcAdult = true;
+
+
+				/**
+				 * If foundExc is true, the exclusion list has been found a
+				 * confirmed. Now we will attempt to determine the ObjectParameters.
+				 */
+
+				parIDyoung = databaseGetParameterID(con, obj);
+
+				// Determines if the exclusions list was found with the ID
+				foundParYoung = databaseParameterExists(con, parIDyoung);
+				foundParAdult = true;
 			}
 			else if ( obj instanceof InvertebratesObject )
 			{
@@ -218,37 +284,35 @@ public class SQLfunctions
 					return false;
 				}
 
-				excID = invertebrateObject.getExclusions()
-						.getInvertebrateExclusionID();
+				excIDyoung = databaseGetInvertebrateExclusionsID(con,
+						invertebrateObject);
 
 				// Determines if the exclusions list was found with the ID
-				foundExc = databaseInvertebrateExclusionsExists(con, excID);
-			}
+				foundExcYoung = databaseInvertebrateExclusionsExists(con,
+						excIDyoung);
+				foundExcAdult = true;
 
-			if ( foundExc == false )
-			{
-				return false;
+
+				/**
+				 * If foundExc is true, the exclusion list has been found a
+				 * confirmed. Now we will attempt to determine the ObjectParameters.
+				 */
+
+				parIDyoung = databaseGetParameterID(con, obj);
+
+				// Determines if the exclusions list was found with the ID
+				foundParYoung = databaseParameterExists(con, parIDyoung);
+				foundParAdult = true;
 			}
 
 
 			/**
-			 * If foundExc is true, the exclusion list has been found a
-			 * confirmed. Now we will attempt to determine the ObjectParameters.
+			 * Now we will determine if all the necessary objects were found in the 
+			 * database.
 			 */
 
-			// If the object contains a object parameters object
-			if ( obj.getParameters() == null )
-			{
-				return false;
-			}
-
-			parID = obj.getParameters().getObjectParametersID();
-
-			// Determines if the exclusions list was found with the ID
-			foundPar = databaseParameterExists(con, parID);
-
-
-			if ( foundPar == false )
+			if ( foundExcYoung == false || foundExcAdult == false
+					|| foundParYoung == false || foundParAdult == false )
 			{
 				return false;
 			}
@@ -256,9 +320,10 @@ public class SQLfunctions
 
 			/**
 			 * If the function gets to this point, it means that the
-			 * AbstractObject contains a ObjectParameters and an ExclusionsList
-			 * that is valid and is found in the database. Now we must determine
-			 * if the AbstractObject itself exists in the database.
+			 * AbstractObject contains a ObjectParametersYoung, ObjectParametersAdult
+			 * and an ExclusionsListYoung and ExclusionsListAdult that is valid and 
+			 * is found in the database. Now we must determine if the AbstractObject
+			 * itself exists in the database.
 			 */
 			foundObj = databaseAbstractObjectExists(con, obj);
 
@@ -297,34 +362,59 @@ public class SQLfunctions
 				excIDcolumn = "InvertebrateExclusionID";
 			}
 
+			// Gets the ID of the popular name table
+			popID = databaseGetObjectPopID(con, obj);
+
 
 			/**
 			 * At this point all parts of an AbstractObject has been validated.
 			 * Now the actual removal can happen.
 			 * 
 			 * For an Object to be correctly removed it has to:
-			 * 1. Remove the objects ExclusionsList
-			 * 2. Remove the objects ObjectParameters
+			 * 1.1 Remove the objects ExclusionsListYoung (Fish and Inv)
+			 * 1.2 Remove the objects ExclusionsListAdult (Fish)
+			 * 2.1 Remove the objects ObjectParametersYoung (Fish, Coral and Inv)
+			 * 2.2 Remove the objects ObjectParametersAdult (Fish)
 			 * 3. Remove the object from any of the other objects ExclusionsList
-			 * 4. Remove the object from any Group it belongs to.
+			 * 4. Remove the object from any Group it belongs to
 			 * 5. Remove the object from the objects table
+			 * 6. Remove the Popular name row for the object
 			 */
-			String removeExcString = "";
-			if ( obj instanceof FishObject
-					|| obj instanceof InvertebratesObject )
+			String removeExcYoungString = "";
+			String removeExcAdultString = "";
+			String removeParString = "";
+			String removeParStringAdult = "";
+			if ( obj instanceof FishObject )
 			{
 				if ( !(excTable.equals("") || excIDcolumn.equals("")) )
 				{
-					// 1. Remove the objects ExclusionsList
-					removeExcString = "DELETE FROM " + excTable + " WHERE "
-							+ excIDcolumn + "=" + excID;
+					// 1.1 Remove the objects ExclusionsList
+					removeExcYoungString = "DELETE FROM " + excTable
+							+ " WHERE " + excIDcolumn + "=" + excIDyoung;
+
+					// 1.2 Remove the objects ExclusionsList
+					removeExcAdultString = "DELETE FROM " + excTable
+							+ " WHERE " + excIDcolumn + "=" + excIDadult;
+
+					// 2.2 Remove the objects ObjectParametersAdult
+					removeParStringAdult = "DELETE FROM "
+							+ objectParametersTable
+							+ " WHERE ObjectParametersID=" + parIDadult;
+				}
+			}
+			else if ( obj instanceof InvertebratesObject )
+			{
+				if ( !(excTable.equals("") || excIDcolumn.equals("")) )
+				{
+					// 1.1 Remove the objects ExclusionsList
+					removeExcYoungString = "DELETE FROM " + excTable
+							+ " WHERE " + excIDcolumn + "=" + excIDyoung;
 				}
 			}
 
-			// 2. Remove the objects ObjectParameters
-			String removeParString = "DELETE FROM " + objectParametersTable
-					+ " WHERE ObjectParametersID=" + parID;
-
+			// 2.1 Remove the objects ObjectParametersYoung
+			removeParString = "DELETE FROM " + objectParametersTable
+					+ " WHERE ObjectParametersID=" + parIDyoung;
 
 			// TODO - 3. Remove the object from any of the other objects
 			// ExclusionsList
@@ -334,7 +424,18 @@ public class SQLfunctions
 
 			// 5. Remove the object from the objects table
 			String removeObjectString = "DELETE FROM " + objTable + " WHERE "
-					+ objIDcolumn + "=" + parID;
+					+ objIDcolumn + "=" + obj.getObjectID();
+
+
+			System.out.println();
+			System.out.println(removeExcYoungString);
+			System.out.println(removeExcAdultString);
+			System.out.println(removeParString);
+			System.out.println(removeParStringAdult);
+			System.out.println(removeObjectString);
+			System.out.println(popID);
+			System.out.println();
+
 
 			try
 			{
@@ -342,13 +443,27 @@ public class SQLfunctions
 				statement.setQueryTimeout(30); // set timeout to 30 sec.
 
 				statement.executeUpdate("BEGIN;");
-				if ( !removeExcString.equals("") )
+				// Young Exclusions
+				if ( !removeExcYoungString.equals("") )
 				{
-					statement.executeUpdate(removeExcString);
+					statement.executeUpdate(removeExcYoungString);
 				}
+				// Adult Exclusions
+				if ( !removeExcAdultString.equals("") )
+				{
+					statement.executeUpdate(removeExcAdultString);
+				}
+				// (Young) Parameters
 				statement.executeUpdate(removeParString);
+				// Adult Parameters
+				if ( !removeParStringAdult.equals("") )
+				{
+					statement.executeUpdate(removeParStringAdult);
+				}
 				statement.executeUpdate(removeObjectString);
 				statement.executeUpdate("COMMIT;");
+
+				databaseRemovePopNamesID(con, popID);
 
 				return true;
 			}
@@ -372,6 +487,8 @@ public class SQLfunctions
 	 * with the given name and description. If either the given connection,
 	 * group name or description is empty false will be returned. It also
 	 * returns false if there is a {@link SQLException}.
+	 * 
+	 * (PS: This function is created for use with SQlite and ID < 0 )
 	 */
 	public static boolean databaseAddGroup(Connection con, String groupName,
 			String groupDescription, int ID)
@@ -414,6 +531,54 @@ public class SQLfunctions
 							+ ", " + null // InvertebrateObjectsString
 							+ ");";
 				}
+
+				try
+				{
+					Statement statement = con.createStatement();
+					statement.setQueryTimeout(30); // set timeout to 30 sec.
+
+					statement.executeUpdate("BEGIN;");
+					statement.executeUpdate(parameters);
+					statement.executeUpdate("COMMIT;");
+
+					return true;
+				}
+				catch ( SQLException e )
+				{
+					// if the error message is "out of memory",
+					// it probably means no database file is found
+					System.err.println(e.getMessage());
+				}
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * This function attempts to create a new ObjectGroup in the given database
+	 * with the given name and description. If either the given connection,
+	 * group name or description is empty false will be returned. It also
+	 * returns false if there is a {@link SQLException}.
+	 */
+	public static boolean databaseAddGroup(Connection con, String groupName,
+			String groupDescription)
+	{
+		if ( con != null && groupName != "" && groupDescription != "" )
+		{
+			// If a group does not exist with the same name as the given name
+			if ( databaseGroupDoesNotExists(con, groupName) )
+			{
+				String parameters = "";
+				parameters = "INSERT INTO " + objectGroupTable + " VALUES ("
+						+ null + ", '" + groupName // The name of the group
+						+ "', '" + groupDescription // The description of the
+													// group
+						+ "', " + null // FishObjectsString
+						+ ", " + null // CoralObjectsString
+						+ ", " + null // InvertebrateObjectsString
+						+ ");";
 
 				try
 				{
@@ -915,7 +1080,6 @@ public class SQLfunctions
 	}
 
 
-
 	/**
 	 * TODO - Description
 	 */
@@ -1162,16 +1326,12 @@ public class SQLfunctions
 							String objectTable = objectTables[i];
 							String columnName = columnNames[i];
 
-							// long time = System.nanoTime();
-
 							String query = "SELECT * " + "FROM " + objectTable
 									+ " WHERE " + columnName + " IN ("
 									+ whereIDinString + ")";
 
+
 							rs = stmt.executeQuery(query);
-							//
-							// time = System.nanoTime() - time;
-							// System.out.println(query + "  -  " + time);
 
 							while ( rs.next() )
 							{
@@ -1539,6 +1699,8 @@ public class SQLfunctions
 					+ ";");
 			statement.executeUpdate("DROP TABLE IF EXISTS "
 					+ objectParametersTable + ";");
+			statement.executeUpdate("DROP TABLE IF EXISTS " + popNamesTable
+					+ ";");
 			statement.executeUpdate("COMMIT;");
 		}
 		catch ( SQLException e )
@@ -1584,6 +1746,78 @@ public class SQLfunctions
 	 * will be returned. It also returns false if there is a
 	 * {@link SQLException}.
 	 */
+	public static int databaseAddObjectParametersReturnID(Connection con,
+			AbstractObject obj)
+	{
+		if ( con != null && obj != null )
+		{
+			int id = -1;
+
+			ObjectParameters par = obj.getParameters();
+
+			String parameters = "INSERT INTO " + objectParametersTable
+					+ " VALUES (" + null + // No ID for the row
+					", " + par.getSalinityLow() + // Salinity Low
+					", " + par.getSalinityLow() + // Salinity High
+					", " + par.getPHlow() + // PH Low
+					", " + par.getPHhigh() + // PH High
+					", " + par.getGHlow() + // GH Low
+					", " + par.getGHhigh() + // GH High
+					", " + par.getTemperatureLow() + // Temperature Low
+					", " + par.getTemperatureHigh() + // Temperature High
+					", " + par.getKhLow() + // KH Low
+					", " + par.getKhHigh() + // KH High
+					", " + par.getMagnesiumLow() + // Magnesium Low
+					", " + par.getMagnesiumHigh() + // Magnesium High
+					", " + par.getCalsiumLow() + // Calcium Low
+					", " + par.getCalsiumHigh() + // Calcium High
+					", " + par.getSpaceNeeded() + // Space Needed
+					", " + par.getOthersSizeLow() + // Others Size Low
+					", " + par.getOthersSizeHigh() + // Others Size High
+					");";
+
+
+			try
+			{
+				Statement statement = con.createStatement();
+				statement.setQueryTimeout(30); // set timeout to 30 sec.
+
+				statement.executeUpdate("BEGIN;");
+
+				statement.executeUpdate(parameters,
+						Statement.RETURN_GENERATED_KEYS);
+				ResultSet rs = statement.getGeneratedKeys();
+
+				statement.executeUpdate("COMMIT;");
+
+				if ( rs.next() )
+				{
+					id = rs.getInt(1);
+				}
+
+				return id;
+			}
+			catch ( SQLException e )
+			{
+				// if the error message is "out of memory",
+				// it probably means no database file is found
+				System.err.println(e.getMessage());
+			}
+		}
+
+
+		return -1;
+	}
+
+
+
+	/**
+	 * This function add the {@link ObjectParameters} contained inside the given
+	 * {@link AbstractObject} into the ObjectParameters table in the database.
+	 * If the given connection or given {@link AbstractObject} is empty false
+	 * will be returned. It also returns false if there is a
+	 * {@link SQLException}.
+	 */
 	public static boolean databaseAddObjectParameters(Connection con,
 			AbstractObject obj)
 	{
@@ -1592,8 +1826,8 @@ public class SQLfunctions
 			ObjectParameters par = obj.getParameters();
 
 			String parameters = "INSERT INTO " + objectParametersTable
-					+ " VALUES (" + par.getObjectParametersID() + ", " + ""
-					+ par.getSalinityLow() + // Salinity Low
+					+ " VALUES (" + null + // No ID for the row
+					", " + par.getSalinityLow() + // Salinity Low
 					", " + par.getSalinityLow() + // Salinity High
 					", " + par.getPHlow() + // PH Low
 					", " + par.getPHhigh() + // PH High
@@ -1639,6 +1873,142 @@ public class SQLfunctions
 
 
 		return false;
+	}
+
+
+
+	/**
+	 * This function creates a PopNames row with the popular name 
+	 * of the given {@link AbstractObject}. It returns the ID of the row created
+	 * and -1 if any exceptions are thrown or the row is not created. 
+	 */
+	public static int databaseAddObjectPopName(Connection con,
+			AbstractObject obj)
+	{
+		if ( con != null && obj != null )
+		{
+			int id = -1;
+
+			String popName = obj.getPopulareName();
+
+			String popNames = "INSERT INTO " + popNamesTable + " VALUES ("
+					+ null + ", '" + popName + "'," + null + "," + null + ","
+					+ null + ");";
+
+			try
+			{
+				Statement statement = con.createStatement();
+				statement.setQueryTimeout(30); // set timeout to 30 sec.
+
+				statement.executeUpdate("BEGIN;");
+
+				statement.executeUpdate(popNames,
+						Statement.RETURN_GENERATED_KEYS);
+				ResultSet rs = statement.getGeneratedKeys();
+
+				statement.executeUpdate("COMMIT;");
+
+				if ( rs.next() )
+				{
+					id = rs.getInt(1);
+				}
+
+				return id;
+			}
+			catch ( SQLException e )
+			{
+				// if the error message is "out of memory",
+				// it probably means no database file is found
+				System.err.println(e.getMessage());
+			}
+		}
+
+		return -1;
+	}
+
+
+
+	/**
+	 * This function adds the {@link FishExclusions} object inside the given
+	 * {@link FishObject} object to the FishExclusionList table in the given
+	 * database. If the given connection or given {@link FishObject} is empty
+	 * false will be returned. It also returns false if there is a
+	 * {@link SQLException}.
+	 */
+	public static int databaseAddFishExclusionsListReturnID(Connection con,
+			FishObject obj)
+	{
+		if ( con != null && obj != null )
+		{
+			int id = -1;
+
+			FishExclusions ex = obj.getFishExclusions();
+
+			String fishExclusiona = "INSERT INTO " + fishExclusionListTable
+					+ " VALUES (" + null + ", " + ""
+					+ ((ex.isAllAlone()) ? 1 : 0) + // Alone
+					", " + ((ex.isAloneWithSpecies()) ? 1 : 0) + // Alone With
+																	// Species
+					", " + ((ex.isOnlyOneInSpecies()) ? 1 : 0) + // Only one in
+																	// Species
+					", " + ((ex.isOnlyOneMale()) ? 1 : 0) + // Only one male
+					", " + ((ex.isOnlyOneFemale()) ? 1 : 0) + // Only one female
+					", " + ex.getOnlyOneMalePerLiter() + // Only one male per
+															// liter
+					", " + ex.getOnlyOneFemalePerLiter() + // Only one female
+															// per liter
+					", " + ex.getOnlyOneFishPerLiter() + // Only one fish per
+															// liter
+					", " + ex.getMinumimFemalesPerMale() + // Min number of
+															// female per male
+					", " + ex.getMinumimMalesPerFemale() + // Min number of male
+															// per female
+					", " + ex.getMinimumSchoolSize() + // Min school size
+					", '" + ex.getOnlyCompatibleWith() + // Only compatible with
+					"', '" + ex.getNotCompatibleWith() + // Not compatible with
+															// fish
+					"', '" + ex.getNotCompatibleWithTheseMales() + // Not
+																	// compatible
+																	// with
+																	// these
+																	// males
+					"', '" + ex.getNotCompatibleWithTheseFemales() + // Not
+																		// compatible
+																		// with
+																		// these
+																		// females
+					"', '" + ex.getReefSafeString() + // Reef safe
+					"');";
+
+			try
+			{
+				Statement statement = con.createStatement();
+				statement.setQueryTimeout(30); // set timeout to 30 sec.
+
+				statement.executeUpdate("BEGIN;");
+
+				statement.executeUpdate(fishExclusiona,
+						Statement.RETURN_GENERATED_KEYS);
+				ResultSet rs = statement.getGeneratedKeys();
+
+				statement.executeUpdate("COMMIT;");
+
+				if ( rs.next() )
+				{
+					id = rs.getInt(1);
+				}
+
+				return id;
+			}
+			catch ( SQLException e )
+			{
+				// if the error message is "out of memory",
+				// it probably means no database file is found
+				System.err.println(e.getMessage());
+			}
+		}
+
+		return -1;
 	}
 
 
@@ -1859,6 +2229,68 @@ public class SQLfunctions
 	 * connection or given {@link InvertebratesObject} is empty false will be
 	 * returned. It also returns false if there is a {@link SQLException}.
 	 */
+	public static int databaseAddInvertebrateExclusionsListReturnID(
+			Connection con, InvertebratesObject obj)
+	{
+		if ( con != null && obj != null )
+		{
+			int id = -1;
+
+			InvertebrateExclusions ex = obj.getExclusions();
+
+			String fishExclusiona = "INSERT INTO "
+					+ invertebrateExclusionListTable + " VALUES (" + null
+					// Only one in Species
+					+ ", " + ((ex.isOnlyOneInSpecies()) ? 1 : 0) +
+					// Only one fish per liter
+					", " + ex.getOnlyOneInvertebratePerLiter() +
+					// Only compatible with
+					", '" + ex.getOnlyCompatibleWith() +
+					// Not compatible with fish
+					"', '" + ex.getNotCompatibleWith() + "');";
+
+
+			try
+			{
+				Statement statement = con.createStatement();
+				statement.setQueryTimeout(30); // set timeout to 30 sec.
+
+				statement.executeUpdate("BEGIN;");
+
+				statement.executeUpdate(fishExclusiona,
+						Statement.RETURN_GENERATED_KEYS);
+				ResultSet rs = statement.getGeneratedKeys();
+
+				statement.executeUpdate("COMMIT;");
+
+				if ( rs.next() )
+				{
+					id = rs.getInt(1);
+				}
+
+				return id;
+			}
+			catch ( SQLException e )
+			{
+				// if the error message is "out of memory",
+				// it probably means no database file is found
+				System.err.println(e.getMessage());
+			}
+		}
+
+		return -1;
+	}
+
+
+
+
+	/**
+	 * This function adds a new empty row into the InvertebrateExclusionList
+	 * table in the database. This function should mainly be used when wanting
+	 * to create a new InvertebrateExclusion for a invertebrates. If the given
+	 * connection or given {@link InvertebratesObject} is empty false will be
+	 * returned. It also returns false if there is a {@link SQLException}.
+	 */
 	public static boolean databaseAddInvertebrateExclusionsList(Connection con,
 			InvertebratesObject obj)
 	{
@@ -1906,6 +2338,162 @@ public class SQLfunctions
 
 
 	/**
+	 * This function adds a new empty row into the PopNames table in the database. 
+	 * This function should mainly be used when wanting
+	 * to create a new row in the PopNames for an object. If the given
+	 * connection is empty -1 will be returned. It also returns -1 if there is a
+	 * {@link SQLException}.
+	 */
+	public static int databaseAddNewPopNamesReturnID(Connection con)
+	{
+		int popNamesID = -1;
+
+		if ( con != null )
+		{
+			String popNamesCreationString = "INSERT INTO " + popNamesTable
+					+ " VALUES (" + null + // No Id is set. The ID will be
+											// returned.
+					", " + null + // Only one in Species
+					", " + null + // Only one fish per liter
+					", " + null + // Only compatible with
+					", " + null + // Not compatible with fish
+					");";
+
+
+			try
+			{
+				Statement statement = con.createStatement();
+				statement.setQueryTimeout(30); // set timeout to 30 sec.
+
+				statement.executeUpdate("BEGIN;");
+
+				statement.executeUpdate(popNamesCreationString,
+						Statement.RETURN_GENERATED_KEYS);
+				ResultSet rs = statement.getGeneratedKeys();
+
+				statement.executeUpdate("COMMIT;");
+
+				if ( rs.next() )
+				{
+					popNamesID = rs.getInt(1);
+				}
+			}
+			catch ( SQLException e )
+			{
+				// if the error message is "out of memory",
+				// it probably means no database file is found
+				System.err.println(e.getMessage());
+				return -1;
+			}
+		}
+
+		return popNamesID;
+	}
+
+
+
+	/**
+	 * This function adds a new empty row into the PopNames table in the database. 
+	 * This function should mainly be used when wanting
+	 * to create a new row in the PopNames for an object. If the given
+	 * connection is empty -1 will be returned. It also returns -1 if there is a
+	 * {@link SQLException}.
+	 */
+	public static int databaseAddNewPopNamesReturnID(Connection con, String name)
+	{
+		int popNamesID = -1;
+
+		if ( con != null )
+		{
+			String popNamesCreationString = "INSERT INTO " + popNamesTable
+					+ " VALUES (" + null + // No Id is set. The ID will be
+											// returned.
+					",'" + name + // Only one in Species
+					"', " + null + // Only one fish per liter
+					", " + null + // Only compatible with
+					", " + null + // Not compatible with fish
+					");";
+
+
+			try
+			{
+				Statement statement = con.createStatement();
+				statement.setQueryTimeout(30); // set timeout to 30 sec.
+
+				statement.executeUpdate("BEGIN;");
+
+				statement.executeUpdate(popNamesCreationString,
+						Statement.RETURN_GENERATED_KEYS);
+				ResultSet rs = statement.getGeneratedKeys();
+
+				statement.executeUpdate("COMMIT;");
+
+				if ( rs.next() )
+				{
+					popNamesID = rs.getInt(1);
+				}
+			}
+			catch ( SQLException e )
+			{
+				// if the error message is "out of memory",
+				// it probably means no database file is found
+				System.err.println(e.getMessage());
+				return -1;
+			}
+		}
+
+		return popNamesID;
+	}
+
+
+
+
+	/**
+	 * This function attempts to update the PopNames row associated with the
+	 * given {@link AbstractObject} with the popular name inside the given Object.
+	 */
+	public static boolean databaseUpdatePopNames(Connection con,
+			AbstractObject obj)
+	{
+		if ( con != null && obj != null )
+		{
+			String getNewPopName = obj.getPopulareName();
+
+			// Gets the ID of the PopNames row of the Object
+			int popNameRowID = databaseGetObjectPopID(con, obj);
+
+
+			// If the ID is not -1, which would indicate an error.
+			if ( popNameRowID > -1 )
+			{
+				try
+				{
+					Statement statement = con.createStatement();
+					statement.setQueryTimeout(30); // set timeout to 30 sec.
+
+					String popUpdateString = "UPDATE " + popNamesTable
+							+ " SET popName_NO='" + getNewPopName + "' WHERE "
+							+ popNamesIDname + "=" + popNameRowID;
+
+					statement.executeUpdate("BEGIN;");
+					statement.executeUpdate(popUpdateString);
+					statement.executeUpdate("COMMIT;");
+
+					return true;
+				}
+				catch ( SQLException e )
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+
+		return false;
+	}
+
+	/**
 	 * This function adds the given {@link FishObject} to the FishObject table
 	 * in the database. The function also add the {@link FishExclusions} and
 	 * {@link ObjectParameters} inside the given {@link FishObject} to the
@@ -1918,21 +2506,94 @@ public class SQLfunctions
 	{
 		if ( con != null && obj != null )
 		{
-			// Adds the objects parameters
-			databaseAddObjectParameters(con, obj);
+			// TEST OF THE EXISTENS OF A OBJECT WITH THE SAME ID
+			if ( databaseAbstractObjectExists(con, obj) )
+			{
+				return false;
+			}
 
-			// Adds the FishExclusion
-			databaseAddFishExclusionsList(con, obj);
+
+			int popNameID = databaseAddObjectPopName(con, obj);
+
+			if ( popNameID == -1 )
+			{
+				return false;
+			}
+
+
+			// PARAMETERS
+
+			int parIDyoung = databaseAddObjectParametersReturnID(con, obj);
+			// Adds the objects parameters and returns false if it fails.
+			if ( parIDyoung == -1 )
+			{
+				// Removes the previously made PopName row.
+				databaseRemovePopNamesID(con, popNameID);
+				return false;
+			}
+
+
+			int parIDadult = databaseAddObjectParametersReturnID(con, obj);
+			// Adds the objects parameters and returns false if it fails.
+			if ( parIDadult == -1 )
+			{
+				// Removes the previously made PopName row.
+				databaseRemovePopNamesID(con, popNameID);
+
+				// Removes the previously made young parameters row.
+				databaseRemoveObjectParametersID(con, parIDyoung);
+				return false;
+			}
+
+
+			// EXCLUSIONS
+
+			int exIDyoung = databaseAddFishExclusionsListReturnID(con, obj);
+			// Adds the FishExclusion and returns false if it fails.
+			if ( exIDyoung == -1 )
+			{
+				// Removes the previously made PopName row.
+				databaseRemovePopNamesID(con, popNameID);
+
+				// Removes the previously made young parameters row.
+				databaseRemoveObjectParametersID(con, parIDyoung);
+
+				// Removes the previously made adult parameters row.
+				databaseRemoveObjectParametersID(con, parIDadult);
+				return false;
+			}
+
+
+			int exIDadult = databaseAddFishExclusionsListReturnID(con, obj);
+			// Adds the FishExclusion and returns false if it fails.
+			if ( exIDadult == -1 )
+			{
+				// Removes the previously made PopName row.
+				databaseRemovePopNamesID(con, popNameID);
+
+				// Removes the previously made young parameters row.
+				databaseRemoveObjectParametersID(con, parIDyoung);
+
+				// Removes the previously made adult parameters row.
+				databaseRemoveObjectParametersID(con, parIDadult);
+
+				// Removes the previously made young exclusions row.
+				databaseRemoveFishExclusionID(con, exIDyoung);
+				return false;
+			}
+
 
 			String fishObject = "INSERT INTO " + fishObjectTable + " VALUES ("
-					+ obj.getObjectID() // The ID of the object
-					+ ", " + "'" + obj.getPopulareName() + // Common name
-					"', '" + obj.getSpeciesName() + // Species Name
+					+ null + // The ID of the object // + obj.getObjectID() +
+					", '" + obj.getSpeciesName() + // Species Name
 					"', '" + obj.getGenusName() + // Genus Name
 					"', '" + obj.getDescription() + // Description
 					"', '" + obj.getSize() + // Size
-					"', '" + obj.getParameters().getObjectParametersID() + // FishParametersID
-					"', '" + obj.getFishExclusions().getFishExclusionID() + // FishExclusionID
+					"', '" + parIDyoung + // FishParametersIDyoung
+					"', '" + parIDadult + // FishParametersIDadult
+					"', '" + exIDyoung + // FishExclusionIDyoung
+					"', '" + exIDadult + // FishExclusionIDadult
+					"', '" + popNameID + // PopNamesID
 					"');";
 
 			try
@@ -1941,9 +2602,17 @@ public class SQLfunctions
 				statement.setQueryTimeout(30); // set timeout to 30 sec.
 
 				statement.executeUpdate("BEGIN;");
-				statement.executeUpdate(fishObject);
+
+				statement.executeUpdate(fishObject,
+						Statement.RETURN_GENERATED_KEYS);
+				ResultSet rs = statement.getGeneratedKeys();
+
 				statement.executeUpdate("COMMIT;");
 
+				if ( rs.next() )
+				{
+					obj.setObjectID(rs.getInt(1));
+				}
 
 				return true;
 			}
@@ -1959,7 +2628,6 @@ public class SQLfunctions
 		return false;
 	}
 
-
 	/**
 	 * This function adds the given {@link CoralObject} to the CoralObject table
 	 * in the database. The function also add the {@link ObjectParameters}
@@ -1972,17 +2640,37 @@ public class SQLfunctions
 	{
 		if ( con != null && obj != null )
 		{
-			// Adds the objects parameters
-			databaseAddObjectParameters(con, obj);
+			// TEST OF THE EXISTENS OF A OBJECT WITH THE SAME ID
+			if ( databaseAbstractObjectExists(con, obj) )
+			{
+				return false;
+			}
+
+
+			int popNameID = databaseAddObjectPopName(con, obj);
+
+			if ( popNameID == -1 )
+			{
+				return false;
+			}
+
+			int parID = databaseAddObjectParametersReturnID(con, obj);
+			// Adds the objects parameters and returns false if it fails.
+			if ( parID == -1 )
+			{
+				// Removes the previously made PopName row.
+				databaseRemovePopNamesID(con, popNameID);
+				return false;
+			}
 
 			String coralObjectRow = "INSERT INTO " + coralObjectTable
-					+ " VALUES (" + obj.getObjectID() + // The ID of the object
-					", '" + obj.getPopulareName() + // Common name
-					"', '" + obj.getSpeciesName() + // Species Name
+					+ " VALUES (" + null + // The ID of the object
+					", '" + obj.getSpeciesName() + // Species Name
 					"', '" + obj.getGenusName() + // Genus Name
 					"', '" + obj.getDescription() + // Description
 					"', '" + obj.getCoralType().toString() + // Type
-					"', '" + obj.getParameters().getObjectParametersID() + // FishParametersID
+					"', '" + parID + // FishParametersID
+					"', '" + popNameID + // PopNamesID
 					"');";
 
 			try
@@ -1991,9 +2679,16 @@ public class SQLfunctions
 				statement.setQueryTimeout(30); // set timeout to 30 sec.
 
 				statement.executeUpdate("BEGIN;");
-				statement.executeUpdate(coralObjectRow);
+				statement.executeUpdate(coralObjectRow,
+						Statement.RETURN_GENERATED_KEYS);
+				ResultSet rs = statement.getGeneratedKeys();
+
 				statement.executeUpdate("COMMIT;");
 
+				if ( rs.next() )
+				{
+					obj.setObjectID(rs.getInt(1));
+				}
 
 				return true;
 			}
@@ -2024,21 +2719,53 @@ public class SQLfunctions
 	{
 		if ( con != null && obj != null )
 		{
-			// Adds the objects parameters
-			databaseAddObjectParameters(con, obj);
+			// TEST OF THE EXISTENS OF A OBJECT WITH THE SAME ID
+			if ( databaseAbstractObjectExists(con, obj) )
+			{
+				return false;
+			}
 
-			// Adds the invertebrates exclusions
-			databaseAddInvertebrateExclusionsList(con, obj);
+
+			int popNameID = databaseAddObjectPopName(con, obj);
+
+			if ( popNameID == -1 )
+			{
+				return false;
+			}
+
+
+			int parID = databaseAddObjectParametersReturnID(con, obj);
+			// Adds the objects parameters and returns false if it fails.
+			if ( parID == -1 )
+			{
+				// Removes the previously made PopName row.
+				databaseRemovePopNamesID(con, popNameID);
+				return false;
+			}
+
+
+			int exID = databaseAddInvertebrateExclusionsListReturnID(con, obj);
+			// Adds the invertebrates exclusions and returns false if it fails.
+			if ( exID == -1 )
+			{
+				// Removes the previously made PopName row.
+				databaseRemovePopNamesID(con, popNameID);
+
+				// Removes the previously made PopName row.
+				databaseRemoveObjectParametersID(con, parID);
+				return false;
+			}
+
 
 			String invertebrateObjectRow = "INSERT INTO "
-					+ invertebrateObjectTable + " VALUES (" + obj.getObjectID()
-					+ ", " + "'" + obj.getPopulareName() + // Common name
-					"', '" + obj.getSpeciesName() + // Species Name
+					+ invertebrateObjectTable + " VALUES (" + null + ", '"
+					+ obj.getSpeciesName() + // Species Name
 					"', '" + obj.getGenusName() + // Genus Name
 					"', '" + obj.getDescription() + // Description
 					"', '" + obj.getInvertebrateType() + // Type
-					"', '" + obj.getParameters().getObjectParametersID() + // FishParametersID
-					"', '" + obj.getExclusions().getInvertebrateExclusionID() + // InvertebrateExclusionID
+					"', '" + parID + // FishParametersID
+					"', '" + exID + // InvertebrateExclusionID
+					"', '" + popNameID + // PopNamesID
 					"');";
 
 
@@ -2048,9 +2775,17 @@ public class SQLfunctions
 				statement.setQueryTimeout(30); // set timeout to 30 sec.
 
 				statement.executeUpdate("BEGIN;");
-				statement.executeUpdate(invertebrateObjectRow);
+
+				statement.executeUpdate(invertebrateObjectRow,
+						Statement.RETURN_GENERATED_KEYS);
+				ResultSet rs = statement.getGeneratedKeys();
+
 				statement.executeUpdate("COMMIT;");
 
+				if ( rs.next() )
+				{
+					obj.setObjectID(rs.getInt(1));
+				}
 
 				return true;
 			}
@@ -2186,9 +2921,6 @@ public class SQLfunctions
 
 		if ( con != null && fishID > 0 )
 		{
-			ObjectParameters objParameter;
-			FishExclusions fishEx;
-
 			try
 			{
 				// Statement stmt = con.createStatement(
@@ -2328,7 +3060,14 @@ public class SQLfunctions
 
 				// Adds additional fields
 				obj.setGenusName(rs.getString("Genus"));
-				obj.setPopulareName(rs.getString("PopularName"));
+				int popNameID = rs.getInt("PopNameID");
+
+				// Adds the PopName
+				String popName = databaseGetPopName(con, popNameID);
+				if ( popName != null )
+				{
+					obj.setPopulareName(popName);
+				}
 
 				return obj;
 			}
@@ -2362,7 +3101,14 @@ public class SQLfunctions
 
 				// Adds additional fields
 				obj.setGenusName(rs.getString("Genus"));
-				obj.setPopulareName(rs.getString("PopularName"));
+				int popNameID = rs.getInt("PopNameID");
+
+				// Adds the PopName
+				String popName = databaseGetPopName(con, popNameID);
+				if ( popName != null )
+				{
+					obj.setPopulareName(popName);
+				}
 
 				return obj;
 			}
@@ -2380,11 +3126,11 @@ public class SQLfunctions
 		{
 			// Gets the objects parameters
 			ObjectParameters objParameter = databaseGetParameter(con,
-					rs.getInt("ObjectParametersID"));
+					rs.getInt("ObjectParametersIDyoung"));
 
 			// Gets the objects exclusions
 			FishExclusions fishEx = databaseGetFishExclusions(con,
-					rs.getInt("FishExclusionID"));
+					rs.getInt("FishExclusionIDyoung"));
 
 			// If the parameters object and exclusions are not null
 			if ( objParameter != null && fishEx != null )
@@ -2393,11 +3139,18 @@ public class SQLfunctions
 				FishObject obj = new FishObject(rs.getInt("FishObjectID"),
 						rs.getString("Species"), rs.getString("Description"),
 						FishGender.UNISEX, rs.getDouble("Size"), objParameter,
-						fishEx);
+						fishEx, FishAgeType.YOUNG);
 
 				// Adds additional fields
 				obj.setGenusName(rs.getString("Genus"));
-				obj.setPopulareName(rs.getString("PopularName"));
+				int popNameID = rs.getInt("PopNameID");
+
+				// Adds the PopName
+				String popName = databaseGetPopName(con, popNameID);
+				if ( popName != null )
+				{
+					obj.setPopulareName(popName);
+				}
 
 				return obj;
 			}
@@ -2491,6 +3244,282 @@ public class SQLfunctions
 	}
 
 
+	/**
+	 * This function attempts to retrieve a {@link ObjectParameters} with the
+	 * given ID from the database. If the given connection or given parID is
+	 * smaller then 1 null will be returned. It also returns false if there is a
+	 * {@link SQLException}.
+	 * 
+	 * @throws ObjectIDnotFoundInDatabaseException
+	 */
+	public static int databaseGetParameterID(Connection con, AbstractObject obj)
+	{
+		if ( con != null && obj != null )
+		{
+			String objTable = "";
+			String objIDcolumn = "";
+			String objParIDcolumn = "";
+
+
+			if ( obj instanceof FishObject )
+			{
+				FishObject fishObj = (FishObject) obj;
+
+				objTable = fishObjectTable;
+				objIDcolumn = fishObjectIDname;
+				if ( fishObj.getFishAgeType().equals(FishAgeType.YOUNG) )
+				{
+					objParIDcolumn = "ObjectParametersIDyoung";
+				}
+				else if ( fishObj.getFishAgeType().equals(FishAgeType.YOUNG) )
+				{
+					objParIDcolumn = "ObjectParametersIDadult";
+				}
+			}
+			else if ( obj instanceof CoralObject )
+			{
+				objTable = coralObjectTable;
+				objIDcolumn = coralObjectIDname;
+				objParIDcolumn = "ObjectParametersID";
+			}
+			else if ( obj instanceof InvertebratesObject )
+			{
+				objTable = invertebrateObjectTable;
+				objIDcolumn = invertebrateObjectIDname;
+				objParIDcolumn = "ObjectParametersID";
+			}
+
+
+			try
+			{
+				// GETTING THE FISH
+				Statement stmt = con.createStatement();
+
+				String objQuery = "SELECT * " + "FROM " + objTable + " WHERE "
+						+ objIDcolumn + "=" + obj.getObjectID() + "";
+
+				ResultSet rs = stmt.executeQuery(objQuery);
+
+				// Confirms only one row
+				onlyOneResultSetRow(con, obj.getObjectID(), objQuery);
+
+				while ( rs.next() )
+				{
+					// GETTING THE PARAMETER ID
+					return rs.getInt(objParIDcolumn);
+				}
+			}
+			catch ( SQLException e )
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println("Could not find " + objectParametersTable
+						+ " with ID:" + obj.getObjectID());
+			}
+			catch ( MoreTheOneResultObject e )
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		return -1;
+	}
+
+	/**
+	 * This function attempts to retrieve a {@link ObjectParameters} with the
+	 * given ID from the database. If the given connection or given parID is
+	 * smaller then 1 null will be returned. It also returns false if there is a
+	 * {@link SQLException}.
+	 * 
+	 * @throws ObjectIDnotFoundInDatabaseException
+	 */
+	public static ObjectParameters databaseGetParameter(Connection con,
+			AbstractObject obj) throws MoreTheOneResultObject,
+			ObjectIDnotFoundInDatabaseException
+	{
+		ObjectParameters objParameter = null;
+
+		if ( con != null && obj != null )
+		{
+			int parID = -1;
+
+			parID = databaseGetParameterID(con, obj);
+
+			if ( parID > -1 )
+			{
+				try
+				{
+					Statement stmt = con.createStatement();
+
+					String query = "SELECT * " + "FROM "
+							+ objectParametersTable
+							+ " WHERE ObjectParametersID=" + parID + "";
+
+					ResultSet rs;
+					rs = stmt.executeQuery(query);
+
+					// Confirms only one row
+					onlyOneResultSetRow(con, parID, query);
+
+					while ( rs.next() )
+					{
+						double[] sal = { rs.getDouble("SalinityLow"),
+								rs.getDouble("SalinityHigh") };
+						double[] ph = { rs.getDouble("PHLow"),
+								rs.getDouble("PHHigh") };
+						double[] gh = { rs.getDouble("GHLow"),
+								rs.getDouble("GHHigh") };
+						double[] temp = { rs.getDouble("TemperatureLow"),
+								rs.getDouble("TemperatureHigh") };
+						double[] kh = { rs.getDouble("KHLow"),
+								rs.getDouble("KHHigh") };
+						double[] magnesium = { rs.getDouble("MagnesiumLow"),
+								rs.getDouble("MagnesiumHigh") };
+						double[] calcium = { rs.getDouble("CalciumLow"),
+								rs.getDouble("CalciumHigh") };
+						double space = rs.getDouble("SpaceNeeded");
+						double[] othersS = { rs.getDouble("OthersSizeLow"),
+								rs.getDouble("OthersSizeHigh") };
+
+						objParameter = new ObjectParameters(
+								rs.getInt("ObjectParametersID"), sal, ph, gh,
+								temp);
+						objParameter.setKh(kh);
+						objParameter.setMagnesium(magnesium);
+						objParameter.setCalcium(calcium);
+						objParameter.setSpaceNeeded(space);
+						objParameter.setOthersSize(othersS);
+					}// end while loop
+
+				}
+				catch ( SQLException e )
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.out.println("Could not find "
+							+ objectParametersTable + " with ID:" + parID);
+				}
+			}
+		}
+
+
+		return objParameter;
+	}
+
+	/**
+	 * This function will attempt to find the PopNames row String that belongs to the given {@link AbstractObject}. 
+	 * If the given connection or given {@link AbstractObject} is null, null will be returned. It also returns 
+	 * null if there is a {@link SQLException}.
+	 */
+	public static String databaseGetPopName(Connection con, int rowID)
+	{
+		if ( con != null && rowID > -1 )
+		{
+			try
+			{
+				Statement statement = con.createStatement();
+				statement.setQueryTimeout(30); // set timeout to 30 sec.
+
+				String getObjPopIDquery = "SELECT popName_NO " + "FROM "
+						+ popNamesTable + " WHERE " + popNamesIDname + "="
+						+ rowID;
+
+				ResultSet rs = statement.executeQuery(getObjPopIDquery);
+
+
+				// // Confirms only one row
+				onlyOneResultSetRow(con, getObjPopIDquery, false);
+
+				if ( rs.next() )
+				{
+					String name = (String) rs.getObject("popName_NO");
+					return name;
+				}
+			}
+			catch ( SQLException e )
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println("Could not find " + popNamesTable + " with "
+						+ popNamesIDname + "=" + rowID);
+			}
+			catch ( MoreTheOneResultObject e )
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				e.getMessage();
+			}
+
+		}
+
+
+		return null;
+	}
+
+
+	/**
+	 * This function attempts to find and return the PopNameID contains 
+	 * within the {@link AbstractObject} given inside the database.
+	 * 
+	 * -1 is returned if anything goes wrong.
+	 */
+	public static int databaseGetObjectPopID(Connection con, AbstractObject obj)
+	{
+		if ( con != null && obj != null )
+		{
+			String objTable = "";
+			String objIDcolumn = "";
+
+
+			if ( obj instanceof FishObject )
+			{
+				objTable = fishObjectTable;
+				objIDcolumn = "FishObjectID";
+			}
+			else if ( obj instanceof CoralObject )
+			{
+				objTable = coralObjectTable;
+				objIDcolumn = "CoralObjectID";
+			}
+			else if ( obj instanceof InvertebratesObject )
+			{
+				objTable = invertebrateObjectTable;
+				objIDcolumn = "InvertebrateObjectID";
+			}
+
+			try
+			{
+				Statement stmt = con.createStatement();
+				String query = "SELECT * " + "FROM " + objTable + " WHERE "
+						+ objIDcolumn + "=" + obj.getObjectID() + "";
+
+				ResultSet rs = stmt.executeQuery(query);
+
+				// Confirms only one row
+				onlyOneResultSetRow(con, obj.getObjectID(), query);
+
+				while ( rs.next() )
+				{
+					// GETTING THE PARAMETER ID
+					return rs.getInt("PopNameID");
+				}
+			}
+			catch ( SQLException e )
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch ( MoreTheOneResultObject e )
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		return -1;
+	}
+
 
 	/**
 	 * This function attempts to retrieve a {@link ObjectParameters} with the
@@ -2518,7 +3547,7 @@ public class SQLfunctions
 				rs = stmt.executeQuery(query);
 
 				// Confirms only one row
-				return onlyOneResultSetRow(rs);
+				return onlyOneResultSetRow(rs, true);
 			}
 			catch ( SQLException e )
 			{
@@ -2561,7 +3590,7 @@ public class SQLfunctions
 				rs = stmt.executeQuery(query);
 
 				// Confirms only one row
-				return onlyOneResultSetRow(rs);
+				return onlyOneResultSetRow(rs, true);
 			}
 			catch ( SQLException e )
 			{
@@ -2716,7 +3745,7 @@ public class SQLfunctions
 				rs = stmt.executeQuery(query);
 
 				// Confirms only one row
-				return onlyOneResultSetRow(rs);
+				return onlyOneResultSetRow(rs, true);
 			}
 			catch ( SQLException e )
 			{
@@ -2729,6 +3758,62 @@ public class SQLfunctions
 
 
 		return false;
+	}
+
+
+
+	/**
+	 * This function attempts to get an row ID with the given 
+	 * {@link AbstractObject} from the database. If the given connection
+	 * or given {@link AbstractObject} is smaller then -1 will be returned.
+	 * It also returns false if there is a {@link SQLException}.
+	 * 
+	 * @throws ObjectIDnotFoundInDatabaseException
+	 */
+	public static int databaseGetInvertebrateExclusionsID(Connection con,
+			InvertebratesObject obj)
+	{
+		if ( con != null && obj != null )
+		{
+			try
+			{
+				// Statement stmt = con.createStatement(
+				// ResultSet.TYPE_SCROLL_INSENSITIVE,
+				// ResultSet.CONCUR_READ_ONLY);
+				Statement stmt = con.createStatement();
+
+				String query = "SELECT * " + "FROM " + invertebrateObjectTable
+						+ " WHERE " + invertebrateObjectIDname + "="
+						+ obj.getObjectID();
+
+				ResultSet rs = stmt.executeQuery(query);
+
+				// Confirms only one row
+				onlyOneResultSetRow(con, obj.getObjectID(), query);
+
+				while ( rs.next() )
+				{
+					return rs.getInt("InvertebrateExclusionID");
+				}
+
+			}
+			catch ( SQLException e )
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println("Could not find "
+						+ invertebrateExclusionListTable + " with ID:"
+						+ obj.getObjectID());
+			}
+			catch ( MoreTheOneResultObject e )
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+
+		return -1;
 	}
 
 
@@ -2842,7 +3927,8 @@ public class SQLfunctions
 	 * @throws MoreTheOneResultObject
 	 * @throws SQLException
 	 */
-	public static boolean onlyOneResultSetRow(ResultSet rs) throws SQLException
+	public static boolean onlyOneResultSetRow(ResultSet rs, boolean close)
+			throws SQLException
 	{
 		if ( rs != null )
 		{
@@ -2857,7 +3943,10 @@ public class SQLfunctions
 				foundOne = true;
 			}
 
-			rs.close();
+			if ( close )
+			{
+				rs.close();
+			}
 
 			return true;
 		}
@@ -2865,6 +3954,47 @@ public class SQLfunctions
 		return false;
 	}
 
+
+
+	/**
+	 * This function attempts to
+	 * 
+	 * @throws MoreTheOneResultObject
+	 * @throws SQLException
+	 */
+	public static void onlyOneResultSetRow(Connection con, String query,
+			boolean close) throws MoreTheOneResultObject, SQLException
+	{
+		if ( con != null && query != null && query.equals("") )
+		{
+			ResultSet rs;
+
+			Statement stmt = con.createStatement();
+
+			rs = stmt.executeQuery(query);
+
+			boolean foundOne = false;
+			while ( rs.next() )
+			{
+				if ( foundOne )
+				{
+					if ( close )
+					{
+						rs.close();
+					}
+					throw new MoreTheOneResultObject(query, con.getMetaData()
+							.getURL());
+				}
+
+				foundOne = true;
+			}
+
+			if ( close )
+			{
+				rs.close();
+			}
+		}
+	}
 
 
 	/**
@@ -2901,6 +4031,33 @@ public class SQLfunctions
 		}
 	}
 
+
+	/**
+	 * This function attempts to
+	 * 
+	 * @throws MoreTheOneResultObject
+	 * @throws SQLException
+	 */
+	public static boolean noResultSetRow(ResultSet rs, boolean close)
+			throws SQLException
+	{
+		boolean found = false;
+		if ( rs != null )
+		{
+			while ( rs.next() )
+			{
+				found = true;
+			}
+
+			if ( close )
+			{
+				rs.close();
+			}
+		}
+
+
+		return found;
+	}
 
 
 	/**
@@ -2944,7 +4101,11 @@ public class SQLfunctions
 
 
 	/**
-	 * TODO - Description
+	 * This function attempts to find and verify if a Group 
+	 * exists in the database with the given name.
+	 * 
+	 * @return Boolean on whether there exists a Group in 
+	 * the database with the given name.
 	 */
 	public static boolean databaseGroupDoesNotExists(Connection con,
 			String groupName)
@@ -2987,7 +4148,11 @@ public class SQLfunctions
 
 
 	/**
-	 * TODO - Description
+	 * This function attempts to find and verify if a Group 
+	 * exists in the database with the given ID.
+	 * 
+	 * @return Boolean on whether there exists a Group in 
+	 * the database with the given ID.
 	 */
 	public static boolean databaseGroupDoesNotExists(Connection con, int ID)
 	{
@@ -3028,6 +4193,12 @@ public class SQLfunctions
 
 
 
+	/**
+	 * This function attempts to find and verify if there exists an Object
+	 * in the database that matches the given {@link AbstractObject},
+	 * especially in regards to the object ID.
+	 * 
+	 */
 	public static boolean databaseAbstractObjectExists(Connection con,
 			AbstractObject object)
 	{
@@ -3068,7 +4239,7 @@ public class SQLfunctions
 					rs = stmt.executeQuery(query);
 
 					// Confirms only one row
-					return onlyOneResultSetRow(rs);
+					return noResultSetRow(rs, true);
 				}
 				catch ( Exception e )
 				{
@@ -3081,4 +4252,152 @@ public class SQLfunctions
 
 		return false;
 	}
+
+
+	/**
+	 * This function attempts to find and return the 
+	 * corresponding {@link ObjectParameters} of the given 
+	 * {@link FishObject} based on the {@link FishAgeType} given.
+	 * 
+	 * NULL is returned if anything goes wrong.
+	 */
+	public static ObjectParameters databaseGetFishParameters(Connection con,
+			FishObject obj, FishAgeType age)
+	{
+		if ( con != null && obj != null && age != null )
+		{
+			int parID = -1;
+			String parColName = "";
+
+			if ( age.equals(FishAgeType.YOUNG) )
+			{
+				parColName = "ObjectParametersIDyoung";
+			}
+			else if ( age.equals(FishAgeType.ADULT) )
+			{
+				parColName = "ObjectParametersIDadult";
+			}
+
+			// If the age was either young or adult.
+			if ( !parColName.equals("") )
+			{
+				try
+				{
+					// GETTING THE FISH
+					Statement stmt = con.createStatement();
+
+					String Fishquery = "SELECT * " + "FROM " + fishObjectTable
+							+ " WHERE FishObjectID=" + obj.getObjectID() + "";
+
+					ResultSet rs = stmt.executeQuery(Fishquery);
+
+					// Confirms only one row
+					onlyOneResultSetRow(con, obj.getObjectID(), Fishquery);
+
+
+					while ( rs.next() )
+					{
+						// GETTING THE PARAMETER ID
+						parID = rs.getInt(parColName);
+
+
+						// GETTING THE OBJECTPARAMETER
+						return databaseGetParameter(con, parID);
+					}
+				}
+				catch ( SQLException e )
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				catch ( MoreTheOneResultObject e )
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				catch ( ObjectIDnotFoundInDatabaseException e )
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+		// If anything goes wrong.
+		return null;
+	}
+
+
+	/**
+	 * This function attempts to find and return the 
+	 * corresponding {@link FishExclusions} of the given 
+	 * {@link FishObject} based on the {@link FishAgeType} given.
+	 * 
+	 * NULL is returned if anything goes wrong.
+	 */
+	public static FishExclusions databaseGetFishExclusions(Connection con,
+			FishObject obj, FishAgeType age)
+	{
+		if ( con != null && obj != null && age != null )
+		{
+			int exID = -1;
+			String exColName = "";
+
+			if ( age.equals(FishAgeType.YOUNG) )
+			{
+				exColName = "FishExclusionIDYoung";
+			}
+			else if ( age.equals(FishAgeType.ADULT) )
+			{
+				exColName = "FishExclusionIDAdult";
+			}
+
+			// If the age was either young or adult.
+			if ( !exColName.equals("") )
+			{
+				try
+				{
+					// GETTING THE FISH
+					Statement stmt = con.createStatement();
+
+					String Fishquery = "SELECT * " + "FROM " + fishObjectTable
+							+ " WHERE FishObjectID=" + obj.getObjectID() + "";
+
+					ResultSet rs = stmt.executeQuery(Fishquery);
+
+					// Confirms only one row
+					onlyOneResultSetRow(con, obj.getObjectID(), Fishquery);
+
+					while ( rs.next() )
+					{
+						// GETTING THE PARAMETER ID
+						exID = rs.getInt(exColName);
+
+
+						// GETTING THE OBJECTPARAMETER
+						return databaseGetFishExclusions(con, exID);
+					}
+				}
+				catch ( SQLException e )
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				catch ( MoreTheOneResultObject e )
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				catch ( ObjectIDnotFoundInDatabaseException e )
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+		// If anything goes wrong.
+		return null;
+	}
+
 }

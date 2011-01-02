@@ -168,4 +168,24 @@ public class AquaPanel extends JPanel
 
 		selectObjectCheck.setSelected(selected);
 	}
+
+
+
+	/**
+	 * TODO - Description
+	 * 
+	 */
+	public void toggle(boolean selected)
+	{
+		if ( selected )
+		{
+			this.setBorder(new RoundedBorder(10, 7.0f, new Color(30, 144, 255)));
+		}
+		else
+		{
+			this.setBorder(new RoundedBorder(10, 2.0f, new Color(0, 191, 255)));
+		}
+
+		selectObjectCheck.setSelected(selected);
+	}
 }

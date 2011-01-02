@@ -233,10 +233,10 @@ public class GroupTopPanel extends JPanel implements ActionListener
 					descriptionArea.setText(desc);
 
 
-					// Gets all the objects from the group(Fish, Invertebrate and Coral)
+					// Gets all the objects from the group(Fish, Invertebrate
+					// and Coral)
 					AbstractObject[] objects = SQLfunctions
-							.databaseGetObjectsFromGroup(con, groupNameField
-									.getText());
+							.databaseGetObjectsFromGroup(con, selectedGroupName);
 
 					// Gets the data inside each object
 					String[][] data = DataRetrival.getObjectsData(objects);
@@ -318,7 +318,8 @@ public class GroupTopPanel extends JPanel implements ActionListener
 					// Gets the new description as is written in the text area
 					String newDesc = descriptionArea.getText();
 
-					// If the current description is not the same as the new description
+					// If the current description is not the same as the new
+					// description
 					if ( !(newDesc.equals(currentDesc)) )
 					{
 						if ( newDesc != "" )
@@ -361,7 +362,8 @@ public class GroupTopPanel extends JPanel implements ActionListener
 
 						if ( changeName )
 						{
-							// Gets the names of the current groups in the database
+							// Gets the names of the current groups in the
+							// database
 							String[] arrayNames = SQLfunctions
 									.databaseGetGroupNames(con);
 
@@ -414,7 +416,8 @@ public class GroupTopPanel extends JPanel implements ActionListener
 				{
 					// Get connection to the database
 					con = AquaReg.getConnectionToDB();
-					// If there does not exist a group already with the given name
+					// If there does not exist a group already with the given
+					// name
 					if ( SQLfunctions.databaseGroupDoesNotExists(con,
 							newGroupName) )
 					{

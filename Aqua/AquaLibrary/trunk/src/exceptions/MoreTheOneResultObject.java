@@ -35,9 +35,9 @@ public class MoreTheOneResultObject extends Exception
 	 * 
 	 * @param ID
 	 */
-	public MoreTheOneResultObject(String name, String database)
+	public MoreTheOneResultObject(String queryString, String database)
 	{
-		objectString = name;
+		objectString = queryString;
 		databaseName = database;
 	}
 

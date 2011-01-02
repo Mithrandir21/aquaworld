@@ -62,6 +62,8 @@ public class SQLreset
 					"./resource/database/MySQLstatements/MySQL_ObjectGroup.txt");
 			File objectParFile = new File(
 					"./resource/database/MySQLstatements/MySQL_ObjectParameters.txt");
+			File popNamesFile = new File(
+					"./resource/database/MySQLstatements/MySQL_PopNames.txt");
 			File fishObjectFile = new File(
 					"./resource/database/MySQLstatements/MySQL_FishObject.txt");
 			File invertebrateObjectFile = new File(
@@ -113,6 +115,10 @@ public class SQLreset
 			// FishExclusion
 			String fishExString = IOmanagment.getSQLtableString(fishExFile);
 			SQLfunctions.databaseStatementExecution(connection, fishExString);
+
+			// PopNames
+			String popNamesString = IOmanagment.getSQLtableString(popNamesFile);
+			SQLfunctions.databaseStatementExecution(connection, popNamesString);
 
 			// FishGroup
 			String fishGroupString = IOmanagment

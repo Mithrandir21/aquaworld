@@ -41,9 +41,9 @@ public class EditingView extends AbstractView implements DocumentListener
 	/**
 	 * Empty constructor
 	 */
-	public EditingView(boolean incDelButton, boolean incExcButton)
+	public EditingView(boolean incDelButton, boolean incExcButton, Class type)
 	{
-		super(incDelButton, incExcButton);
+		super(incDelButton, incExcButton, type);
 	}
 
 
@@ -95,12 +95,37 @@ public class EditingView extends AbstractView implements DocumentListener
 			populateField(phHighField, par.getPHhigh());
 
 
+			if ( obj instanceof CoralObject
+					|| obj instanceof InvertebratesObject )
+			{
+				ghLowField.setNecessary(false);
+				ghHighField.setNecessary(false);
+			}
+			else
+			{
+				ghLowField.setNecessary(true);
+				ghHighField.setNecessary(true);
+			}
+
 			// Gets the gh low
 			populateField(ghLowField, par.getGHlow());
 
 			// Gets the gh high
 			populateField(ghHighField, par.getGHhigh());
 
+
+
+			if ( obj instanceof CoralObject
+					|| obj instanceof InvertebratesObject )
+			{
+				khLowField.setNecessary(true);
+				khHighField.setNecessary(true);
+			}
+			else
+			{
+				khLowField.setNecessary(false);
+				khHighField.setNecessary(false);
+			}
 
 			// Gets the kh low
 			populateField(khLowField, par.getKhLow());
@@ -246,10 +271,7 @@ public class EditingView extends AbstractView implements DocumentListener
 				// If the user answers yes
 				if ( answer == JOptionPane.YES_OPTION )
 				{
-					Connection con = AquaReg.getConnectionToDB();
-
-					SQLfunctions.databaseRemoveAbstractObject(con, object);
-					EditingFrame.list.refreshJLists();
+					EditingFrame.deleteObject(object);
 				}
 			}
 		}
@@ -271,6 +293,8 @@ public class EditingView extends AbstractView implements DocumentListener
 				// If the user answers yes
 				if ( answer == JOptionPane.YES_OPTION )
 				{
+					EditingFrame.editingObjectView.resetAction();
+					EditingFrame.editingObjectView.populateFields(object);
 					EditingFrame.list.refreshJLists();
 				}
 			}
@@ -324,7 +348,6 @@ public class EditingView extends AbstractView implements DocumentListener
 	private void saveObject()
 	{
 		String groupName = "";
-		String popName = "";
 		String speciesName = "";
 		String genusName = "";
 		String description = "";
@@ -335,7 +358,9 @@ public class EditingView extends AbstractView implements DocumentListener
 
 		if ( connection != null && object != null )
 		{
-			popName = popNameField.getText(); // Gets the popular name
+			// Sets the popular name so it can be saved.
+			object.setPopulareName(popNameField.getText());
+
 			speciesName = speciesField.getText(); // Gets the species name
 			genusName = genusField.getText(); // Gets the genus name
 			description = descriptionArea.getText(); // Gets the description
@@ -365,38 +390,61 @@ public class EditingView extends AbstractView implements DocumentListener
 
 			if ( objType != "" )
 			{
-				boolean parSaved = this.updateObjectParameters(object);
+				boolean popSaved = SQLfunctions.databaseUpdatePopNames(
+						connection, object);
 
-				// If parameters have been saved.
-				if ( parSaved )
+				if ( popSaved )
 				{
-					// The update string for the Object
-					String objectUpdateString = "";
-					objectUpdateString = "UPDATE " + objType + " "
-							+ "SET PopularName='" + popName + "', Species='"
-							+ speciesName + "', Genus='" + genusName
-							+ "', Description='" + description + "', Size='"
-							+ size + "' " + "WHERE " + objIDname + "="
-							+ object.getObjectID();
+					boolean parSaved = this.updateObjectParameters(object);
 
-					SQLfunctions.databaseStatementExecution(connection,
-							objectUpdateString);
+					// If parameters have been saved.
+					if ( parSaved )
+					{
+						// The update string for the Object
+						String objectUpdateString = "";
 
 
+						if ( object instanceof FishObject )
+						{
+							objectUpdateString = "UPDATE " + objType + " "
+									+ "SET Species='" + speciesName
+									+ "', Genus='" + genusName
+									+ "', Description='" + description
+									+ "', Size='" + size + "' " + "WHERE "
+									+ objIDname + "=" + object.getObjectID();
+						}
+						else if ( object instanceof CoralObject )
+						{
+							CoralObject coral = (CoralObject) object;
+
+							objectUpdateString = "UPDATE " + objType + " "
+									+ "SET Species='" + speciesName
+									+ "', Genus='" + genusName
+									+ "', Description='" + description
+									+ "', CoralType='" + coral.getCoralType()
+									+ "' " + "WHERE " + objIDname + "="
+									+ object.getObjectID();
+						}
+						else if ( object instanceof InvertebratesObject )
+						{
+							InvertebratesObject invObj = (InvertebratesObject) object;
+
+							objectUpdateString = "UPDATE " + objType + " "
+									+ "SET Species='" + speciesName
+									+ "', Genus='" + genusName
+									+ "', Description='" + description
+									+ "', InvertebratesType='"
+									+ invObj.getInvertebrateType() + "' "
+									+ "WHERE " + objIDname + "="
+									+ object.getObjectID();
+						}
+
+						SQLfunctions.databaseStatementExecution(connection,
+								objectUpdateString);
+
+						// TODO - Group Update Edit View
+					}
 				}
-
-				// TODO - Group Update Edit View
-				// // The update string for the group that the object belongs
-				// to.
-				// String groupUpdateString = "";
-				// groupUpdateString = "UPDATE " + objType + " "
-				// + "SET PopularName='" + popName + "', Species='"
-				// + speciesName + "', Genus='" + genusName
-				// + "', Description='" + description + "', Size='" + size
-				// + "' " + "WHERE " + objIDname + "="
-				// + object.getObjectID();
-				//
-				// System.out.println(groupUpdateString);
 			}
 		}
 
@@ -411,14 +459,5 @@ public class EditingView extends AbstractView implements DocumentListener
 			// connection close failed.
 			System.err.println(e);
 		}
-
-
-
-
-
-
-
-
-
 	}
 }

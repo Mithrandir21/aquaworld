@@ -1,13 +1,18 @@
 CREATE TABLE IF NOT EXISTS `FishObject` (
   `FishObjectID` int(11) NOT NULL AUTO_INCREMENT,
-  `PopularName` text,
   `Species` text NOT NULL,
   `Genus` text,
   `Description` text,
   `Size` double NOT NULL,
-  `ObjectParametersID` int(11) NOT NULL,
-  `FishExclusionID` int(11) NOT NULL,
+  `ObjectParametersIDyoung` int(11) NOT NULL,
+  `ObjectParametersIDadult` int(11) NOT NULL,
+  `FishExclusionIDYoung` int(11) NOT NULL,
+  `FishExclusionIDAdult` int(11) NOT NULL,
+  `PopNameID` int(11) NOT NULL,
   PRIMARY KEY (`FishObjectID`),
-  CONSTRAINT `FishExclusion` FOREIGN KEY `FishExclusion`(`FishExclusionID`) REFERENCES `FishExclusionList` (`FishExclusionID`) ON DELETE CASCADE,
-  CONSTRAINT `FishParameters` FOREIGN KEY `FishParameters`(`ObjectParametersID`) REFERENCES `ObjectParameters` (`ObjectParametersID`) ON DELETE CASCADE  
+  CONSTRAINT `FishPopName` FOREIGN KEY `FishPopName`(`PopNameID`) REFERENCES `PopNames` (`popNameID`) ON DELETE CASCADE,
+  CONSTRAINT `FishExclusionYoung` FOREIGN KEY `FishExclusionYoung`(`FishExclusionIDYoung`) REFERENCES `FishExclusionList` (`FishExclusionID`) ON DELETE CASCADE,
+  CONSTRAINT `FishExclusionAdult` FOREIGN KEY `FishExclusionAdult`(`FishExclusionIDAdult`) REFERENCES `FishExclusionList` (`FishExclusionID`) ON DELETE CASCADE,
+  CONSTRAINT `FishParametersYoung` FOREIGN KEY `FishParametersYoung`(`ObjectParametersIDyoung`) REFERENCES `ObjectParameters` (`ObjectParametersID`) ON DELETE CASCADE, 
+  CONSTRAINT `FishParametersAdult` FOREIGN KEY `FishParametersAdult`(`ObjectParametersIDadult`) REFERENCES `ObjectParameters` (`ObjectParametersID`) ON DELETE CASCADE  
 ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
