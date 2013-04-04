@@ -79,7 +79,7 @@ public class AquaReg extends JFrame
 		try
 		{
 			Class.forName("org.sqlite.JDBC");
-			Class.forName("com.mysql.jdbc.Driver");
+			// Class.forName("com.mysql.jdbc.Driver");
 
 
 			// String url = "jdbc:mysql://db4free.net:3306/aquaworld";
@@ -87,14 +87,14 @@ public class AquaReg extends JFrame
 			// String pass = "sauron21";
 			// // create a database connection
 			// connection = DriverManager.getConnection(url, user, pass);
+			//
+			// String url = "jdbc:mysql://localhost/aquaworld";
+			// String user = "aquaworld";
+			// String pass = "";
+			// // create a database connection
+			// connection = DriverManager.getConnection(url, user, pass);
 
-			String url = "jdbc:mysql://localhost/aquaworld";
-			String user = "aquaworld";
-			String pass = "";
-			// create a database connection
-			connection = DriverManager.getConnection(url, user, pass);
-
-			// connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
+			connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
 		}
 		catch ( ClassNotFoundException e1 )
 		{
@@ -136,16 +136,16 @@ public class AquaReg extends JFrame
 		try
 		{
 			Class.forName("org.sqlite.JDBC");
-			Class.forName("com.mysql.jdbc.Driver");
+			// Class.forName("com.mysql.jdbc.Driver");
 
 
-			String url = "jdbc:mysql://localhost/aquaworld";
-			String user = "aquaworld";
-			String pass = "";
-			// create a database connection
-			connection = DriverManager.getConnection(url, user, pass);
+			// String url = "jdbc:mysql://localhost/aquaworld";
+			// String user = "aquaworld";
+			// String pass = "";
+			// // create a database connection
+			// connection = DriverManager.getConnection(url, user, pass);
 
-			// connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
+			connection = DriverManager.getConnection("jdbc:sqlite:Fish.db");
 
 			return connection;
 		}
