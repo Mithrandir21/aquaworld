@@ -1,6 +1,8 @@
 package coreObjects.Equipment;
 
-
+/**
+ * This class is an abstract class for equipment objects, such as caves, filters and plants.
+ */
 public abstract class EquipmentObject
 {
 	/**
@@ -17,7 +19,7 @@ public abstract class EquipmentObject
 
 
 	/**
-	 * TODO - Description NEEDED!
+	 * Constructor for the class that takes a Producer(String) and a Description(String).
 	 * 
 	 * @param producer
 	 * @param description
@@ -33,7 +35,7 @@ public abstract class EquipmentObject
 
 
 	/**
-	 * TODO - Description NEEDED!
+	 * The producer of the equipment.
 	 * 
 	 * @return the producer
 	 */
@@ -45,7 +47,7 @@ public abstract class EquipmentObject
 
 
 	/**
-	 * TODO - Description NEEDED!
+	 * The equipment description.
 	 * 
 	 * @return the description
 	 */
