@@ -1,3 +1,0 @@
-AquaReg<br /> 
-- Group Description user input character limitation to [az-AZ-09].
-- New
