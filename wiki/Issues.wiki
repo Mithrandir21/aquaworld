@@ -1,0 +1,2 @@
+AquaReq
+- Group Description user input character limitation to [az-AZ-09].
